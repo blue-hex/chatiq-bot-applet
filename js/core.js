@@ -20,8 +20,7 @@ export function initChat() {
     <div class="max-w-md mx-auto p-4">
 
     <div id="chatbot-form" class="bg-yellow-600 hidden w-96 absolute bottom-16 right-4 p-4 rounded-lg shadow-lg">
-    <button onclick="history.back()">Go Back</button>
-
+ 
     <strong class="text-white text-xl align-left cursor-pointer alert-del">&times;</strong>
 
     
