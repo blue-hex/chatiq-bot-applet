@@ -110,9 +110,10 @@ body {
   flex-direction: row-reverse;
 }
 .right-msg .msg-bubble {
-  background: var(--right-msg-bg);
+  background: #d69e2e;
   color: #fff;
   border-bottom-right-radius: 0;
+  margin: 2%;
 }
 .right-msg .msg-img {
   margin: 0 0 0 10px;
@@ -136,7 +137,7 @@ body {
 }
 .msger-send-btn {
   margin-left: 10px;
-  background: rgb(0, 196, 65);
+  background: rgb(194, 193, 116);
   color: #fff;
   font-weight: bold;
   cursor: pointer;
