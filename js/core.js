@@ -13,7 +13,7 @@ export function initChat() {
   <!-- Chatbot Form -->
   <div class="max-w-md mx-auto p-4">
       <div id="chatbot-form"
-          class="bg-white hidden w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-neutral-200">
+          class=" backdrop-blur-2xl hidden w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-neutral-200">
           <div class="rounded-full align-left cursor-pointer alert-del">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                   class="w-6 h-6 text-black">
@@ -23,23 +23,23 @@ export function initChat() {
               </svg>
           </div>
           <div class="md:container md:mx-auto ">
-              <div class="max-w-sm bg-white rounded-lg">
+              <div class="max-w-sm backdrop-blur-2xl rounded-lg">
                   <a href="#">
-                      <div class="flex justify-center items-center bg-white">
+                      <div class="flex justify-center items-center  backdrop-blur-2xl">
 
                           <img class="h-16 w-16 " src="https://iqsuite.io/assets/iq.png" alt="" width="40px"
                               height="30px" />
                       </div>
                   </a>
-                  <div class="p-5 bg-white">
+                  <div class="p-5  backdrop-blur-2xl">
                       <a href="#">
                           <h5 class="text-center mb-2 text-2xl font-bold tracking-tight text-black">Chat iQ</h5>
                       </a>
                       <p class="text-center mb-3 font-normal text-black">Transform any business and deploy a custom
                           solution with our cutting edge AI. </p>
                   </div>
-                  <div class="px-5 pb-5 text-center bg-white" id="start-conversation-button">
-                      <div id="chat:FCxvu7NgcI" class="text-white rounded-lg text-bl bg-blue-950 py-4 px-4 w-full">
+                  <div class="px-5 pb-5 text-center  backdrop-blur-2xl" id="start-conversation-button">
+                      <div id="chat:FCxvu7NgcI" class="text-white rounded-lg text-bl bg-black py-4 px-4 w-full">
                           <button type="button"> Start Conversation </button>
                       </div>
                   </div>
@@ -48,12 +48,10 @@ export function initChat() {
           </div>
           <!-- Email Verification Form -->
           <div id="email-verification" class="hidden mt-4 w-96 ">
-              <form id="email-form" class="space-y-4">
-                  <label for="email" class="block font-semibold text-white">Verify Your Email:</label>
-                  <input type="email" name="email" id="email"
+              <form id="email-form" class="">
+                  <input type="email" name="email" id="email" required
                       class="p-2 rounded-md bg-neutral-100 border border-neutral-200" placeholder="Enter your email">
-                  <button id="email-button" type="submit" class="bg-blue-950 text-white p-2 rounded-md">Start
-                      Chat</button>
+                  <button id="email-button" type="submit" class="bg-black text-white p-2 rounded-md text-sm">Continue</button>
               </form>
           </div>
           <div id="chat-conversation1" class="msg-bubble chat-conversation1  mb-4 hidden">
@@ -67,7 +65,7 @@ export function initChat() {
                           class=" flex-1 w-full rounded-lg p-2 bg-neutral-100 border border-neutral-200"
                           placeholder="Type your query" />
                       <button type="submit" id="send-button"
-                          class="bg-blue-950 hover:bg-blue-900 text-white rounded-lg p-2 ml-2 inline-flex justify-center items-center">
+                          class="bg-black hover:bg-blue-900 text-white rounded-lg p-2 ml-2 inline-flex justify-center items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                               class="w-6 h-6 text-white">
                               <path
