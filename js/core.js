@@ -54,7 +54,7 @@ export function initChat() {
                   <button id="email-button" type="submit" class="bg-black text-white p-2 rounded-md text-sm">Continue</button>
               </form>
           </div>
-          <div id="chat-conversation1" class="msg-bubble chat-conversation1  mb-4 hidden">
+          <div id="chat-conversation1" class="msg-bubble chat-conversation1  mb-4 hidden h-96 overflow-y-auto">
 
           </div>
           <!-- Chat Conversation Form -->
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
     messageBubble.textContent = message;
 
     if (sender === "left") {
-      messageBubble.style.background = "#d69e2e";
+      messageBubble.style.background = "#059669";
       messageBubble.style.color = "#fff";
       messageBubble.style.borderBottomRightRadius = "0";
     }
@@ -180,43 +180,43 @@ document.addEventListener("DOMContentLoaded", function () {
     chatConversation1.appendChild(messageDiv);
   }
 
-  function getBotResponse(userMessage) {
-    // API Call Here !!
-    fetch("http://127.0.0.1:5000/milo_chat", {
-      method: "POST",
-      headers: {
-        mode: "cors",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST",
-      },
-      body: JSON.stringify({ msg: userMessage }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+  async function getBotResponse(userMessage) {
+
+    const formdata = new FormData();
+    formdata.append("user_query", userMessage);
+    formdata.append("chatbot_id", "10");
+
+    try {
+      const response = await fetch("http://localhost:3001/app/bot-query/", {
+        method: "POST",
+        body: formdata,
+      });
+      const result = await response.json(); // Assuming the API returns JSON now
+
+      const iqResponse = result.message_list.find(message => message.type === "iq");
+      if (iqResponse) {
         const responseElement = document.getElementById("chat-conversation1");
         const chat = document.querySelector(".msg-bubble");
 
-        const userMsg = `<div class="msg right-msg">
-                                <div class="msg-img" style="background-image: url(https://image.flaticon.com/icons/svg/145/145867.svg)">
-                                </div>
-                                <div class="msg-bubble ">
+        const userMsg = `<div class="msg left-msg">
+                                <div class="msg-bubble left-msg rounded-3xl">
                                     <div class="msg-info">
-                                        <div class="msg-info-name">AI Bot:</div>
-                                        <div class="msg-info-time">12:46</div>
+                                        <div class="msg-info-name">Chat iQ</div>
                                     </div>
                                     <div class="msg-text">
-                                    ${data.result}
+                                    ${iqResponse.text}
                                     </div>
                                 </div>
-                            </div>
-                                `;
+                            </div>`;
         const userMsgDiv = document.createElement("div");
         userMsgDiv.innerHTML = userMsg;
         chat.appendChild(userMsgDiv);
-      })
-      .catch((error) => console.error(error));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
+
 
   // Email API
   document.getElementById("email-button").addEventListener("click", () => {
