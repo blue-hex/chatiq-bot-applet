@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const formdata = new FormData();
     formdata.append("user_query", userMessage);
-    formdata.append("chatbot_id", "10");
+    formdata.append("chatbot_id", "14");
 
     try {
       const response = await fetch("http://localhost:3001/app/bot-query/", {
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
-  // Email API
+  // Customer Information API
   document.getElementById("email-button").addEventListener("click", () => {
     const inputData = document.getElementById("email").value;
     fetch("http://127.0.0.1:5000/milo_chat", {
