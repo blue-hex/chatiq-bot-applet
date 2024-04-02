@@ -184,7 +184,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const formdata = new FormData();
     formdata.append("user_query", userMessage);
-    formdata.append("chatbot_id", "14");
+    formdata.append("chatbot_id", "16");
+    formdata.append("user_email", "abhi@bhs.com");
 
     try {
       const response = await fetch("http://localhost:3001/app/bot-query/", {
