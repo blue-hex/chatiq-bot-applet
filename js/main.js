@@ -1,3 +1,3 @@
 import { initChat } from "./core.js"
 
-initChat();
+initChat(56);

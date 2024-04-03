@@ -1,8 +1,8 @@
 
 
-
-export function initChat() {
-
+// 
+export function initChat(bot_id) {
+  const botiq_id = bot_id;
   const chatTemplate = `
   <div class="fixed bottom-4 right-4">
   <button id="toggle-chatbot-button"
@@ -47,11 +47,13 @@ export function initChat() {
               </div>
           </div>
           <!-- Email Verification Form -->
-          <div id="email-verification" class="hidden mt-4 w-96 ">
-              <form id="email-form" class="">
+          <div id="email-verification" class="hidden mt-4 w-96">
+              <form id="email-form" class="w-full ml-12 ">
+                  <input type="text" name="name" id="customer_name" required
+                      class="p-2 rounded-md bg-neutral-100 border border-neutral-200 w-8/12" placeholder="Enter your name">
                   <input type="email" name="email" id="email" required
-                      class="p-2 rounded-md bg-neutral-100 border border-neutral-200" placeholder="Enter your email">
-                  <button id="email-button" type="submit" class="bg-black text-white p-2 rounded-md text-sm">Continue</button>
+                      class="p-2 rounded-md bg-neutral-100 border border-neutral-200 w-8/12 my-1.5" placeholder="Enter your email">
+                  <button id="email-button" type="submit" class="bg-black text-white p-2 rounded-md text-sm w-8/12 my-1.5">Continue</button>
               </form>
           </div>
           <div id="chat-conversation1" class="msg-bubble chat-conversation1  mb-4 hidden h-96 overflow-y-auto">
@@ -77,10 +79,16 @@ export function initChat() {
       </div>
   </div>`;
 
-
   // Create a div element to hold the chat UI
   const chatDiv = document.createElement("div");
   chatDiv.innerHTML = chatTemplate;
+
+  // Store the bot id 
+  const bot_element = document.createElement("p");
+  bot_element.innerHTML = botiq_id;
+  bot_element.id = "botiq_id";
+  bot_element.hidden = true;
+  document.body.appendChild(bot_element);
 
   // Attach the chat UI to the document body
   document.body.appendChild(chatDiv);
@@ -150,6 +158,8 @@ document.addEventListener("DOMContentLoaded", function () {
     chatConversation1.style.display = "block";
   });
 
+  let user_email1;
+
   function appendMessage(sender, message) {
     const messageDiv = document.createElement("div");
     messageDiv.classList.add(
@@ -181,11 +191,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function getBotResponse(userMessage) {
-
+    console.log("user_email inside bot response", document.getElementById("botiq_id").innerHTML)
+    console.log("bot_id from main")
     const formdata = new FormData();
     formdata.append("user_query", userMessage);
-    formdata.append("chatbot_id", "16");
-    formdata.append("user_email", "abhi@bhs.com");
+    formdata.append("chatbot_id", document.getElementById("botiq_id").innerHTML);
+    formdata.append("user_email", user_email1); //Need to get this customer email from users application
 
     try {
       const response = await fetch("http://localhost:3001/app/bot-query/", {
@@ -221,26 +232,65 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Customer Information API
   document.getElementById("email-button").addEventListener("click", () => {
-    const inputData = document.getElementById("email").value;
-    fetch("http://127.0.0.1:5000/milo_chat", {
+    user_email1 = document.getElementById("email").value;
+    console.log("user_email", "user_email1");
+    const customerEmail = document.getElementById("email").value;
+    const customerName = document.getElementById("customer_name").value
+    const botIQId = document.getElementById("botiq_id").innerHTML
+    console.log("inside the email registration", customerEmail, customerName);
+    const formdata = new FormData();
+    formdata.append("customer_name", customerName);
+    formdata.append("customer_email", customerEmail);
+    formdata.append("bot_id", botIQId);
+
+    fetch("http://localhost:3001/app/bot-create-or-fetch/", {
       method: "POST",
-      headers: {
-        mode: "cors",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST",
-      },
-      body: JSON.stringify({ email: inputData }),
+      // headers: {
+      //   mode: "cors",
+      //   "Content-Type": "application/json",
+      //   "Access-Control-Allow-Origin": "*",
+      //   "Access-Control-Allow-Methods": "POST",
+      // },
+      body: formdata,
     })
       .then((response) => {
         if (response.ok) {
           return response.json();
+
         } else {
           throw new Error("POST request failed");
         }
       })
       .then((data) => {
-        console.log(data);
+        const result = data
+        console.log("conversation", result["conversation"])
+        for (const item of result["conversation"]) {
+          const iqResponse = item.find(message => message.type === "iq");
+          const userResponse = item.find(message => message.type === "user");
+
+          if (userResponse) {
+            appendMessage("user", userResponse.text);
+          }
+
+          if (iqResponse) {
+            const responseElement = document.getElementById("chat-conversation1");
+            const chat = document.querySelector(".msg-bubble");
+
+            const userMsg = `<div class="msg left-msg">
+                                  <div class="msg-bubble left-msg rounded-3xl">
+                                      <div class="msg-info">
+                                          <div class="msg-info-name">Chat iQ</div>
+                                      </div>
+                                      <div class="msg-text">
+                                      ${iqResponse.text}
+                                      </div>
+                                  </div>
+                              </div>`;
+            const userMsgDiv = document.createElement("div");
+            userMsgDiv.innerHTML = userMsg;
+            chat.appendChild(userMsgDiv);
+          }
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
