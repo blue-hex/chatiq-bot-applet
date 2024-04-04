@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
   emailForm.addEventListener("submit", function (e) {
     e.preventDefault();
     emailVerification.style.display = "none";
+    chatConversation1.style.display = "block";
     chatConversation.style.display = "block";
   });
 
@@ -156,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Show the chat conversation container
     chatConversation1.style.display = "block";
+
   });
 
   let user_email1;
@@ -199,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formdata.append("user_email", user_email1); //Need to get this customer email from users application
 
     try {
-      const response = await fetch("http://localhost:3001/app/bot-query/", {
+      const response = await fetch("http://localhost:3003/app/bot-query/", {
         method: "POST",
         body: formdata,
       });
@@ -243,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formdata.append("customer_email", customerEmail);
     formdata.append("bot_id", botIQId);
 
-    fetch("http://localhost:3001/app/bot-create-or-fetch/", {
+    fetch("http://localhost:3003/app/bot-create-or-fetch/", {
       method: "POST",
       // headers: {
       //   mode: "cors",
@@ -263,8 +265,28 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         const result = data
-        console.log("conversation", result["conversation"])
-        for (const item of result["conversation"]) {
+        const conversation_list = result["conversation"]
+        // Initial message from Bot
+        if (result["conversation"].length === 0) {
+          const responseElement = document.getElementById("chat-conversation1");
+          const chat = document.querySelector(".msg-bubble");
+
+          const userMsg = `<div class="msg left-msg">
+                                  <div class="msg-bubble left-msg rounded-3xl">
+                                      <div class="msg-info">
+                                          <div class="msg-info-name">Chat iQ</div>
+                                      </div>
+                                      <div class="msg-text">
+                                      What can I help you with today?
+                                      </div>
+                                  </div>
+                              </div>`;
+          const userMsgDiv = document.createElement("div");
+          userMsgDiv.innerHTML = userMsg;
+          chat.appendChild(userMsgDiv);
+        }
+        // Append History of customer bot
+        for (const item of conversation_list) {
           const iqResponse = item.find(message => message.type === "iq");
           const userResponse = item.find(message => message.type === "user");
 
