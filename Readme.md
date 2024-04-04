@@ -32,15 +32,9 @@ There are two primary methods to install ChatiQ-Applet:
 Once installed, you can leverage ChatiQ-Applet's functionality within your JavaScript code:
 
 ```javascript
-import ChatiQApplet from 'chatiq-applet'; // For npm installations
-
-// OR
-
-const chatiQApplet = new ChatiQApplet({
-  // Configuration options (refer to ChatiQ-Applet documentation for details)
-});
-
-chatiQApplet.init(); // Initialize the ChatiQ chat functionality
+	<script>
+		chatLib.initChat('pass_your_unique_bot_id'); // intialize your iQ bot
+	</script>
 ```
 
 **Important:**
