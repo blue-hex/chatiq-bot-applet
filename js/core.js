@@ -76,8 +76,48 @@ export function initChat(bot_id) {
                       </button>
               </form>
           </div>
+      <button onclick="my_modal_4.showModal()" id="clear-chat" 
+        class="bg-black hover:bg-blue-900 text-white rounded-lg p-1 ml-64 mt-2 inline-flex justify-center items-center">Clear chat</button>
+
+      <dialog id="my_modal_5" class="modal">
+			<div class="modal-box modal-content">
+				<h3 class="font-bold text-lg">Hello!</h3>
+				<p class="py-4 text-green-700">Your chat bot history has been deleted.</p>
+				<div class="modal-action">
+					<form method="dialog">
+						<button class="btn">Close</button>
+					</form>
+				</div>
+			</div>
+		</dialog>
+
+		<dialog id="my_modal_4" class="modal">
+			<div class="modal-box w-11/12 max-w-5xl modal-content">
+				<h3 class="font-bold text-lg">Hello!</h3>
+				<p class="py-4">Are you sure you want to delete this Chat History?</p>
+				<div class="modal-action ">
+					<form id="clearChatForm" method="dialog">
+						<button class="btn text-white bg-red-600 hover:bg-red-800">Yes, I'm sure</button>
+					</form>
+					<form method="dialog">
+						<button class="btn close">No, cancel</button>
+					</form>
+				</div>
+			</div>
+		</dialog>
       </div>
-  </div>`;
+  </div>
+  <dialog id="my_modal_3" class="modal">
+			<div class="modal-box modal-content">
+				<h3 class="font-bold text-lg">Hello!</h3>
+				<p class="py-4 text-green-700">Associated bot has been deactivated. Contact to site owner.</p>
+				<div class="modal-action">
+					<form method="dialog">
+						<button class="btn">Close</button>
+					</form>
+				</div>
+			</div>
+		</dialog>`;
 
   // Create a div element to hold the chat UI
   const chatDiv = document.createElement("div");
@@ -118,11 +158,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   toggleChatbotButton.addEventListener("click", function () {
-    if (chatbotForm.classList.contains("hidden")) {
-      chatbotForm.classList.remove("hidden");
-    } else {
-      chatbotForm.classList.add("hidden");
-    }
+    const botIQId = document.getElementById("botiq_id").innerHTML
+    console.log("inside the email registration1" );
+    const formdata = new FormData();
+    formdata.append("bot_id", botIQId);
+
+    fetch("http://localhost:8014/app/bot-create-or-fetch/", {
+      method: "POST",
+      body: formdata,
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+
+        } else {
+          throw new Error("POST request failed");
+        }
+      })
+      .then((data) => {
+        const result = data
+        const conversation_list = result["conversation"]  
+        if(result["status"]==="success"){
+          if (chatbotForm.classList.contains("hidden")) {
+            chatbotForm.classList.remove("hidden");
+          } else {
+            chatbotForm.classList.add("hidden");
+          }
+                    
+      }
+      else{
+        chatbotForm.classList.add("hidden");
+        // alert("deactivated bot",result["message"])
+        const modal = document.getElementById('my_modal_3');
+				modal.showModal();
+      }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+
+    
   });
 
   startConversationButton.addEventListener("click", function () {
@@ -201,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formdata.append("user_email", user_email1); //Need to get this customer email from users application
 
     try {
-      const response = await fetch("http://localhost:3003/app/bot-query/", {
+      const response = await fetch("http://localhost:8014/app/bot-query/", {
         method: "POST",
         body: formdata,
       });
@@ -245,14 +321,8 @@ document.addEventListener("DOMContentLoaded", function () {
     formdata.append("customer_email", customerEmail);
     formdata.append("bot_id", botIQId);
 
-    fetch("http://localhost:3003/app/bot-create-or-fetch/", {
+    fetch("http://localhost:8014/app/bot-create-or-fetch/", {
       method: "POST",
-      // headers: {
-      //   mode: "cors",
-      //   "Content-Type": "application/json",
-      //   "Access-Control-Allow-Origin": "*",
-      //   "Access-Control-Allow-Methods": "POST",
-      // },
       body: formdata,
     })
       .then((response) => {
@@ -265,57 +335,137 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         const result = data
-        const conversation_list = result["conversation"]
-        // Initial message from Bot
-        if (result["conversation"].length === 0) {
-          const responseElement = document.getElementById("chat-conversation1");
-          const chat = document.querySelector(".msg-bubble");
+        const conversation_list = result["conversation"]  
+        if(result["status"]==="success"){
+                    // Initial message from Bot
+                    if (result["conversation"].length === 0) {
+                      const responseElement = document.getElementById("chat-conversation1");
+                      const chat = document.querySelector(".msg-bubble");
 
-          const userMsg = `<div class="msg left-msg">
-                                  <div class="msg-bubble left-msg rounded-3xl">
-                                      <div class="msg-info">
-                                          <div class="msg-info-name">Chat iQ</div>
-                                      </div>
-                                      <div class="msg-text">
-                                      What can I help you with today?
-                                      </div>
-                                  </div>
-                              </div>`;
-          const userMsgDiv = document.createElement("div");
-          userMsgDiv.innerHTML = userMsg;
-          chat.appendChild(userMsgDiv);
-        }
-        // Append History of customer bot
-        for (const item of conversation_list) {
-          const iqResponse = item.find(message => message.type === "iq");
-          const userResponse = item.find(message => message.type === "user");
+                      const userMsg = `<div class="msg left-msg">
+                                              <div class="msg-bubble left-msg rounded-3xl">
+                                                  <div class="msg-info">
+                                                      <div class="msg-info-name">Chat iQ</div>
+                                                  </div>
+                                                  <div class="msg-text">
+                                                  What can I help you with today?
+                                                  </div>
+                                              </div>
+                                          </div>`;
+                      const userMsgDiv = document.createElement("div");
+                      userMsgDiv.innerHTML = userMsg;
+                      chat.appendChild(userMsgDiv);
+                    }
+                    // Append History of customer bot
+                    for (const item of conversation_list) {
+                      const iqResponse = item.find(message => message.type === "iq");
+                      const userResponse = item.find(message => message.type === "user");
 
-          if (userResponse) {
-            appendMessage("user", userResponse.text);
-          }
+                      if (userResponse) {
+                        appendMessage("user", userResponse.text);
+                      }
 
-          if (iqResponse) {
-            const responseElement = document.getElementById("chat-conversation1");
-            const chat = document.querySelector(".msg-bubble");
+                      if (iqResponse) {
+                        const responseElement = document.getElementById("chat-conversation1");
+                        const chat = document.querySelector(".msg-bubble");
 
-            const userMsg = `<div class="msg left-msg">
-                                  <div class="msg-bubble left-msg rounded-3xl">
-                                      <div class="msg-info">
-                                          <div class="msg-info-name">Chat iQ</div>
-                                      </div>
-                                      <div class="msg-text">
-                                      ${iqResponse.text}
-                                      </div>
-                                  </div>
-                              </div>`;
-            const userMsgDiv = document.createElement("div");
-            userMsgDiv.innerHTML = userMsg;
-            chat.appendChild(userMsgDiv);
-          }
-        }
+                        const userMsg = `<div class="msg left-msg">
+                                              <div class="msg-bubble left-msg rounded-3xl">
+                                                  <div class="msg-info">
+                                                      <div class="msg-info-name">Chat iQ</div>
+                                                  </div>
+                                                  <div class="msg-text">
+                                                  ${iqResponse.text}
+                                                  </div>
+                                              </div>
+                                          </div>`;
+                        const userMsgDiv = document.createElement("div");
+                        userMsgDiv.innerHTML = userMsg;
+                        chat.appendChild(userMsgDiv);
+                      }
+                    }
+       }
+      else{
+        alert("Associated bot has been deactivated. Contact to site owner")
+      }
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   });
+
+
+
+// Clear Chat History
+document.getElementById("clearChatForm").addEventListener("click", () => {
+  user_email1 = document.getElementById("email").value;
+  const customerEmail = document.getElementById("email").value;
+  const botIQId = document.getElementById("botiq_id").innerHTML
+  const formdata = new FormData();
+  formdata.append("user_email", customerEmail);
+  formdata.append("chatbot_id", botIQId);
+
+  fetch("http://localhost:8014/app/clear-chat-history/", {
+    method: "POST",
+    // headers: {
+    //   mode: "cors",
+    //   "Content-Type": "application/json",
+    //   "Access-Control-Allow-Origin": "*",
+    //   "Access-Control-Allow-Methods": "POST",
+    // },
+    body: formdata,
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+
+      } else {
+        throw new Error("POST request failed");
+      }
+    })
+    .then((data) => {
+      const result = data
+      console.log("main result",result)
+      if(result["status"]==="success"){
+        const modal = document.getElementById('my_modal_5');
+				modal.showModal();
+        closeModal()
+        document.getElementById("chat-conversation1").innerHTML=""
+        const conversation_list = result["conversation"]  
+        // Initial message from Bot
+        
+        const responseElement = document.getElementById("chat-conversation1");
+        const chat = document.querySelector(".msg-bubble");
+
+        const userMsg = `<div class="msg left-msg">
+                                <div class="msg-bubble left-msg rounded-3xl">
+                                    <div class="msg-info">
+                                        <div class="msg-info-name">Chat iQ</div>
+                                    </div>
+                                    <div class="msg-text">
+                                    What can I help you with today?
+                                    </div>
+                                </div>
+                            </div>`;
+        const userMsgDiv = document.createElement("div");
+        userMsgDiv.innerHTML = userMsg;
+        chat.appendChild(userMsgDiv);
+      }
+      else{
+        alert("failed request")
+      }
+      
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+});
+// Auto close Alert
+ function closeModal() {
+  const alertElement = document.getElementById('my_modal_5');
+  setTimeout(function () {
+    console.log("close alert")
+    alertElement.close()
+  }, 3000); 
+}
 });
