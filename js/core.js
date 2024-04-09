@@ -76,44 +76,15 @@ export function initChat(bot_id) {
                       </button>
               </form>
           </div>
-      <button onclick="my_modal_4.showModal()" id="clear-chat" 
-        class="bg-black hover:bg-blue-900 text-white rounded-lg p-1 ml-64 mt-2 inline-flex justify-center items-center">Clear chat</button>
-
-      <dialog id="my_modal_5" class="modal">
-			<div class="modal-box modal-content">
-				<h3 class="font-bold text-lg">Hello!</h3>
-				<p class="py-4 text-green-700">Your chat bot history has been deleted.</p>
-				<div class="modal-action">
-					<form method="dialog">
-						<button class="btn">Close</button>
-					</form>
-				</div>
-			</div>
-		</dialog>
-
-		<dialog id="my_modal_4" class="modal">
-			<div class="modal-box w-11/12 max-w-5xl modal-content">
-				<h3 class="font-bold text-lg">Hello!</h3>
-				<p class="py-4">Are you sure you want to delete this Chat History?</p>
-				<div class="modal-action ">
-					<form id="clearChatForm" method="dialog">
-						<button class="btn text-white bg-red-600 hover:bg-red-800">Yes, I'm sure</button>
-					</form>
-					<form method="dialog">
-						<button class="btn close">No, cancel</button>
-					</form>
-				</div>
-			</div>
-		</dialog>
       </div>
   </div>
   <dialog id="my_modal_3" class="modal">
 			<div class="modal-box modal-content">
 				<h3 class="font-bold text-lg">Hello!</h3>
-				<p class="py-4 text-green-700">Associated bot has been deactivated. Contact to site owner.</p>
+				<p class="py-4 text-green-600 font-bold text-lg">Associated bot has been deactivated. Contact to site owner.</p>
 				<div class="modal-action">
 					<form method="dialog">
-						<button class="btn">Close</button>
+						<button class="btn ml-96 text-black bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-gray-200 hover:bg-gray-300 focus:ring-gray-300 border-gray-200">Close</button>
 					</form>
 				</div>
 			</div>
@@ -396,73 +367,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-// Clear Chat History
-document.getElementById("clearChatForm").addEventListener("click", () => {
-  user_email1 = document.getElementById("email").value;
-  const customerEmail = document.getElementById("email").value;
-  const botIQId = document.getElementById("botiq_id").innerHTML
-  const formdata = new FormData();
-  formdata.append("user_email", customerEmail);
-  formdata.append("chatbot_id", botIQId);
 
-  fetch("http://localhost:8014/app/clear-chat-history/", {
-    method: "POST",
-    // headers: {
-    //   mode: "cors",
-    //   "Content-Type": "application/json",
-    //   "Access-Control-Allow-Origin": "*",
-    //   "Access-Control-Allow-Methods": "POST",
-    // },
-    body: formdata,
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-
-      } else {
-        throw new Error("POST request failed");
-      }
-    })
-    .then((data) => {
-      const result = data
-      console.log("main result",result)
-      if(result["status"]==="success"){
-        const modal = document.getElementById('my_modal_5');
-				modal.showModal();
-        closeModal()
-        document.getElementById("chat-conversation1").innerHTML=""
-        const conversation_list = result["conversation"]  
-        // Initial message from Bot
-        
-        const responseElement = document.getElementById("chat-conversation1");
-        const chat = document.querySelector(".msg-bubble");
-
-        const userMsg = `<div class="msg left-msg">
-                                <div class="msg-bubble left-msg rounded-3xl">
-                                    <div class="msg-info">
-                                        <div class="msg-info-name">Chat iQ</div>
-                                    </div>
-                                    <div class="msg-text">
-                                    What can I help you with today?
-                                    </div>
-                                </div>
-                            </div>`;
-        const userMsgDiv = document.createElement("div");
-        userMsgDiv.innerHTML = userMsg;
-        chat.appendChild(userMsgDiv);
-      }
-      else{
-        alert("failed request")
-      }
-      
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-});
 // Auto close Alert
  function closeModal() {
-  const alertElement = document.getElementById('my_modal_5');
+  const alertElement = document.getElementById('my_modal_3');
   setTimeout(function () {
     console.log("close alert")
     alertElement.close()
