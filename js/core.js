@@ -78,17 +78,25 @@ export function initChat(bot_id) {
           </div>
       </div>
   </div>
-  <dialog id="my_modal_3" class="modal">
-			<div class="modal-box modal-content">
-				<h3 class="font-bold text-lg">Hello!</h3>
-				<p class="py-4 text-green-600 font-bold text-lg">Associated bot has been deactivated. Contact to site owner.</p>
-				<div class="modal-action">
-					<form method="dialog">
-						<button class="btn ml-96 text-black bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 bg-gray-200 hover:bg-gray-300 focus:ring-gray-300 border-gray-200">Close</button>
-					</form>
-				</div>
-			</div>
-		</dialog>`;
+    <dialog class="fixed z-10 inset-0 overflow-y-auto modal" id="my_modal_3">
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="fixed inset-0 transition-opacity">
+      <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
+    </div>
+    
+    <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+      <div class="p-8">
+        <div class="text-center modal-action">
+          <h2 class="text-lg font-semibold mb-4">Your IQ Bot has deactivated.</h2>
+          <p class="text-sm text-gray-600 mb-6">Associated bot has been deactivated. Contact site owner.</p>
+          <form method="dialog">
+          <button class="bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">Close</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>`;
 
   // Create a div element to hold the chat UI
   const chatDiv = document.createElement("div");
