@@ -1,9 +1,7 @@
-
-
 (function () {
   const chatLib = {};
 
-  function initChat(bot_id, base_url) {
+ function initChat(bot_id, base_url) {
     document.addEventListener("DOMContentLoaded", function () {
       const botiq_id = bot_id;
       const BASE_URL = base_url ? base_url : "https://chat.iqsuite.in";
@@ -19,9 +17,9 @@
     <div class="max-w-md mx-auto p-4 bg-white-40">
         <div id="chatbot-form"
             class=" backdrop-blur-2xl hidden w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-neutral-200">
-            <div class="rounded-full align-left cursor-pointer alert-del">
+            <div class="alert-del" style="margin-top: 10px;margin-left: 10px;" id="close-start-conversation">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="w-6 h-6 text-black">
+                    class="" >
                     <path fill-rule="evenodd"
                         d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
                         clip-rule="evenodd" />
@@ -30,9 +28,9 @@
             <div class="md:container md:mx-auto mt-4 ">
                 <div class="max-w-sm backdrop-blur-2xl rounded-lg">
                     <a href="#">
-                        <div class="flex justify-center items-center  backdrop-blur-2xl">
+                        <div class="flex justify-center items-center backdrop-blur-2xl">
   
-                            <img class="h-16 w-16 " src="https://iqsuite.io/assets/iq.png" alt="" width="40px"
+                            <img class="img" src="https://iqsuite.io/assets/iq.png" alt="" width="40px"
                                 height="30px" />
                         </div>
                     </a>
@@ -44,8 +42,8 @@
                             solution with our cutting edge AI. </p>
                     </div>
                     <div class="px-5 pb-5 text-center  backdrop-blur-2xl" id="start-conversation-button">
-                        <div id="chat:FCxvu7NgcI" class="text-white rounded-lg text-bl bg-black py-4 px-4 w-full">
-                            <button type="button"> Start Conversation </button>
+                        <div id="chat:FCxvu7NgcI" class="text-white rounded-lg text-black bg-black py-4 px-4 w-full">
+                            <button type="button" class="custom-button" id="activation-status"> Start Conversation </button>
                         </div>
                     </div>
   
@@ -58,7 +56,7 @@
                         class="p-2 rounded-md bg-neutral-100 border border-neutral-200 w-8/12" placeholder="Enter your name">
                     <input type="email" name="email" id="email" required
                         class="p-2 rounded-md bg-neutral-100 border border-neutral-200 w-8/12 my-2" placeholder="Enter your email">
-                    <button id="email-button" type="submit" class="bg-black text-white p-2 rounded-md text-sm w-8/12 my-2">Continue</button>
+                    <button id="email-button" type="submit" class="w-8/12 bg-black text-white p-2 rounded-md text-sm bt-wid my-2 ">Continue</button>
                 </form>
             </div>
             <div id="chat-conversation1" class="msg-bubble chat-conversation1  mb-4 hidden h-96 overflow-y-auto">
@@ -115,20 +113,77 @@
       const sendButton = document.getElementById("send-button");
       const chatConversation1 = document.getElementById("chat-conversation1");
       const userInput = document.getElementById("user-input");
+      const closeStartConversation = document.getElementById("close-start-conversation")
+      const activationStatus = document.getElementById("activation-status")
+      const statusBG = document.getElementById("chat:FCxvu7NgcI")
 
-
-      if (toggleChatbotButton) {
-        toggleChatbotButton.addEventListener("click", function () {
-          if (chatbotForm.classList.contains("hidden")) {
-            chatbotForm.classList.remove("hidden");
-          } else {
-            chatbotForm.classList.add("hidden");
-          }
+      // access display property of chatbotForm
+      
+      //tailwind to css
+      if (closeStartConversation) {
+        closeStartConversation.addEventListener("click", function () {
+          chatbotForm.style.display="none";
+          
         });
       }
+      if (toggleChatbotButton) {
+        toggleChatbotButton.addEventListener("click", function () {
+          const botIQId = document.getElementById("botiq_id").innerHTML
+          const formdata = new FormData();
+          formdata.append("bot_id", botIQId);
 
-      if (startConversationButton) {
-        startConversationButton.addEventListener("click", function () {
+          fetch("http://localhost:8014/app/bot-create-or-fetch/", {
+            method: "POST",
+            body: formdata,
+          })
+            .then((response) => {
+              if (response.ok) {
+                return response.json();
+
+              } else {
+                throw new Error("POST request failed");
+              }
+            })
+            .then((data) => {
+              const result = data
+              const conversation_list = result["conversation"]
+              console.log("inside block none1")
+              const computedStyle = window.getComputedStyle(chatbotForm);
+              const displayProperty = computedStyle.getPropertyValue("display");
+
+              activationStatus.innerHTML="Start Conversation"
+              activationStatus.disabled = false;
+              statusBG.classList.add("bg-black");
+              statusBG.classList.remove("bg-red");
+              activationStatus.style.backgroundColor = "#000";
+
+              if (result["status"] === "success") {
+                console.log("display",displayProperty)
+                if (displayProperty === "none") {
+                  chatbotForm.style.display="block";
+                } else {
+                  chatbotForm.style.display="none";
+                }
+
+              }
+              else {
+                console.log("inside block none2")
+                chatbotForm.style.display="block";
+                activationStatus.innerHTML="Your IQ Bot has deactivated."
+                activationStatus.disabled = true;
+                statusBG.classList.remove("bg-black");
+                statusBG.classList.add("bg-red");
+                activationStatus.style.backgroundColor = "#dc2626";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+
+        });
+      }
+      if (activationStatus) {
+        activationStatus.addEventListener("click", function () {
           startConversationButton.style.display = "none";
           emailVerification.style.display = "block";
         });
@@ -240,11 +295,9 @@
       // Customer Information API
       document.getElementById("email-button").addEventListener("click", () => {
         user_email1 = document.getElementById("email").value;
-        //console.log("user_email", "user_email1");
         const customerEmail = document.getElementById("email").value;
         const customerName = document.getElementById("customer_name").value
         const botIQId = document.getElementById("botiq_id").innerHTML
-        //console.log("inside the email registration", customerEmail, customerName);
         const formdata = new FormData();
         formdata.append("customer_name", customerName);
         formdata.append("customer_email", customerEmail);
@@ -265,35 +318,9 @@
           .then((data) => {
             const result = data
             const conversation_list = result["conversation"]
-            // Initial message from Bot
-            if (result["conversation"].length === 0) {
-              const responseElement = document.getElementById("chat-conversation1");
-              const chat = document.querySelector(".msg-bubble");
-
-              const userMsg = `<div class="msg left-msg">
-                                    <div class="msg-bubble left-msg rounded-3xl">
-                                        <div class="msg-info">
-                                            <div class="msg-info-name">Chat iQ</div>
-                                        </div>
-                                        <div class="msg-text">
-                                        What can I help you with today?
-                                        </div>
-                                    </div>
-                                </div>`;
-              const userMsgDiv = document.createElement("div");
-              userMsgDiv.innerHTML = userMsg;
-              chat.appendChild(userMsgDiv);
-            }
-            // Append History of customer bot
-            for (const item of conversation_list) {
-              const iqResponse = item.find(message => message.type === "iq");
-              const userResponse = item.find(message => message.type === "user");
-
-              if (userResponse) {
-                appendMessage("user", userResponse.text);
-              }
-
-              if (iqResponse) {
+            if (result["status"] === "success") {
+              // Initial message from Bot
+              if (result["conversation"].length === 0) {
                 const responseElement = document.getElementById("chat-conversation1");
                 const chat = document.querySelector(".msg-bubble");
 
@@ -303,7 +330,7 @@
                                             <div class="msg-info-name">Chat iQ</div>
                                         </div>
                                         <div class="msg-text">
-                                        ${iqResponse.text}
+                                        What can I help you with today?
                                         </div>
                                     </div>
                                 </div>`;
@@ -311,12 +338,51 @@
                 userMsgDiv.innerHTML = userMsg;
                 chat.appendChild(userMsgDiv);
               }
+              // Append History of customer bot
+              for (const item of conversation_list) {
+                const iqResponse = item.find(message => message.type === "iq");
+                const userResponse = item.find(message => message.type === "user");
+
+                if (userResponse) {
+                  appendMessage("user", userResponse.text);
+                }
+
+                if (iqResponse) {
+                  const responseElement = document.getElementById("chat-conversation1");
+                  const chat = document.querySelector(".msg-bubble");
+
+                  const userMsg = `<div class="msg left-msg">
+                                    <div class="msg-bubble left-msg rounded-3xl">
+                                        <div class="msg-info">
+                                            <div class="msg-info-name">Chat iQ</div>
+                                        </div>
+                                        <div class="msg-text">
+                                        ${iqResponse.text}
+                                        </div>
+                                    </div>
+                                </div>`;
+                  const userMsgDiv = document.createElement("div");
+                  userMsgDiv.innerHTML = userMsg;
+                  chat.appendChild(userMsgDiv);
+                }
+              }
+            }
+            else {
+              alert("Associated bot has been deactivated. Contact to site owner")
             }
           })
           .catch((error) => {
             console.error("Error:", error);
           });
       });
+      // Auto close Alert
+      function closeModal() {
+        const alertElement = document.getElementById('my_modal_3');
+        setTimeout(function () {
+          console.log("close alert")
+          alertElement.close()
+        }, 3000);
+      }
     })
   }
 
