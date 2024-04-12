@@ -6,16 +6,16 @@ ChatiQ-Applet is a powerful npm package that empowers you to integrate the Chati
 
 **Installation:**
 
-There are two primary methods to install ChatiQ-Applet:
+The primary methods to install ChatiQ-Applet:
 
-**Method 1: Using CDN**
+**Using CDN**
 
 
 1. **Include the script:** Directly reference the ChatiQ-Applet script from the unpkg CDN in your HTML file's `<head>` section:
 
    ```html
-   <script src="https://unpkg.com/chatiq-applet"></script>
-   <script src="https://cdn.tailwindcss.com"></script> // Component Styling Dependancy 
+    <script src="https://cdn.jsdelivr.net/npm/chatiq-applet"></script>
+    <link href="https://cdn.jsdelivr.net/npm/chatiq-applet/main.css" rel="stylesheet">
    ```
 
 
@@ -26,6 +26,12 @@ There are two primary methods to install ChatiQ-Applet:
    	chatLib.initChat('pass_your_unique_bot_id'); // intialize your iQ bot
    </script>
 ```
+
+3. Optional (If your application is blocking the Network API Call)
+
+- Include https://chatiq.iqsuite.in in CORS
+
+
 
 **Important:**
 
