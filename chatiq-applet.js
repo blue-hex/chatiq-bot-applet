@@ -43,7 +43,7 @@
                     </div>
                     <div class="px-5 pb-5 text-center  backdrop-blur-2xl" id="start-conversation-button">
                         <div id="chat:FCxvu7NgcI" class="text-white rounded-lg text-black bg-black py-4 px-4 w-full">
-                            <button type="button" class="custom-button"> Start Conversation </button>
+                            <button type="button" class="custom-button" id="activation-status"> Start Conversation </button>
                         </div>
                     </div>
   
@@ -80,26 +80,7 @@
                 </form>
             </div>
         </div>
-    </div>
- <dialog class="fixed z-10 inset-0 overflow-y-auto modal" id="my_modal_3">
-  <div class="flex items-center justify-center ">
-    <div class="fixed inset-0 transition-opacity">
-      <div class="absolute inset-0 bg-gray-900 opacity-75"></div>
-    </div>
-    
-    <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-      <div class="p-8">
-        <div class="text-center modal-action">
-          <h2 class="text-lg font-semibold mb-4">Your IQ Bot has deactivated.</h2>
-          <p class="text-sm text-gray-600 mb-6">Associated bot has been deactivated. Contact site owner.</p>
-          <form method="dialog">
-          <button class="bg-gray-900 text-white py-2 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">Close</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</dialog>`;
+    </div>`;
 
 
       const chatDiv = document.createElement("div");
@@ -133,6 +114,9 @@
       const chatConversation1 = document.getElementById("chat-conversation1");
       const userInput = document.getElementById("user-input");
       const closeStartConversation = document.getElementById("close-start-conversation")
+      const activationStatus = document.getElementById("activation-status")
+      const statusBG = document.getElementById("chat:FCxvu7NgcI")
+
       // access display property of chatbotForm
       
       //tailwind to css
@@ -167,6 +151,12 @@
               const computedStyle = window.getComputedStyle(chatbotForm);
               const displayProperty = computedStyle.getPropertyValue("display");
 
+              activationStatus.innerHTML="Start Conversation"
+              activationStatus.disabled = false;
+              statusBG.classList.add("bg-black");
+              statusBG.classList.remove("bg-red");
+              activationStatus.style.backgroundColor = "#000";
+
               if (result["status"] === "success") {
                 console.log("display",displayProperty)
                 if (displayProperty === "none") {
@@ -178,9 +168,12 @@
               }
               else {
                 console.log("inside block none2")
-                chatbotForm.style.display="none";
-                const modal = document.getElementById('my_modal_3');
-                modal.showModal();
+                chatbotForm.style.display="block";
+                activationStatus.innerHTML="Your IQ Bot has deactivated."
+                activationStatus.disabled = true;
+                statusBG.classList.remove("bg-black");
+                statusBG.classList.add("bg-red");
+                activationStatus.style.backgroundColor = "#dc2626";
               }
             })
             .catch((error) => {
@@ -189,9 +182,8 @@
 
         });
       }
-
-      if (startConversationButton) {
-        startConversationButton.addEventListener("click", function () {
+      if (activationStatus) {
+        activationStatus.addEventListener("click", function () {
           startConversationButton.style.display = "none";
           emailVerification.style.display = "block";
         });
