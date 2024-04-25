@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+div {
+  font-family: "IBM Plex Sans", sans-serif !important;
+}
+
 :root {
   --body-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   --msger-bg: #fff;
@@ -681,14 +687,15 @@ a {
   color: #fff;
 
 }
+
 .bg-red {
-  background-color: #dc2626; 
+  background-color: #dc2626;
 }
 
 
 .bt-wid {
   width: 71%;
-  
+
 }
 
 .mb-4 {
@@ -755,4 +762,3 @@ a {
 .z-10 {
   z-index: 20;
 }
-
