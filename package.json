@@ -4,9 +4,18 @@
   "description": "Chat-iQ employs advanced NLU technology to understand and interpret user queries and commands in natural language, facilitating more intuitive and human-like interactions.",
   "main": "chatiq-applet.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build chatiq-applet-v2.js --out-dir dist --public-url ./"
   },
   "author": "Abhishek Choudhury",
   "license": "ISC",
-  "readme": "Readme.md"
+  "readme": "Readme.md",
+  "devDependencies": {
+    "animejs": "^3.2.2",
+    "jquery": "^3.7.1",
+    "parcel": "^2.12.0",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typed.js": "^2.1.0"
+  }
 }

@@ -10,6 +10,16 @@ The primary methods to install ChatiQ-Applet:
 
 **Using CDN**
 
+**Development Guide**
+```
+npm install
+```
+
+```
+npx parcel chatiq-applet-v2.js
+```
+
+If you face any issues with above command, remove `.parcel-cache` folder and try again.
 
 1. **Include the script:** Directly reference the ChatiQ-Applet script from the unpkg CDN in your HTML file's `<head>` section:
 

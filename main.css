@@ -762,3 +762,7 @@ a {
 .z-10 {
   z-index: 20;
 }
+
+#toggle-chatbot-button:hover {
+  cursor: pointer;
+}
