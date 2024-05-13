@@ -590,19 +590,25 @@ var _jquery = require("jquery");
 var _jqueryDefault = parcelHelpers.interopDefault(_jquery);
 var _animejs = require("animejs");
 var _animejsDefault = parcelHelpers.interopDefault(_animejs);
-var _typedJs = require("typed.js");
-var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
 (0, _jqueryDefault.default)(function() {
     let BASE_URL = "";
     let BOT_ID = "";
     let chatHistory = [];
     let name = "";
     let email = "";
+    let isLoading = false;
+    const loader = `<div class="isLoading loader self-start"></div>`;
     setupChatWidget();
     //
     (0, _jqueryDefault.default)(".post-logo-wrapper").hide();
     (0, _jqueryDefault.default)("#email-loading-btn").hide();
     (0, _jqueryDefault.default)(".error-message").hide();
+    (0, _jqueryDefault.default)("#toggle-chatbot-button").click(function() {
+        (0, _jqueryDefault.default)("#chatbot-form").toggle();
+    });
+    (0, _jqueryDefault.default)("#close-start-conversation").click(function() {
+        (0, _jqueryDefault.default)("#chatbot-form").hide();
+    });
     function showLogoHeader() {
         (0, _jqueryDefault.default)(".pre-logo-wrapper").hide();
         (0, _jqueryDefault.default)("#welcome-message").hide();
@@ -630,8 +636,7 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
 				
 				<div class="max-w-md mx-auto p-4">
 					<div id="chatbot-form" class="flex flex-col w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-slate-200 bg-white" style="max-height: 50vh;">
-						
-						<div class="flex items-center justify-end w-full"  id="close-start-conversation">
+						<div class="flex items-center justify-end w-full cursor-pointer"  id="close-start-conversation">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="6 h-6">
 								<path fill-rule="evenodd"
 									d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
@@ -681,13 +686,14 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
 						<!-- Chat Conversation Form -->
 						<div id="chat-conversation" class="overflow-auto">
 						
-							<div class="flex flex-col space-y-4 p-6 max-w-lg mx-auto rounded-lg mt-10 overflow-y-auto" style="max-height: 50vh;" id="conversations-wrapper">
+							<div class="flex flex-col space-y-4 p-6 max-w-lg mx-auto rounded-lg mt-10 overflow-y-auto" id="conversations-wrapper">
 								<!-- AI Message -->
 								<div class="hidden self-end items-center bg-green-500 shadow justify-end px-3 py-2 rounded-md" style="max-width: 75%;">
 									<p class="text-green-100 text-sm">
 										Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium fugit hic modi placeat quo reprehenderit similique veniam, vitae. At beatae cupiditate deserunt esse inventore quaerat quod repellendus veritatis? Quis, quo!
 									</p>
 								</div>
+								
 								<!-- User Message -->
 								<div class="hidden self-start items-center bg-gray-300 px-3 py-2 rounded-md max-w-1/2" style="max-width: 75%;">
 									<p class="text-gray-800 text-sm">
@@ -699,7 +705,7 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
 						
 						<form id="chat-form" class="space-y-4">
 							<div class="mt-4 flex">
-								<input type="text" id="user-input" class="w-full border border-slate-200 rounded-3xl px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="Type your query" />
+								<input type="text" id="user-input" class="w-full border border-slate-200 rounded-3xl px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="Type your query" required />
 								<button type="submit" id="send-button" class="bg-transparent text-white rounded-xl px-3 py-1 ml-2 inline-flex justify-center items-center">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-black hover:text-blue-500 hover:drop-shadow-md transition-all duration-150">
 										<path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
@@ -762,20 +768,50 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
             ]
         });
     }
+    // CHAT FORM
     (0, _jqueryDefault.default)("#chat-form").submit(function(e) {
         e.preventDefault();
         const userMessage = (0, _jqueryDefault.default)("#user-input").val();
-        console.log(userMessage);
         // 	scroll to bottom
         // $('#chat-conversation').animate({
         // 	scrollTop: $('#chat-conversation').get(0).scrollHeight
         // }, 500);
         addMessage(userMessage, true);
+        (0, _jqueryDefault.default)("#user-input").val("");
+        (0, _jqueryDefault.default)("#conversations-wrapper").append(loader);
+        (0, _jqueryDefault.default)("#send-button").prop("disabled", true);
+        (0, _jqueryDefault.default)("#send-button").addClass("cursor-not-allowed");
+        query(userMessage).then((response)=>{
+            addMessage(response.response, false);
+            (0, _jqueryDefault.default)(".isLoading").remove();
+            (0, _jqueryDefault.default)("#send-button").prop("disabled", false);
+            (0, _jqueryDefault.default)("#send-button").removeClass("cursor-not-allowed");
+        }).catch((error)=>{
+            console.log(error);
+        });
     });
+    function query(userMessage) {
+        return fetch(BASE_URL + "/api/v1/query/", {
+            method: "POST",
+            body: JSON.stringify({
+                "customer_email": email,
+                "bot_id": BOT_ID,
+                "query": userMessage
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((response)=>{
+            if (response.ok) return response.json();
+            else throw new Error("Something went wrong");
+        });
+    }
     (0, _jqueryDefault.default)("#email-verification-form").submit(function(e) {
         e.preventDefault();
         const customerName = (0, _jqueryDefault.default)("#customer_name").val();
         const customerEmail = (0, _jqueryDefault.default)("#email").val();
+        name = customerName;
+        email = customerEmail;
         let formData = new FormData();
         formData.append("name", customerName);
         formData.append("email", customerEmail);
@@ -795,8 +831,25 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
             (0, _jqueryDefault.default)("#chat-form").slideDown();
             name = customerName;
             email = customerEmail;
-            addGreetingMessage("Hello there! How can I help you today?");
-            chatHistory = data.conversations;
+            // addGreetingMessage("Hello there! How can I help you today?");
+            chatHistory = data.chat_history;
+            if (chatHistory.length > 0) {
+                chatHistory.forEach((chat)=>{
+                    if (chat.type === "iq") addMessage(chat.message, false);
+                    else addMessage(chat.message, true);
+                });
+                (0, _jqueryDefault.default)("#conversations-wrapper").append(`
+							<div class="relative">
+  								<div class="absolute inset-0 flex items-center" aria-hidden="true">
+    								<div class="w-full border-t border-gray-300"></div>
+  								</div>
+								<div class="relative flex justify-center">
+									<span class="bg-white px-2 text-sm text-gray-500">Continue</span>
+								</div>
+							</div>
+					`);
+                addGreetingMessage("Hello there! How can I help you today?");
+            } else addGreetingMessage("Hello there! How can I help you today?");
         }).catch((error)=>{
             console.error(error);
             (0, _jqueryDefault.default)("#email-submit-btn").show();
@@ -808,21 +861,39 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
     });
     function addGreetingMessage(greetingMessage) {
         (0, _jqueryDefault.default)("#conversations-wrapper").append(`
-				<div class="self-end inline-flex items-center bg-green-500 shadow justify-end px-3 py-2 rounded-md" style="max-width: 75%;">
-					<p class="text-green-100 text-sm">
-						${greetingMessage}
-					</p>
+				<div class="self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none">
+					  <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${greetingMessage}</p>
+					</div>
 				</div>
 			`);
     }
     function addMessage(message, isUser = false) {
-        const $message = (0, _jqueryDefault.default)(`
-			<div class="message self-${isUser ? "start" : "end"} inline-flex items-center bg-${isUser ? "gray" : "green"}-300 px-3 py-2 rounded-md max-w-1/2" style="max-width: 75%; opacity: 0;">
-				<p class="text-${isUser ? "gray-800" : "green-100"} text-sm">
-					${message}
-				</p>
-			</div>
-		`);
+        let $message = null;
+        if (isUser) $message = (0, _jqueryDefault.default)(`
+				<div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
+					  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+					</svg>
+
+					<div class="bg-blue-400 text-blue-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+        else $message = (0, _jqueryDefault.default)(`
+				<div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
+					  	<path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
         (0, _jqueryDefault.default)("#conversations-wrapper").append($message);
         // Animate the message using anime.js
         (0, _animejsDefault.default)({
@@ -831,10 +902,7 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
                 -10,
                 0
             ],
-            opacity: [
-                0,
-                1
-            ],
+            // opacity: [0, 1],
             duration: 300,
             easing: "easeOutQuad",
             complete: ()=>{
@@ -850,11 +918,23 @@ var _typedJsDefault = parcelHelpers.interopDefault(_typedJs);
     chatLib.initChatiQ = function(botId = "", baseUrl = "") {
         BASE_URL = baseUrl;
         BOT_ID = botId;
+        let formData = new FormData();
+        formData.append("bot_id", BOT_ID);
+        formData.append("whitelisted_domain", window.location.origin);
+        fetch(BASE_URL + "/api/v1/init/", {
+            method: "POST",
+            body: formData
+        }).then((response)=>{
+            if (response.ok) return response.json();
+            else throw new Error("Something went wrong");
+        }).then((data)=>{
+            console.log(data);
+        });
     };
     window.chatLib = chatLib;
 });
 
-},{"./styles.css":"7N9bM","jquery":"hgMhh","animejs":"jokr5","typed.js":"6M0L2","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7N9bM":[function() {},{}],"hgMhh":[function(require,module,exports) {
+},{"./styles.css":"7N9bM","jquery":"hgMhh","animejs":"jokr5","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7N9bM":[function() {},{}],"hgMhh":[function(require,module,exports) {
 /*!
  * jQuery JavaScript Library v3.7.1
  * https://jquery.com/
@@ -8866,206 +8946,6 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"6M0L2":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>i);
-function t() {
-    return t = Object.assign ? Object.assign.bind() : function(t) {
-        for(var s = 1; s < arguments.length; s++){
-            var e = arguments[s];
-            for(var n in e)Object.prototype.hasOwnProperty.call(e, n) && (t[n] = e[n]);
-        }
-        return t;
-    }, t.apply(this, arguments);
-}
-var s = {
-    strings: [
-        "These are the default values...",
-        "You know what you should do?",
-        "Use your own!",
-        "Have a great day!"
-    ],
-    stringsElement: null,
-    typeSpeed: 0,
-    startDelay: 0,
-    backSpeed: 0,
-    smartBackspace: !0,
-    shuffle: !1,
-    backDelay: 700,
-    fadeOut: !1,
-    fadeOutClass: "typed-fade-out",
-    fadeOutDelay: 500,
-    loop: !1,
-    loopCount: Infinity,
-    showCursor: !0,
-    cursorChar: "|",
-    autoInsertCss: !0,
-    attr: null,
-    bindInputFocusEvents: !1,
-    contentType: "html",
-    onBegin: function(t) {},
-    onComplete: function(t) {},
-    preStringTyped: function(t, s) {},
-    onStringTyped: function(t, s) {},
-    onLastStringBackspaced: function(t) {},
-    onTypingPaused: function(t, s) {},
-    onTypingResumed: function(t, s) {},
-    onReset: function(t) {},
-    onStop: function(t, s) {},
-    onStart: function(t, s) {},
-    onDestroy: function(t) {}
-}, e = new /*#__PURE__*/ (function() {
-    function e() {}
-    var n = e.prototype;
-    return n.load = function(e, n, i) {
-        if (e.el = "string" == typeof i ? document.querySelector(i) : i, e.options = t({}, s, n), e.isInput = "input" === e.el.tagName.toLowerCase(), e.attr = e.options.attr, e.bindInputFocusEvents = e.options.bindInputFocusEvents, e.showCursor = !e.isInput && e.options.showCursor, e.cursorChar = e.options.cursorChar, e.cursorBlinking = !0, e.elContent = e.attr ? e.el.getAttribute(e.attr) : e.el.textContent, e.contentType = e.options.contentType, e.typeSpeed = e.options.typeSpeed, e.startDelay = e.options.startDelay, e.backSpeed = e.options.backSpeed, e.smartBackspace = e.options.smartBackspace, e.backDelay = e.options.backDelay, e.fadeOut = e.options.fadeOut, e.fadeOutClass = e.options.fadeOutClass, e.fadeOutDelay = e.options.fadeOutDelay, e.isPaused = !1, e.strings = e.options.strings.map(function(t) {
-            return t.trim();
-        }), e.stringsElement = "string" == typeof e.options.stringsElement ? document.querySelector(e.options.stringsElement) : e.options.stringsElement, e.stringsElement) {
-            e.strings = [], e.stringsElement.style.cssText = "clip: rect(0 0 0 0);clip-path:inset(50%);height:1px;overflow:hidden;position:absolute;white-space:nowrap;width:1px;";
-            var r = Array.prototype.slice.apply(e.stringsElement.children), o = r.length;
-            if (o) for(var a = 0; a < o; a += 1)e.strings.push(r[a].innerHTML.trim());
-        }
-        for(var u in e.strPos = 0, e.currentElContent = this.getCurrentElContent(e), e.currentElContent && e.currentElContent.length > 0 && (e.strPos = e.currentElContent.length - 1, e.strings.unshift(e.currentElContent)), e.sequence = [], e.strings)e.sequence[u] = u;
-        e.arrayPos = 0, e.stopNum = 0, e.loop = e.options.loop, e.loopCount = e.options.loopCount, e.curLoop = 0, e.shuffle = e.options.shuffle, e.pause = {
-            status: !1,
-            typewrite: !0,
-            curString: "",
-            curStrPos: 0
-        }, e.typingComplete = !1, e.autoInsertCss = e.options.autoInsertCss, e.autoInsertCss && (this.appendCursorAnimationCss(e), this.appendFadeOutAnimationCss(e));
-    }, n.getCurrentElContent = function(t) {
-        return t.attr ? t.el.getAttribute(t.attr) : t.isInput ? t.el.value : "html" === t.contentType ? t.el.innerHTML : t.el.textContent;
-    }, n.appendCursorAnimationCss = function(t) {
-        var s = "data-typed-js-cursor-css";
-        if (t.showCursor && !document.querySelector("[" + s + "]")) {
-            var e = document.createElement("style");
-            e.setAttribute(s, "true"), e.innerHTML = "\n        .typed-cursor{\n          opacity: 1;\n        }\n        .typed-cursor.typed-cursor--blink{\n          animation: typedjsBlink 0.7s infinite;\n          -webkit-animation: typedjsBlink 0.7s infinite;\n                  animation: typedjsBlink 0.7s infinite;\n        }\n        @keyframes typedjsBlink{\n          50% { opacity: 0.0; }\n        }\n        @-webkit-keyframes typedjsBlink{\n          0% { opacity: 1; }\n          50% { opacity: 0.0; }\n          100% { opacity: 1; }\n        }\n      ", document.body.appendChild(e);
-        }
-    }, n.appendFadeOutAnimationCss = function(t) {
-        var s = "data-typed-fadeout-js-css";
-        if (t.fadeOut && !document.querySelector("[" + s + "]")) {
-            var e = document.createElement("style");
-            e.setAttribute(s, "true"), e.innerHTML = "\n        .typed-fade-out{\n          opacity: 0;\n          transition: opacity .25s;\n        }\n        .typed-cursor.typed-cursor--blink.typed-fade-out{\n          -webkit-animation: 0;\n          animation: 0;\n        }\n      ", document.body.appendChild(e);
-        }
-    }, e;
-}()), n = new /*#__PURE__*/ (function() {
-    function t() {}
-    var s = t.prototype;
-    return s.typeHtmlChars = function(t, s, e) {
-        if ("html" !== e.contentType) return s;
-        var n = t.substring(s).charAt(0);
-        if ("<" === n || "&" === n) {
-            var i;
-            for(i = "<" === n ? ">" : ";"; t.substring(s + 1).charAt(0) !== i && !(1 + ++s > t.length););
-            s++;
-        }
-        return s;
-    }, s.backSpaceHtmlChars = function(t, s, e) {
-        if ("html" !== e.contentType) return s;
-        var n = t.substring(s).charAt(0);
-        if (">" === n || ";" === n) {
-            var i;
-            for(i = ">" === n ? "<" : "&"; t.substring(s - 1).charAt(0) !== i && !(--s < 0););
-            s--;
-        }
-        return s;
-    }, t;
-}()), i = /*#__PURE__*/ function() {
-    function t(t, s) {
-        e.load(this, s, t), this.begin();
-    }
-    var s = t.prototype;
-    return s.toggle = function() {
-        this.pause.status ? this.start() : this.stop();
-    }, s.stop = function() {
-        this.typingComplete || this.pause.status || (this.toggleBlinking(!0), this.pause.status = !0, this.options.onStop(this.arrayPos, this));
-    }, s.start = function() {
-        this.typingComplete || this.pause.status && (this.pause.status = !1, this.pause.typewrite ? this.typewrite(this.pause.curString, this.pause.curStrPos) : this.backspace(this.pause.curString, this.pause.curStrPos), this.options.onStart(this.arrayPos, this));
-    }, s.destroy = function() {
-        this.reset(!1), this.options.onDestroy(this);
-    }, s.reset = function(t) {
-        void 0 === t && (t = !0), clearInterval(this.timeout), this.replaceText(""), this.cursor && this.cursor.parentNode && (this.cursor.parentNode.removeChild(this.cursor), this.cursor = null), this.strPos = 0, this.arrayPos = 0, this.curLoop = 0, t && (this.insertCursor(), this.options.onReset(this), this.begin());
-    }, s.begin = function() {
-        var t = this;
-        this.options.onBegin(this), this.typingComplete = !1, this.shuffleStringsIfNeeded(this), this.insertCursor(), this.bindInputFocusEvents && this.bindFocusEvents(), this.timeout = setTimeout(function() {
-            0 === t.strPos ? t.typewrite(t.strings[t.sequence[t.arrayPos]], t.strPos) : t.backspace(t.strings[t.sequence[t.arrayPos]], t.strPos);
-        }, this.startDelay);
-    }, s.typewrite = function(t, s) {
-        var e = this;
-        this.fadeOut && this.el.classList.contains(this.fadeOutClass) && (this.el.classList.remove(this.fadeOutClass), this.cursor && this.cursor.classList.remove(this.fadeOutClass));
-        var i = this.humanizer(this.typeSpeed), r = 1;
-        !0 !== this.pause.status ? this.timeout = setTimeout(function() {
-            s = n.typeHtmlChars(t, s, e);
-            var i = 0, o = t.substring(s);
-            if ("^" === o.charAt(0) && /^\^\d+/.test(o)) {
-                var a = 1;
-                a += (o = /\d+/.exec(o)[0]).length, i = parseInt(o), e.temporaryPause = !0, e.options.onTypingPaused(e.arrayPos, e), t = t.substring(0, s) + t.substring(s + a), e.toggleBlinking(!0);
-            }
-            if ("`" === o.charAt(0)) {
-                for(; "`" !== t.substring(s + r).charAt(0) && (r++, !(s + r > t.length)););
-                var u = t.substring(0, s), p = t.substring(u.length + 1, s + r), c = t.substring(s + r + 1);
-                t = u + p + c, r--;
-            }
-            e.timeout = setTimeout(function() {
-                e.toggleBlinking(!1), s >= t.length ? e.doneTyping(t, s) : e.keepTyping(t, s, r), e.temporaryPause && (e.temporaryPause = !1, e.options.onTypingResumed(e.arrayPos, e));
-            }, i);
-        }, i) : this.setPauseStatus(t, s, !0);
-    }, s.keepTyping = function(t, s, e) {
-        0 === s && (this.toggleBlinking(!1), this.options.preStringTyped(this.arrayPos, this));
-        var n = t.substring(0, s += e);
-        this.replaceText(n), this.typewrite(t, s);
-    }, s.doneTyping = function(t, s) {
-        var e = this;
-        this.options.onStringTyped(this.arrayPos, this), this.toggleBlinking(!0), this.arrayPos === this.strings.length - 1 && (this.complete(), !1 === this.loop || this.curLoop === this.loopCount) || (this.timeout = setTimeout(function() {
-            e.backspace(t, s);
-        }, this.backDelay));
-    }, s.backspace = function(t, s) {
-        var e = this;
-        if (!0 !== this.pause.status) {
-            if (this.fadeOut) return this.initFadeOut();
-            this.toggleBlinking(!1);
-            var i = this.humanizer(this.backSpeed);
-            this.timeout = setTimeout(function() {
-                s = n.backSpaceHtmlChars(t, s, e);
-                var i = t.substring(0, s);
-                if (e.replaceText(i), e.smartBackspace) {
-                    var r = e.strings[e.arrayPos + 1];
-                    e.stopNum = r && i === r.substring(0, s) ? s : 0;
-                }
-                s > e.stopNum ? (s--, e.backspace(t, s)) : s <= e.stopNum && (e.arrayPos++, e.arrayPos === e.strings.length ? (e.arrayPos = 0, e.options.onLastStringBackspaced(), e.shuffleStringsIfNeeded(), e.begin()) : e.typewrite(e.strings[e.sequence[e.arrayPos]], s));
-            }, i);
-        } else this.setPauseStatus(t, s, !1);
-    }, s.complete = function() {
-        this.options.onComplete(this), this.loop ? this.curLoop++ : this.typingComplete = !0;
-    }, s.setPauseStatus = function(t, s, e) {
-        this.pause.typewrite = e, this.pause.curString = t, this.pause.curStrPos = s;
-    }, s.toggleBlinking = function(t) {
-        this.cursor && (this.pause.status || this.cursorBlinking !== t && (this.cursorBlinking = t, t ? this.cursor.classList.add("typed-cursor--blink") : this.cursor.classList.remove("typed-cursor--blink")));
-    }, s.humanizer = function(t) {
-        return Math.round(Math.random() * t / 2) + t;
-    }, s.shuffleStringsIfNeeded = function() {
-        this.shuffle && (this.sequence = this.sequence.sort(function() {
-            return Math.random() - .5;
-        }));
-    }, s.initFadeOut = function() {
-        var t = this;
-        return this.el.className += " " + this.fadeOutClass, this.cursor && (this.cursor.className += " " + this.fadeOutClass), setTimeout(function() {
-            t.arrayPos++, t.replaceText(""), t.strings.length > t.arrayPos ? t.typewrite(t.strings[t.sequence[t.arrayPos]], 0) : (t.typewrite(t.strings[0], 0), t.arrayPos = 0);
-        }, this.fadeOutDelay);
-    }, s.replaceText = function(t) {
-        this.attr ? this.el.setAttribute(this.attr, t) : this.isInput ? this.el.value = t : "html" === this.contentType ? this.el.innerHTML = t : this.el.textContent = t;
-    }, s.bindFocusEvents = function() {
-        var t = this;
-        this.isInput && (this.el.addEventListener("focus", function(s) {
-            t.stop();
-        }), this.el.addEventListener("blur", function(s) {
-            t.el.value && 0 !== t.el.value.length || t.start();
-        }));
-    }, s.insertCursor = function() {
-        this.showCursor && (this.cursor || (this.cursor = document.createElement("span"), this.cursor.className = "typed-cursor", this.cursor.setAttribute("aria-hidden", !0), this.cursor.innerHTML = this.cursorChar, this.el.parentNode && this.el.parentNode.insertBefore(this.cursor, this.el.nextSibling)));
-    }, t;
-}();
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["9o23O","ZfBY5"], "ZfBY5", "parcelRequirea695")
+},{}]},["9o23O","ZfBY5"], "ZfBY5", "parcelRequirea695")
 
 //# sourceMappingURL=chatiq-applet-v2.js.map

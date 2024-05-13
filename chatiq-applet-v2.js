@@ -1,7 +1,6 @@
 import './styles.css';
 import $ from "jquery";
 import anime from "animejs";
-import Typed from 'typed.js';
 
 $(function() {
 
@@ -13,6 +12,10 @@ $(function() {
 	let name = "";
 	let email = "";
 
+	let isLoading = false;
+
+	const loader = `<div class="isLoading loader self-start"></div>`;
+
 	setupChatWidget();
 	//
 	$('.post-logo-wrapper').hide();
@@ -20,6 +23,14 @@ $(function() {
 	$('#email-loading-btn').hide();
 
 	$('.error-message').hide();
+
+	$('#toggle-chatbot-button').click(function() {
+		$('#chatbot-form').toggle();
+	})
+
+	$('#close-start-conversation').click(function() {
+		$('#chatbot-form').hide();
+	});
 
 	function showLogoHeader() {
 		$('.pre-logo-wrapper').hide();
@@ -45,8 +56,7 @@ $(function() {
 				
 				<div class="max-w-md mx-auto p-4">
 					<div id="chatbot-form" class="flex flex-col w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-slate-200 bg-white" style="max-height: 50vh;">
-						
-						<div class="flex items-center justify-end w-full"  id="close-start-conversation">
+						<div class="flex items-center justify-end w-full cursor-pointer"  id="close-start-conversation">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="6 h-6">
 								<path fill-rule="evenodd"
 									d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
@@ -96,13 +106,14 @@ $(function() {
 						<!-- Chat Conversation Form -->
 						<div id="chat-conversation" class="overflow-auto">
 						
-							<div class="flex flex-col space-y-4 p-6 max-w-lg mx-auto rounded-lg mt-10 overflow-y-auto" style="max-height: 50vh;" id="conversations-wrapper">
+							<div class="flex flex-col space-y-4 p-6 max-w-lg mx-auto rounded-lg mt-10 overflow-y-auto" id="conversations-wrapper">
 								<!-- AI Message -->
 								<div class="hidden self-end items-center bg-green-500 shadow justify-end px-3 py-2 rounded-md" style="max-width: 75%;">
 									<p class="text-green-100 text-sm">
 										Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium fugit hic modi placeat quo reprehenderit similique veniam, vitae. At beatae cupiditate deserunt esse inventore quaerat quod repellendus veritatis? Quis, quo!
 									</p>
 								</div>
+								
 								<!-- User Message -->
 								<div class="hidden self-start items-center bg-gray-300 px-3 py-2 rounded-md max-w-1/2" style="max-width: 75%;">
 									<p class="text-gray-800 text-sm">
@@ -114,7 +125,7 @@ $(function() {
 						
 						<form id="chat-form" class="space-y-4">
 							<div class="mt-4 flex">
-								<input type="text" id="user-input" class="w-full border border-slate-200 rounded-3xl px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="Type your query" />
+								<input type="text" id="user-input" class="w-full border border-slate-200 rounded-3xl px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="Type your query" required />
 								<button type="submit" id="send-button" class="bg-transparent text-white rounded-xl px-3 py-1 ml-2 inline-flex justify-center items-center">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-black hover:text-blue-500 hover:drop-shadow-md transition-all duration-150">
 										<path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
@@ -174,25 +185,66 @@ $(function() {
 		})
 	}
 
+	// CHAT FORM
 	$('#chat-form').submit(function(e) {
 		e.preventDefault();
 
 		const userMessage = $('#user-input').val();
-		console.log(userMessage);
-
 		// 	scroll to bottom
 		// $('#chat-conversation').animate({
 		// 	scrollTop: $('#chat-conversation').get(0).scrollHeight
 		// }, 500);
 
 		addMessage(userMessage, true);
+
+		$('#user-input').val('');
+
+		$('#conversations-wrapper').append(loader);
+
+		$('#send-button').prop('disabled', true);
+		$('#send-button').addClass('cursor-not-allowed');
+
+
+		query(userMessage).then(response => {
+			addMessage(response.response, false);
+			$('.isLoading').remove();
+			$('#send-button').prop('disabled', false);
+			$('#send-button').removeClass('cursor-not-allowed');
+		}).catch(error => {
+			console.log(error)
+		})
+
 	});
+	function query(userMessage) {
+
+		return fetch(BASE_URL + '/api/v1/query/', {
+			method: "POST",
+			body: JSON.stringify({
+				"customer_email": email,
+				"bot_id": BOT_ID,
+				"query": userMessage
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(response => {
+			if (response.ok) {
+				return response.json();
+			} else {
+				throw new Error('Something went wrong');
+			}
+		})
+
+	}
 
 	$('#email-verification-form').submit(function(e) {
 		e.preventDefault();
 
 		const customerName = $('#customer_name').val();
 		const customerEmail = $('#email').val();
+
+		name = customerName;
+		email = customerEmail;
 
 		let formData = new FormData();
 		formData.append('name', customerName);
@@ -219,8 +271,36 @@ $(function() {
 				name = customerName;
 				email = customerEmail;
 
-				addGreetingMessage("Hello there! How can I help you today?");
-				chatHistory = data.conversations;
+				// addGreetingMessage("Hello there! How can I help you today?");
+
+				chatHistory = data.chat_history;
+
+				if ( chatHistory.length > 0 ) {
+					chatHistory.forEach(chat => {
+						if (chat.type === "iq") {
+							addMessage(chat.message, false);
+						} else {
+							addMessage(chat.message, true);
+						}
+					});
+
+					$('#conversations-wrapper').append(`
+							<div class="relative">
+  								<div class="absolute inset-0 flex items-center" aria-hidden="true">
+    								<div class="w-full border-t border-gray-300"></div>
+  								</div>
+								<div class="relative flex justify-center">
+									<span class="bg-white px-2 text-sm text-gray-500">Continue</span>
+								</div>
+							</div>
+					`);
+
+					addGreetingMessage("Hello there! How can I help you today?")
+				} else {
+					addGreetingMessage("Hello there! How can I help you today?")
+				}
+
+
 			})
 			.catch(error => {
 				console.error(error);
@@ -237,23 +317,47 @@ $(function() {
 	function addGreetingMessage(greetingMessage) {
 		$('#conversations-wrapper').append(
 			`
-				<div class="self-end inline-flex items-center bg-green-500 shadow justify-end px-3 py-2 rounded-md" style="max-width: 75%;">
-					<p class="text-green-100 text-sm">
-						${greetingMessage}
-					</p>
+				<div class="self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none">
+					  <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${greetingMessage}</p>
+					</div>
 				</div>
 			`
 		)
 	}
 
 	function addMessage(message, isUser = false) {
-		const $message = $(`
-			<div class="message self-${isUser ? 'start' : 'end'} inline-flex items-center bg-${isUser ? 'gray' : 'green'}-300 px-3 py-2 rounded-md max-w-1/2" style="max-width: 75%; opacity: 0;">
-				<p class="text-${isUser ? 'gray-800' : 'green-100'} text-sm">
-					${message}
-				</p>
-			</div>
-		`);
+
+		let $message = null;
+
+		if (isUser) {
+			$message = $(`
+				<div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
+					  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+					</svg>
+
+					<div class="bg-blue-400 text-blue-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+		} else {
+			$message = $(`
+				<div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
+					  	<path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+		}
+
 
 		$('#conversations-wrapper').append($message);
 
@@ -261,7 +365,7 @@ $(function() {
 		anime({
 			targets: $message[0],
 			translateY: [-10, 0],
-			opacity: [0, 1],
+			// opacity: [0, 1],
 			duration: 300,
 			easing: 'easeOutQuad',
 			complete: () => {
@@ -279,6 +383,22 @@ $(function() {
 	chatLib.initChatiQ = function(botId = "", baseUrl = "") {
 		BASE_URL = baseUrl;
 		BOT_ID = botId;
+
+		let formData = new FormData();
+		formData.append('bot_id', BOT_ID);
+		formData.append('whitelisted_domain', window.location.origin);
+
+		fetch(BASE_URL + '/api/v1/init/', { method: "POST", body: formData })
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				} else {
+					throw new Error('Something went wrong');
+				}
+			})
+			.then(data => {
+				console.log(data);
+			})
 	}
 
 	window.chatLib = chatLib;
