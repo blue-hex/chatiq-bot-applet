@@ -2,53 +2,51 @@ import './styles.css';
 import $ from "jquery";
 import anime from "animejs";
 
-$(function() {
+$(function () {
 
-	let BASE_URL = "";
-	let BOT_ID = "";
+    let BASE_URL = "";
+    let BOT_ID = "";
 
-	let chatHistory = [];
+    let chatHistory = [];
 
-	let name = "";
-	let email = "";
+    let name = "";
+    let email = "";
 
-	let isLoading = false;
+    let isLoading = false;
 
-	const loader = `<div class="isLoading loader self-start"></div>`;
+    const loader = `<div class="isLoading loader self-start"></div>`;
 
-	setupChatWidget();
-	//
-	$('.post-logo-wrapper').hide();
+    let initSuccess = false;
+    let bot_config = {};
 
-	$('#email-loading-btn').hide();
+    // setupChatWidget();
 
-	$('.error-message').hide();
+    //
+    $('#toggle-chatbot-button').click(function () {
+        $('#chatbot-form').toggle();
+    })
 
-	$('#toggle-chatbot-button').click(function() {
-		$('#chatbot-form').toggle();
-	})
+    $('#close-start-conversation').click(function () {
+        $('#chatbot-form').hide();
+    });
 
-	$('#close-start-conversation').click(function() {
-		$('#chatbot-form').hide();
-	});
+    function showLogoHeader() {
+        $('.pre-logo-wrapper').hide();
+        $('#welcome-message').hide();
+        $('.post-logo-wrapper').show();
 
-	function showLogoHeader() {
-		$('.pre-logo-wrapper').hide();
-		$('#welcome-message').hide();
-		$('.post-logo-wrapper').show();
+        anime({
+            targets: '.post-logo-wrapper',
+            translateY: [-10, 0],
+            // translateX: [-100, 0],
+            opacity: [0, 1],
+            duration: 600,
+            // easing: 'easeInOutSine',
+        })
+    }
 
-		anime({
-			targets: '.post-logo-wrapper',
-			translateY: [-10, 0],
-			// translateX: [-100, 0],
-			opacity: [0, 1],
-			duration: 600,
-			// easing: 'easeInOutSine',
-		})
-	}
-
-	function setupChatWidget() {
-		const chatTemplate = `
+    function setupChatWidget(brand_name, logo, welcome_message) {
+        const chatTemplate = `
 			<div class="fixed bottom-4 right-4">
 				<button id="toggle-chatbot-button" style="border: 0; background: transparent;">
 					<img src="https://iqsuite.io/assets/iq.png" class="w-12 h-12 rounded-full">
@@ -67,13 +65,15 @@ $(function() {
 						<div class="md:container md:mx-auto m-0" id="chat-mast">
 							<div class="max-w-sm backdrop-blur-2xl rounded-lg">
 								<div class="pre-logo-wrapper flex items-center justify-center space-x-2">
-									<img class="inline-block" src="https://iqsuite.io/assets/iq.png" alt="" width="40px" id="logo" />
-									<h1 class="text-2xl font-bold tracking-tight text-black">Chat iQ</h1>
+									<img class="inline-block rounded-lg" src="${logo ? BASE_URL + logo : 'https://iqsuite.io/assets/iq.png'}" alt="" width="60px" id="logo" />
+									<h1 class="text-2xl font-bold tracking-tight text-black">
+									    ${brand_name ? brand_name : "Chat iQ"}
+                                    </h1>
 								</div>
 								
 								<div class="post-logo-wrapper flex items-center space-x-2">
 									<img class="inline-block" src="https://iqsuite.io/assets/iq.png" alt="" width="40px" id="logo" />
-									<h1 class="text-2xl font-bold tracking-tight text-black">Chat iQ</h1>
+									<h1 class="text-2xl font-bold tracking-tight text-black">${bot_config.brand_name ? bot_config.brand_name : "Chat iQ"}</h1>
 								</div>
 								
 								<div class="px-3 py-3 welcome-wrapper">
@@ -138,185 +138,215 @@ $(function() {
 			</div>
 		`;
 
-		// Add the chat widget to the body
-		const chatDiv = document.createElement("div");
-		chatDiv.innerHTML = chatTemplate;
-		document.body.appendChild(chatDiv);
+        // Add the chat widget to the body
+        const chatDiv = document.createElement("div");
+        chatDiv.innerHTML = chatTemplate;
+        document.body.appendChild(chatDiv);
 
-		// Store bot information
-		const botElement = document.createElement("p");
-		botElement.innerHTML = BOT_ID;
-		botElement.id = "botiq_id";
-		botElement.hidden = true;
-		document.body.appendChild(botElement);
+        // Store bot information
+        const botElement = document.createElement("p");
+        botElement.innerHTML = BOT_ID;
+        botElement.id = "botiq_id";
+        botElement.hidden = true;
+        document.body.appendChild(botElement);
 
-		// Greet the user when the page is loaded
-		// document.getElementById("welcome-message").innerText = `Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!`;
+        // Greet the user when the page is loaded
+        // document.getElementById("welcome-message").innerText = `Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!`;
 
-		anime({
-			targets: '.welcome-wrapper',
-			translateY: [-30, 0],
-			opacity: [0, 1],
-			duration: 1500,
-			update: () => {
-				// let options = {
-				// 	strings: ["Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!"],
-				// 	typeSpeed: 6,
-				// 	showCursor: false,
-				// };
-				//
-				// let welcomeMessage = new Typed("#welcome-message", options);
-				//
-				// welcomeMessage.start();
+        anime({
+            targets: '.welcome-wrapper',
+            translateY: [-30, 0],
+            opacity: [0, 1],
+            duration: 1500,
+            update: () => {
+                // let options = {
+                // 	strings: ["Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!"],
+                // 	typeSpeed: 6,
+                // 	showCursor: false,
+                // };
+                //
+                // let welcomeMessage = new Typed("#welcome-message", options);
+                //
+                // welcomeMessage.start();
+                $('#welcome-message').text(`Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!`);
+            }
+        })
 
-				$('#welcome-message').text(`Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!`);
-			}
-		})
+        $('#email-verification').removeClass('hidden');
 
-		$('#email-verification').removeClass('hidden');
+        $('#chat-conversation').hide();
+        $('#chat-form').hide();
 
-		$('#chat-conversation').hide();
-		$('#chat-form').hide();
+        anime({
+            targets: '#email-verification',
+            translateY: [-10, 0],
+            opacity: [0, 1],
+        })
+    }
 
-		anime({
-			targets: '#email-verification',
-			translateY: [-10, 0],
-			opacity: [0, 1],
-		})
-	}
+    // CHAT FORM
 
-	// CHAT FORM
-	$('#chat-form').submit(function(e) {
-		e.preventDefault();
+    const chatLib = {};
 
-		const userMessage = $('#user-input').val();
-		// 	scroll to bottom
-		// $('#chat-conversation').animate({
-		// 	scrollTop: $('#chat-conversation').get(0).scrollHeight
-		// }, 500);
+    chatLib.initChatiQ = function (botId = "", baseUrl = "") {
+        BASE_URL = baseUrl;
+        BOT_ID = botId;
 
-		addMessage(userMessage, true);
+        let formData = new FormData();
+        formData.append('bot_id', BOT_ID);
+        formData.append('whitelisted_domain', window.location.origin);
 
-		$('#user-input').val('');
+        fetch(BASE_URL + '/api/v1/init/', {method: "POST", body: formData})
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                initSuccess = true;
+                const { brand_name, logo, welcome_message } = data.bot_branding;
 
-		$('#conversations-wrapper').append(loader);
+                setupChatWidget(brand_name, logo, welcome_message);
 
-		$('#send-button').prop('disabled', true);
-		$('#send-button').addClass('cursor-not-allowed');
+                $('.post-logo-wrapper').hide();
+                $('#email-loading-btn').hide();
+                $('.error-message').hide();
 
+                $('#chat-form').submit(function (e) {
+                    e.preventDefault();
 
-		query(userMessage).then(response => {
-			addMessage(response.response, false);
-			$('.isLoading').remove();
-			$('#send-button').prop('disabled', false);
-			$('#send-button').removeClass('cursor-not-allowed');
-		}).catch(error => {
-			console.log(error)
-		})
+                    const userMessage = $('#user-input').val();
+                    // 	scroll to bottom
+                    // $('#chat-conversation').animate({
+                    // 	scrollTop: $('#chat-conversation').get(0).scrollHeight
+                    // }, 500);
 
-	});
-	function query(userMessage) {
+                    addMessage(userMessage, true);
 
-		return fetch(BASE_URL + '/api/v1/query/', {
-			method: "POST",
-			body: JSON.stringify({
-				"customer_email": email,
-				"bot_id": BOT_ID,
-				"query": userMessage
-			}),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then(response => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error('Something went wrong');
-			}
-		})
+                    $('#user-input').val('');
 
-	}
+                    $('#conversations-wrapper').append(loader);
 
-	$('#email-verification-form').submit(function(e) {
-		e.preventDefault();
-
-		const customerName = $('#customer_name').val();
-		const customerEmail = $('#email').val();
-
-		name = customerName;
-		email = customerEmail;
-
-		let formData = new FormData();
-		formData.append('name', customerName);
-		formData.append('email', customerEmail);
-		formData.append('bot_id', BOT_ID);
-
-		$('#email-submit-btn').hide();
-		$('#email-loading-btn').show();
-
-		fetch(BASE_URL + '/api/v1/bot-get-or-create/', { method: "POST", body: formData })
-			.then(response => {
-				if (response.ok) {
-					return response.json();
-				} else {
-					throw new Error('Something went wrong');
-				}
-			})
-			.then(data => {
-				showLogoHeader();
-				$('#email-verification').hide();
-				$('#chat-conversation').show();
-				$('#chat-form').slideDown();
-
-				name = customerName;
-				email = customerEmail;
-
-				// addGreetingMessage("Hello there! How can I help you today?");
-
-				chatHistory = data.chat_history;
-
-				if ( chatHistory.length > 0 ) {
-					chatHistory.forEach(chat => {
-						if (chat.type === "iq") {
-							addMessage(chat.message, false);
-						} else {
-							addMessage(chat.message, true);
-						}
-					});
-
-					$('#conversations-wrapper').append(`
-							<div class="relative">
-  								<div class="absolute inset-0 flex items-center" aria-hidden="true">
-    								<div class="w-full border-t border-gray-300"></div>
-  								</div>
-								<div class="relative flex justify-center">
-									<span class="bg-white px-2 text-sm text-gray-500">Continue</span>
-								</div>
-							</div>
-					`);
-
-					addGreetingMessage("Hello there! How can I help you today?")
-				} else {
-					addGreetingMessage("Hello there! How can I help you today?")
-				}
+                    $('#send-button').prop('disabled', true);
+                    $('#send-button').addClass('cursor-not-allowed');
 
 
-			})
-			.catch(error => {
-				console.error(error);
-				$('#email-submit-btn').show();
-				$('#email-loading-btn').hide();
-				$('.error-message').show();
-			});
+                    query(userMessage).then(response => {
+                        addMessage(response.response, false);
+                        $('.isLoading').remove();
+                        $('#send-button').prop('disabled', false);
+                        $('#send-button').removeClass('cursor-not-allowed');
+                    }).catch(error => {
+                        console.log(error)
+                    })
 
-		console.log(customerName, customerEmail);
+                });
 
-		// hide the email form and show the chat conversation area
-	});
+                function query(userMessage) {
 
-	function addGreetingMessage(greetingMessage) {
-		$('#conversations-wrapper').append(
-			`
+                    return fetch(BASE_URL + '/api/v1/query/', {
+                        method: "POST",
+                        body: JSON.stringify({
+                            "customer_email": email,
+                            "bot_id": BOT_ID,
+                            "query": userMessage
+                        }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Something went wrong');
+                        }
+                    })
+
+                }
+
+                $('#email-verification-form').submit(function (e) {
+                    e.preventDefault();
+
+                    const customerName = $('#customer_name').val();
+                    const customerEmail = $('#email').val();
+
+                    name = customerName;
+                    email = customerEmail;
+
+                    let formData = new FormData();
+                    formData.append('name', customerName);
+                    formData.append('email', customerEmail);
+                    formData.append('bot_id', BOT_ID);
+
+                    $('#email-submit-btn').hide();
+                    $('#email-loading-btn').show();
+
+                    fetch(BASE_URL + '/api/v1/bot-get-or-create/', {method: "POST", body: formData})
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error('Something went wrong');
+                            }
+                        })
+                        .then(data => {
+                            showLogoHeader();
+                            $('#email-verification').hide();
+                            $('#chat-conversation').show();
+                            $('#chat-form').slideDown();
+
+                            name = customerName;
+                            email = customerEmail;
+
+                            // addGreetingMessage("Hello there! How can I help you today?");
+
+                            chatHistory = data.chat_history;
+
+                            if (chatHistory.length > 0) {
+                                chatHistory.forEach(chat => {
+                                    if (chat.type === "iq") {
+                                        addMessage(chat.message, false);
+                                    } else {
+                                        addMessage(chat.message, true);
+                                    }
+                                });
+
+                                $('#conversations-wrapper').append(`
+                                    <div class="relative">
+                                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                            <div class="w-full border-t border-gray-300"></div>
+                                        </div>
+                                        <div class="relative flex justify-center">
+                                            <span class="bg-white px-2 text-sm text-gray-500">Continue</span>
+                                        </div>
+                                    </div>
+                                `);
+
+                                addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`)
+                            } else {
+                                addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`)
+                            }
+
+
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            $('#email-submit-btn').show();
+                            $('#email-loading-btn').hide();
+                            $('.error-message').show();
+                        });
+
+                    console.log(customerName, customerEmail);
+
+                    // hide the email form and show the chat conversation area
+                });
+
+                function addGreetingMessage(greetingMessage) {
+                    $('#conversations-wrapper').append(
+                        `
 				<div class="self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none">
 					  <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
@@ -326,15 +356,15 @@ $(function() {
 					</div>
 				</div>
 			`
-		)
-	}
+                    )
+                }
 
-	function addMessage(message, isUser = false) {
+                function addMessage(message, isUser = false) {
 
-		let $message = null;
+                    let $message = null;
 
-		if (isUser) {
-			$message = $(`
+                    if (isUser) {
+                        $message = $(`
 				<div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
 					  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
@@ -345,8 +375,8 @@ $(function() {
 					</div>
 				</div>
 			`);
-		} else {
-			$message = $(`
+                    } else {
+                        $message = $(`
 				<div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
 					  	<path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
@@ -356,50 +386,29 @@ $(function() {
 					</div>
 				</div>
 			`);
-		}
+                    }
 
 
-		$('#conversations-wrapper').append($message);
+                    $('#conversations-wrapper').append($message);
 
-		// Animate the message using anime.js
-		anime({
-			targets: $message[0],
-			translateY: [-10, 0],
-			// opacity: [0, 1],
-			duration: 300,
-			easing: 'easeOutQuad',
-			complete: () => {
-				// Scroll to the bottom of the container after the animation is complete
-				const $chatConversation = $('#chat-conversation');
-				$chatConversation.animate({
-					scrollTop: $chatConversation.get(0).scrollHeight
-				}, 500);
-			}
-		});
-	}
+                    // Animate the message using anime.js
+                    anime({
+                        targets: $message[0],
+                        translateY: [-10, 0],
+                        // opacity: [0, 1],
+                        duration: 300,
+                        easing: 'easeOutQuad',
+                        complete: () => {
+                            // Scroll to the bottom of the container after the animation is complete
+                            const $chatConversation = $('#chat-conversation');
+                            $chatConversation.animate({
+                                scrollTop: $chatConversation.get(0).scrollHeight
+                            }, 500);
+                        }
+                    });
+                }
+            })
+    }
 
-	const chatLib = {};
-
-	chatLib.initChatiQ = function(botId = "", baseUrl = "") {
-		BASE_URL = baseUrl;
-		BOT_ID = botId;
-
-		let formData = new FormData();
-		formData.append('bot_id', BOT_ID);
-		formData.append('whitelisted_domain', window.location.origin);
-
-		fetch(BASE_URL + '/api/v1/init/', { method: "POST", body: formData })
-			.then(response => {
-				if (response.ok) {
-					return response.json();
-				} else {
-					throw new Error('Something went wrong');
-				}
-			})
-			.then(data => {
-				console.log(data);
-			})
-	}
-
-	window.chatLib = chatLib;
+    window.chatLib = chatLib;
 })

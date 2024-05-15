@@ -598,11 +598,10 @@ var _animejsDefault = parcelHelpers.interopDefault(_animejs);
     let email = "";
     let isLoading = false;
     const loader = `<div class="isLoading loader self-start"></div>`;
-    setupChatWidget();
+    let initSuccess = false;
+    let bot_config = {};
+    // setupChatWidget();
     //
-    (0, _jqueryDefault.default)(".post-logo-wrapper").hide();
-    (0, _jqueryDefault.default)("#email-loading-btn").hide();
-    (0, _jqueryDefault.default)(".error-message").hide();
     (0, _jqueryDefault.default)("#toggle-chatbot-button").click(function() {
         (0, _jqueryDefault.default)("#chatbot-form").toggle();
     });
@@ -627,7 +626,7 @@ var _animejsDefault = parcelHelpers.interopDefault(_animejs);
             duration: 600
         });
     }
-    function setupChatWidget() {
+    function setupChatWidget(brand_name, logo, welcome_message) {
         const chatTemplate = `
 			<div class="fixed bottom-4 right-4">
 				<button id="toggle-chatbot-button" style="border: 0; background: transparent;">
@@ -647,13 +646,15 @@ var _animejsDefault = parcelHelpers.interopDefault(_animejs);
 						<div class="md:container md:mx-auto m-0" id="chat-mast">
 							<div class="max-w-sm backdrop-blur-2xl rounded-lg">
 								<div class="pre-logo-wrapper flex items-center justify-center space-x-2">
-									<img class="inline-block" src="https://iqsuite.io/assets/iq.png" alt="" width="40px" id="logo" />
-									<h1 class="text-2xl font-bold tracking-tight text-black">Chat iQ</h1>
+									<img class="inline-block rounded-lg" src="${logo ? BASE_URL + logo : "https://iqsuite.io/assets/iq.png"}" alt="" width="60px" id="logo" />
+									<h1 class="text-2xl font-bold tracking-tight text-black">
+									    ${brand_name ? brand_name : "Chat iQ"}
+                                    </h1>
 								</div>
 								
 								<div class="post-logo-wrapper flex items-center space-x-2">
 									<img class="inline-block" src="https://iqsuite.io/assets/iq.png" alt="" width="40px" id="logo" />
-									<h1 class="text-2xl font-bold tracking-tight text-black">Chat iQ</h1>
+									<h1 class="text-2xl font-bold tracking-tight text-black">${bot_config.brand_name ? bot_config.brand_name : "Chat iQ"}</h1>
 								</div>
 								
 								<div class="px-3 py-3 welcome-wrapper">
@@ -769,151 +770,6 @@ var _animejsDefault = parcelHelpers.interopDefault(_animejs);
         });
     }
     // CHAT FORM
-    (0, _jqueryDefault.default)("#chat-form").submit(function(e) {
-        e.preventDefault();
-        const userMessage = (0, _jqueryDefault.default)("#user-input").val();
-        // 	scroll to bottom
-        // $('#chat-conversation').animate({
-        // 	scrollTop: $('#chat-conversation').get(0).scrollHeight
-        // }, 500);
-        addMessage(userMessage, true);
-        (0, _jqueryDefault.default)("#user-input").val("");
-        (0, _jqueryDefault.default)("#conversations-wrapper").append(loader);
-        (0, _jqueryDefault.default)("#send-button").prop("disabled", true);
-        (0, _jqueryDefault.default)("#send-button").addClass("cursor-not-allowed");
-        query(userMessage).then((response)=>{
-            addMessage(response.response, false);
-            (0, _jqueryDefault.default)(".isLoading").remove();
-            (0, _jqueryDefault.default)("#send-button").prop("disabled", false);
-            (0, _jqueryDefault.default)("#send-button").removeClass("cursor-not-allowed");
-        }).catch((error)=>{
-            console.log(error);
-        });
-    });
-    function query(userMessage) {
-        return fetch(BASE_URL + "/api/v1/query/", {
-            method: "POST",
-            body: JSON.stringify({
-                "customer_email": email,
-                "bot_id": BOT_ID,
-                "query": userMessage
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        }).then((response)=>{
-            if (response.ok) return response.json();
-            else throw new Error("Something went wrong");
-        });
-    }
-    (0, _jqueryDefault.default)("#email-verification-form").submit(function(e) {
-        e.preventDefault();
-        const customerName = (0, _jqueryDefault.default)("#customer_name").val();
-        const customerEmail = (0, _jqueryDefault.default)("#email").val();
-        name = customerName;
-        email = customerEmail;
-        let formData = new FormData();
-        formData.append("name", customerName);
-        formData.append("email", customerEmail);
-        formData.append("bot_id", BOT_ID);
-        (0, _jqueryDefault.default)("#email-submit-btn").hide();
-        (0, _jqueryDefault.default)("#email-loading-btn").show();
-        fetch(BASE_URL + "/api/v1/bot-get-or-create/", {
-            method: "POST",
-            body: formData
-        }).then((response)=>{
-            if (response.ok) return response.json();
-            else throw new Error("Something went wrong");
-        }).then((data)=>{
-            showLogoHeader();
-            (0, _jqueryDefault.default)("#email-verification").hide();
-            (0, _jqueryDefault.default)("#chat-conversation").show();
-            (0, _jqueryDefault.default)("#chat-form").slideDown();
-            name = customerName;
-            email = customerEmail;
-            // addGreetingMessage("Hello there! How can I help you today?");
-            chatHistory = data.chat_history;
-            if (chatHistory.length > 0) {
-                chatHistory.forEach((chat)=>{
-                    if (chat.type === "iq") addMessage(chat.message, false);
-                    else addMessage(chat.message, true);
-                });
-                (0, _jqueryDefault.default)("#conversations-wrapper").append(`
-							<div class="relative">
-  								<div class="absolute inset-0 flex items-center" aria-hidden="true">
-    								<div class="w-full border-t border-gray-300"></div>
-  								</div>
-								<div class="relative flex justify-center">
-									<span class="bg-white px-2 text-sm text-gray-500">Continue</span>
-								</div>
-							</div>
-					`);
-                addGreetingMessage("Hello there! How can I help you today?");
-            } else addGreetingMessage("Hello there! How can I help you today?");
-        }).catch((error)=>{
-            console.error(error);
-            (0, _jqueryDefault.default)("#email-submit-btn").show();
-            (0, _jqueryDefault.default)("#email-loading-btn").hide();
-            (0, _jqueryDefault.default)(".error-message").show();
-        });
-        console.log(customerName, customerEmail);
-    // hide the email form and show the chat conversation area
-    });
-    function addGreetingMessage(greetingMessage) {
-        (0, _jqueryDefault.default)("#conversations-wrapper").append(`
-				<div class="self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none">
-					  <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
-					</svg>
-					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
-						<p>${greetingMessage}</p>
-					</div>
-				</div>
-			`);
-    }
-    function addMessage(message, isUser = false) {
-        let $message = null;
-        if (isUser) $message = (0, _jqueryDefault.default)(`
-				<div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
-					  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
-					</svg>
-
-					<div class="bg-blue-400 text-blue-100 text-sm shadow px-3 py-3 rounded-md">
-						<p>${message}</p>
-					</div>
-				</div>
-			`);
-        else $message = (0, _jqueryDefault.default)(`
-				<div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
-					  	<path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
-					</svg>
-					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
-						<p>${message}</p>
-					</div>
-				</div>
-			`);
-        (0, _jqueryDefault.default)("#conversations-wrapper").append($message);
-        // Animate the message using anime.js
-        (0, _animejsDefault.default)({
-            targets: $message[0],
-            translateY: [
-                -10,
-                0
-            ],
-            // opacity: [0, 1],
-            duration: 300,
-            easing: "easeOutQuad",
-            complete: ()=>{
-                // Scroll to the bottom of the container after the animation is complete
-                const $chatConversation = (0, _jqueryDefault.default)("#chat-conversation");
-                $chatConversation.animate({
-                    scrollTop: $chatConversation.get(0).scrollHeight
-                }, 500);
-            }
-        });
-    }
     const chatLib = {};
     chatLib.initChatiQ = function(botId = "", baseUrl = "") {
         BASE_URL = baseUrl;
@@ -929,6 +785,157 @@ var _animejsDefault = parcelHelpers.interopDefault(_animejs);
             else throw new Error("Something went wrong");
         }).then((data)=>{
             console.log(data);
+            initSuccess = true;
+            const { brand_name, logo, welcome_message } = data.bot_branding;
+            setupChatWidget(brand_name, logo, welcome_message);
+            (0, _jqueryDefault.default)(".post-logo-wrapper").hide();
+            (0, _jqueryDefault.default)("#email-loading-btn").hide();
+            (0, _jqueryDefault.default)(".error-message").hide();
+            (0, _jqueryDefault.default)("#chat-form").submit(function(e) {
+                e.preventDefault();
+                const userMessage = (0, _jqueryDefault.default)("#user-input").val();
+                // 	scroll to bottom
+                // $('#chat-conversation').animate({
+                // 	scrollTop: $('#chat-conversation').get(0).scrollHeight
+                // }, 500);
+                addMessage(userMessage, true);
+                (0, _jqueryDefault.default)("#user-input").val("");
+                (0, _jqueryDefault.default)("#conversations-wrapper").append(loader);
+                (0, _jqueryDefault.default)("#send-button").prop("disabled", true);
+                (0, _jqueryDefault.default)("#send-button").addClass("cursor-not-allowed");
+                query(userMessage).then((response)=>{
+                    addMessage(response.response, false);
+                    (0, _jqueryDefault.default)(".isLoading").remove();
+                    (0, _jqueryDefault.default)("#send-button").prop("disabled", false);
+                    (0, _jqueryDefault.default)("#send-button").removeClass("cursor-not-allowed");
+                }).catch((error)=>{
+                    console.log(error);
+                });
+            });
+            function query(userMessage) {
+                return fetch(BASE_URL + "/api/v1/query/", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "customer_email": email,
+                        "bot_id": BOT_ID,
+                        "query": userMessage
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((response)=>{
+                    if (response.ok) return response.json();
+                    else throw new Error("Something went wrong");
+                });
+            }
+            (0, _jqueryDefault.default)("#email-verification-form").submit(function(e) {
+                e.preventDefault();
+                const customerName = (0, _jqueryDefault.default)("#customer_name").val();
+                const customerEmail = (0, _jqueryDefault.default)("#email").val();
+                name = customerName;
+                email = customerEmail;
+                let formData = new FormData();
+                formData.append("name", customerName);
+                formData.append("email", customerEmail);
+                formData.append("bot_id", BOT_ID);
+                (0, _jqueryDefault.default)("#email-submit-btn").hide();
+                (0, _jqueryDefault.default)("#email-loading-btn").show();
+                fetch(BASE_URL + "/api/v1/bot-get-or-create/", {
+                    method: "POST",
+                    body: formData
+                }).then((response)=>{
+                    if (response.ok) return response.json();
+                    else throw new Error("Something went wrong");
+                }).then((data)=>{
+                    showLogoHeader();
+                    (0, _jqueryDefault.default)("#email-verification").hide();
+                    (0, _jqueryDefault.default)("#chat-conversation").show();
+                    (0, _jqueryDefault.default)("#chat-form").slideDown();
+                    name = customerName;
+                    email = customerEmail;
+                    // addGreetingMessage("Hello there! How can I help you today?");
+                    chatHistory = data.chat_history;
+                    if (chatHistory.length > 0) {
+                        chatHistory.forEach((chat)=>{
+                            if (chat.type === "iq") addMessage(chat.message, false);
+                            else addMessage(chat.message, true);
+                        });
+                        (0, _jqueryDefault.default)("#conversations-wrapper").append(`
+                                    <div class="relative">
+                                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                            <div class="w-full border-t border-gray-300"></div>
+                                        </div>
+                                        <div class="relative flex justify-center">
+                                            <span class="bg-white px-2 text-sm text-gray-500">Continue</span>
+                                        </div>
+                                    </div>
+                                `);
+                        addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`);
+                    } else addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`);
+                }).catch((error)=>{
+                    console.error(error);
+                    (0, _jqueryDefault.default)("#email-submit-btn").show();
+                    (0, _jqueryDefault.default)("#email-loading-btn").hide();
+                    (0, _jqueryDefault.default)(".error-message").show();
+                });
+                console.log(customerName, customerEmail);
+            // hide the email form and show the chat conversation area
+            });
+            function addGreetingMessage(greetingMessage) {
+                (0, _jqueryDefault.default)("#conversations-wrapper").append(`
+				<div class="self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none">
+					  <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${greetingMessage}</p>
+					</div>
+				</div>
+			`);
+            }
+            function addMessage(message, isUser = false) {
+                let $message = null;
+                if (isUser) $message = (0, _jqueryDefault.default)(`
+				<div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
+					  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+					</svg>
+
+					<div class="bg-blue-400 text-blue-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+                else $message = (0, _jqueryDefault.default)(`
+				<div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
+					  	<path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+                (0, _jqueryDefault.default)("#conversations-wrapper").append($message);
+                // Animate the message using anime.js
+                (0, _animejsDefault.default)({
+                    targets: $message[0],
+                    translateY: [
+                        -10,
+                        0
+                    ],
+                    // opacity: [0, 1],
+                    duration: 300,
+                    easing: "easeOutQuad",
+                    complete: ()=>{
+                        // Scroll to the bottom of the container after the animation is complete
+                        const $chatConversation = (0, _jqueryDefault.default)("#chat-conversation");
+                        $chatConversation.animate({
+                            scrollTop: $chatConversation.get(0).scrollHeight
+                        }, 500);
+                    }
+                });
+            }
         });
     };
     window.chatLib = chatLib;
