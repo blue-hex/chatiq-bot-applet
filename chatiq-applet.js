@@ -1,397 +1,364 @@
-(function () {
-	const chatLib = {};
-
-	function initChat(bot_id, base_url) {
-		document.addEventListener("DOMContentLoaded", function () {
-			const botiq_id = bot_id;
-			const BASE_URL = base_url ? base_url : "https://chat.iqsuite.in";
-
-			const chatTemplate = `
-          <div class="fixed bottom-4 right-4">
-          <button id="toggle-chatbot-button"
-              class="bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none">
-              <img src="https://iqsuite.io/assets/iq.png" class="w-12 h-12 rounded-full scale-125">
-          </button>
-      
-        <!-- Chatbot Form -->
-        <div class="max-w-md mx-auto p-4 bg-white-40">
-            <div id="chatbot-form"
-                class=" backdrop-blur-2xl hidden w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-neutral-200">
-                <div class="alert-del" style="margin-top: 10px;margin-left: 10px;" id="close-start-conversation">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        class="" >
-                        <path fill-rule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="md:container md:mx-auto mt-4 ">
-                    <div class="max-w-sm backdrop-blur-2xl rounded-lg">
-                        <a href="#">
-                            <div class="flex justify-center items-center backdrop-blur-2xl">
-      
-                                <img class="img" src="https://iqsuite.io/assets/iq.png" alt="" width="40px"
-                                    height="30px" />
-                            </div>
-                        </a>
-                        <div class="p-5  backdrop-blur-2xl">
-                            <a href="#">
-                                <h5 class="text-center mb-2 text-2xl font-bold tracking-tight text-black">Chat iQ</h5>
-                            </a>
-                            <p class="text-center mb-3 font-normal text-black">Transform any business and deploy a custom
-                                solution with our cutting edge AI. </p>
-                        </div>
-                        <div class="px-5 pb-5 text-center  backdrop-blur-2xl" id="start-conversation-button">
-                            <div id="chat:FCxvu7NgcI" class="text-white rounded-lg text-black bg-black py-4 px-4 w-full">
-                                <button type="button" class="custom-button" id="activation-status"> Start Conversation </button>
-                            </div>
-                        </div>
-      
-                    </div>
-                </div>
-                <!-- Email Verification Form -->
-                <div id="email-verification" class="hidden mt-4 w-96">
-                    <form id="email-form" class="w-full ml-12 ">
-                        <input type="text" name="name" id="customer_name" required
-                            class="p-2 rounded-md bg-neutral-100 border border-neutral-200 w-8/12" placeholder="Enter your name">
-                        <input type="email" name="email" id="email" required
-                            class="p-2 rounded-md bg-neutral-100 border border-neutral-200 w-8/12 my-2" placeholder="Enter your email">
-                        <button id="email-button" type="submit" class="w-8/12 bg-black text-white p-2 rounded-md text-sm bt-wid my-2 ">Continue</button>
-                    </form>
-                </div>
-                <div id="chat-conversation1" class="msg-bubble chat-conversation1  mb-4 hidden h-96 overflow-y-auto">
-      
-                </div>
-                <!-- Chat Conversation Form -->
-                <div id="chat-conversation" class="hidden mt-4">
-                    <form id="chat-form" class="space-y-4">
-                        <div class="mt-4 flex">
-                            <input type="text" id="user-input"
-                                class=" flex-1 w-full rounded-lg p-2 bg-neutral-100 border border-neutral-200"
-                                placeholder="Type your query" />
-                            <button type="submit" id="send-button"
-                                class="bg-black hover:bg-blue-900 text-white rounded-lg p-2 ml-2 inline-flex justify-center items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    class="w-6 h-6 text-white">
-                                    <path
-                                        d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-                                </svg>
-                            </button>
-                    </form>
-                </div>
-            </div>
-        </div>`;
+require("./chatiq-applet.css");
+var $hzDL5$jquery = require("jquery");
+var $hzDL5$animejs = require("animejs");
 
 
-			const chatDiv = document.createElement("div");
-			chatDiv.innerHTML = chatTemplate;
-
-			// Store the bot id
-			const bot_element = document.createElement("p");
-			bot_element.innerHTML = botiq_id;
-			bot_element.id = "botiq_id";
-			bot_element.hidden = true;
-			document.body.appendChild(bot_element);
-
-			// Attach the chat UI to the document body
-			document.body.appendChild(chatDiv);
-
-			var alert_del = document.querySelectorAll(".alert-del");
-
-			alert_del.forEach((x) =>
-				x.addEventListener("click", function () {
-					x.parentElement.classList.add("hidden");
-				})
-			);
-
-			const toggleChatbotButton = document.getElementById("toggle-chatbot-button");
-			const chatbotForm = document.getElementById("chatbot-form");
-			const startConversationButton = document.getElementById("start-conversation-button");
-			const emailVerification = document.getElementById("email-verification");
-			const chatConversation = document.getElementById("chat-conversation");
-			const emailForm = document.getElementById("email-form");
-			const chatForm = document.getElementById("chat-form");
-			const sendButton = document.getElementById("send-button");
-			const chatConversation1 = document.getElementById("chat-conversation1");
-			const userInput = document.getElementById("user-input");
-			const closeStartConversation = document.getElementById("close-start-conversation")
-			const activationStatus = document.getElementById("activation-status")
-			const statusBG = document.getElementById("chat:FCxvu7NgcI")
-
-			// access display property of chatbotForm
-
-			//tailwind to css
-			if (closeStartConversation) {
-				closeStartConversation.addEventListener("click", function () {
-					chatbotForm.style.display = "none";
-
-				});
-			}
-			if (toggleChatbotButton) {
-				toggleChatbotButton.addEventListener("click", function () {
-					const botIQId = document.getElementById("botiq_id").innerHTML
-					const formdata = new FormData();
-					formdata.append("bot_id", botIQId);
-
-					fetch("http://localhost:8014/app/bot-create-or-fetch/", {
-						method: "POST",
-						body: formdata,
-					})
-						.then((response) => {
-							if (response.ok) {
-								return response.json();
-
-							} else {
-								throw new Error("POST request failed");
-							}
-						})
-						.then((data) => {
-							const result = data
-							const conversation_list = result["conversation"]
-							console.log("inside block none1")
-							const computedStyle = window.getComputedStyle(chatbotForm);
-							const displayProperty = computedStyle.getPropertyValue("display");
-
-							activationStatus.innerHTML = "Start Conversation"
-							activationStatus.disabled = false;
-							statusBG.classList.add("bg-black");
-							statusBG.classList.remove("bg-red");
-							activationStatus.style.backgroundColor = "#000";
-
-							if (result["status"] === "success") {
-								console.log("display", displayProperty)
-								if (displayProperty === "none") {
-									chatbotForm.style.display = "block";
-								} else {
-									chatbotForm.style.display = "none";
-								}
-
-							} else {
-								console.log("inside block none2")
-								chatbotForm.style.display = "block";
-								activationStatus.innerHTML = "Your IQ Bot has deactivated."
-								activationStatus.disabled = true;
-								statusBG.classList.remove("bg-black");
-								statusBG.classList.add("bg-red");
-								activationStatus.style.backgroundColor = "#dc2626";
-							}
-						})
-						.catch((error) => {
-							console.error("Error:", error);
-						});
-
-				});
-			}
-
-			if (activationStatus) {
-				activationStatus.addEventListener("click", function () {
-					startConversationButton.style.display = "none";
-					emailVerification.style.display = "block";
-				});
-			}
-
-			if (emailForm) {
-				emailForm.addEventListener("submit", function (e) {
-					e.preventDefault();
-					emailVerification.style.display = "none";
-					chatConversation1.style.display = "block";
-					chatConversation.style.display = "block";
-				});
-			}
-
-			if (sendButton) {
-				sendButton.addEventListener("click", function (e) {
-					e.preventDefault();
-
-					const userMessage = userInput.value.trim();
-
-					// Validate if user message is not empty
-					if (userMessage.length === 0) {
-						//alert("Please enter a message to send.");
-						return;
-					}
-
-					appendMessage("user", userMessage);
-					const botResponse = getBotResponse(userMessage);
-
-					userInput.value = "";
-
-					chatConversation1.style.display = "block";
-				});
-			}
+function $parcel$interopDefault(a) {
+  return a && a.__esModule ? a.default : a;
+}
 
 
-			let user_email1;
 
-			function appendMessage(sender, message) {
-				const messageDiv = document.createElement("div");
-				messageDiv.classList.add(
-					"message",
-					sender === "left" ? "left-msg" : "right-msg"
-				);
+(0, ($parcel$interopDefault($hzDL5$jquery)))(function() {
+    let BASE_URL = "";
+    let BOT_ID = "";
+    let chatHistory = [];
+    let name = "";
+    let email = "";
+    let isLoading = false;
+    const loader = `<div class="isLoading loader self-start"></div>`;
+    let initSuccess = false;
+    let bot_config = {};
+    // setupChatWidget();
+    //
+    (0, ($parcel$interopDefault($hzDL5$jquery)))("#toggle-chatbot-button").click(function() {
+        (0, ($parcel$interopDefault($hzDL5$jquery)))("#chatbot-form").toggle();
+    });
+    (0, ($parcel$interopDefault($hzDL5$jquery)))("#close-start-conversation").click(function() {
+        (0, ($parcel$interopDefault($hzDL5$jquery)))("#chatbot-form").hide();
+    });
+    function showLogoHeader() {
+        (0, ($parcel$interopDefault($hzDL5$jquery)))(".pre-logo-wrapper").hide();
+        (0, ($parcel$interopDefault($hzDL5$jquery)))("#welcome-message").hide();
+        (0, ($parcel$interopDefault($hzDL5$jquery)))(".post-logo-wrapper").show();
+        (0, ($parcel$interopDefault($hzDL5$animejs)))({
+            targets: ".post-logo-wrapper",
+            translateY: [
+                -10,
+                0
+            ],
+            // translateX: [-100, 0],
+            opacity: [
+                0,
+                1
+            ],
+            duration: 600
+        });
+    }
+    function setupChatWidget(brand_name, logo, welcome_message) {
+        const chatTemplate = `
+			<div class="fixed bottom-4 right-4">
+				<button id="toggle-chatbot-button" style="border: 0; background: transparent;">
+					<img src="https://iqsuite.io/assets/iq.png" class="w-12 h-12 rounded-full">
+				</button>
+				
+				<div class="max-w-md mx-auto p-4">
+					<div id="chatbot-form" class="flex flex-col w-96 absolute bottom-16 right-4 p-4 rounded-3xl shadow-lg border border-slate-200 bg-white" style="max-height: 50vh;">
+						<div class="flex items-center justify-end w-full cursor-pointer"  id="close-start-conversation">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="6 h-6">
+								<path fill-rule="evenodd"
+									d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+									clip-rule="evenodd" />
+							</svg>
+						</div>
+						
+						<div class="md:container md:mx-auto m-0" id="chat-mast">
+							<div class="max-w-sm backdrop-blur-2xl rounded-lg">
+								<div class="pre-logo-wrapper flex items-center justify-center space-x-2">
+									<img class="inline-block rounded-lg" src="${logo ? BASE_URL + logo : "https://iqsuite.io/assets/iq.png"}" alt="" width="60px" id="logo" />
+									<h1 class="text-2xl font-bold tracking-tight text-black">
+									    ${brand_name ? brand_name : "Chat iQ"}
+                                    </h1>
+								</div>
+								
+								<div class="post-logo-wrapper flex items-center space-x-2">
+									<img class="inline-block" src="https://iqsuite.io/assets/iq.png" alt="" width="40px" id="logo" />
+									<h1 class="text-2xl font-bold tracking-tight text-black">${bot_config.brand_name ? bot_config.brand_name : "Chat iQ"}</h1>
+								</div>
+								
+								<div class="px-3 py-3 welcome-wrapper">
+									<p class="text-center mb-3 font-normal text-black text-xs" id="welcome-message"></p>									
+								</div>						
+							</div>
+						</div>
+						
+						<!-- Email Verification Form -->
+						<div id="email-verification" class="hidden mx-0 my-1">
+							<form id="email-verification-form" class="">
+								<div class="flex flex-col space-y-1.5">
+									<div class="error-message block mb-3">
+										<p class="text-red-500 text-xs text-center">Oops, something went wrong, please try again.</p>
+									</div>
+								
+									<input type="text" name="name" id="customer_name" autofocus autocapitalize="words" required class="w-full border border-slate-200 rounded-md px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="John Doe" />
+									<input type="email" name="email" id="email" required class="w-full border border-slate-200 rounded-md px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="john.doe@acme.org" />
+									<button id="email-submit-btn" type="submit" class="bg-black hover:bg-gray-800 text-white p-2 rounded-md text-sm bt-wid my-2 ">Continue</button>
+									<button id="email-loading-btn" type="button" disabled class="bg-black hover:bg-gray-800 text-white p-2 rounded-md text-sm bt-wid my-2 flex items-center justify-center">
+									  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+									  </svg>
+									</button>
+								</div>
+							</form>
+						</div>
 
-				const messageBubble = document.createElement("div");
-				messageBubble.classList.add("msg-bubble");
-				messageBubble.textContent = message;
-
-				if (sender === "left") {
-					messageBubble.style.background = "#059669";
-					messageBubble.style.color = "#fff";
-					messageBubble.style.borderBottomRightRadius = "0";
-				}
-
-				// Calculate the width based on the message content, but limit it to a maximum of 450px
-				const maxBubbleWidth = "450px";
-				const messageWidth =
-					Math.min(
-						message.length <= 5 ? message.length * 25 : message.length * 10,
-						parseInt(maxBubbleWidth)
-					) + "px";
-
-				messageBubble.style.width = messageWidth;
-				messageDiv.appendChild(messageBubble);
-				chatConversation1.appendChild(messageDiv);
-			}
-
-			async function getBotResponse(userMessage) {
-				//console.log("user_email inside bot response", document.getElementById("botiq_id").innerHTML)
-				//console.log("bot_id from main")
-				const formdata = new FormData();
-				formdata.append("user_query", userMessage);
-				formdata.append("chatbot_id", document.getElementById("botiq_id").innerHTML);
-				formdata.append("user_email", user_email1);
-
-				try {
-					const response = await fetch(BASE_URL + "/app/bot-query/", {
-						method: "POST",
-						body: formdata,
-					});
-					const result = await response.json();
-
-					const iqResponse = result.message_list.find(message => message.type === "iq");
-					if (iqResponse) {
-						const responseElement = document.getElementById("chat-conversation1");
-						const chat = document.querySelector(".msg-bubble");
-
-						const userMsg = `<div class="msg left-msg">
-                                      <div class="msg-bubble left-msg rounded-3xl">
-                                          <div class="msg-info">
-                                              <div class="msg-info-name">Chat iQ</div>
-                                          </div>
-                                          <div class="msg-text">
-                                          ${iqResponse.text}
-                                          </div>
-                                      </div>
-                                  </div>`;
-						const userMsgDiv = document.createElement("div");
-						userMsgDiv.innerHTML = userMsg;
-						chat.appendChild(userMsgDiv);
-					}
-				} catch (error) {
-					console.error(error);
-				}
-			}
-
-
-			// Customer Information API
-			document.getElementById("email-button").addEventListener("click", () => {
-				user_email1 = document.getElementById("email").value;
-				const customerEmail = document.getElementById("email").value;
-				const customerName = document.getElementById("customer_name").value
-				const botIQId = document.getElementById("botiq_id").innerHTML
-				const formdata = new FormData();
-				formdata.append("customer_name", customerName);
-				formdata.append("customer_email", customerEmail);
-				formdata.append("bot_id", botIQId);
-
-				fetch(BASE_URL + "/app/bot-create-or-fetch/", {
-					method: "POST",
-					body: formdata,
-				})
-					.then((response) => {
-						if (response.ok) {
-							return response.json();
-
-						} else {
-							throw new Error("POST request failed");
-						}
-					})
-					.then((data) => {
-						const result = data
-						const conversation_list = result["conversation"]
-						if (result["status"] === "success") {
-							// Initial message from Bot
-							if (result["conversation"].length === 0) {
-								const responseElement = document.getElementById("chat-conversation1");
-								const chat = document.querySelector(".msg-bubble");
-
-								const userMsg = `<div class="msg left-msg">
-                                        <div class="msg-bubble left-msg rounded-3xl">
-                                            <div class="msg-info">
-                                                <div class="msg-info-name">Chat iQ</div>
-                                            </div>
-                                            <div class="msg-text">
-                                            What can I help you with today?
-                                            </div>
+						<!-- Chat Conversation Form -->
+						<div id="chat-conversation" class="overflow-auto">
+						
+							<div class="flex flex-col space-y-4 p-6 max-w-lg mx-auto rounded-lg mt-10 overflow-y-auto" id="conversations-wrapper">
+								<!-- AI Message -->
+								<div class="hidden self-end items-center bg-green-500 shadow justify-end px-3 py-2 rounded-md" style="max-width: 75%;">
+									<p class="text-green-100 text-sm">
+										Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium fugit hic modi placeat quo reprehenderit similique veniam, vitae. At beatae cupiditate deserunt esse inventore quaerat quod repellendus veritatis? Quis, quo!
+									</p>
+								</div>
+								
+								<!-- User Message -->
+								<div class="hidden self-start items-center bg-gray-300 px-3 py-2 rounded-md max-w-1/2" style="max-width: 75%;">
+									<p class="text-gray-800 text-sm">
+										Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid architecto asperiores assumenda corporis ea eos ex inventore itaque magni nisi non numquam, praesentium quo, sit soluta tempora, tenetur velit voluptatem!
+									</p>
+								</div>
+							</div>
+						</div>
+						
+						<form id="chat-form" class="space-y-4">
+							<div class="mt-4 flex">
+								<input type="text" id="user-input" class="w-full border border-slate-200 rounded-3xl px-3 py-3 shadow-sm text-sm focus:outline-none font-semibold" placeholder="Type your query" required />
+								<button type="submit" id="send-button" class="bg-transparent text-white rounded-xl px-3 py-1 ml-2 inline-flex justify-center items-center">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-black hover:text-blue-500 hover:drop-shadow-md transition-all duration-150">
+										<path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+									</svg>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		`;
+        // Add the chat widget to the body
+        const chatDiv = document.createElement("div");
+        chatDiv.innerHTML = chatTemplate;
+        document.body.appendChild(chatDiv);
+        // Store bot information
+        const botElement = document.createElement("p");
+        botElement.innerHTML = BOT_ID;
+        botElement.id = "botiq_id";
+        botElement.hidden = true;
+        document.body.appendChild(botElement);
+        // Greet the user when the page is loaded
+        // document.getElementById("welcome-message").innerText = `Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!`;
+        (0, ($parcel$interopDefault($hzDL5$animejs)))({
+            targets: ".welcome-wrapper",
+            translateY: [
+                -30,
+                0
+            ],
+            opacity: [
+                0,
+                1
+            ],
+            duration: 1500,
+            update: ()=>{
+                // let options = {
+                // 	strings: ["Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!"],
+                // 	typeSpeed: 6,
+                // 	showCursor: false,
+                // };
+                //
+                // let welcomeMessage = new Typed("#welcome-message", options);
+                //
+                // welcomeMessage.start();
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#welcome-message").text(`Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!`);
+            }
+        });
+        (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-verification").removeClass("hidden");
+        (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-conversation").hide();
+        (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-form").hide();
+        (0, ($parcel$interopDefault($hzDL5$animejs)))({
+            targets: "#email-verification",
+            translateY: [
+                -10,
+                0
+            ],
+            opacity: [
+                0,
+                1
+            ]
+        });
+    }
+    // CHAT FORM
+    const chatLib = {};
+    chatLib.initChatiQ = function(botId = "", baseUrl = "") {
+        BASE_URL = baseUrl;
+        BOT_ID = botId;
+        let formData = new FormData();
+        formData.append("bot_id", BOT_ID);
+        formData.append("whitelisted_domain", window.location.origin);
+        fetch(BASE_URL + "/api/v1/init/", {
+            method: "POST",
+            body: formData
+        }).then((response)=>{
+            if (response.ok) return response.json();
+            else throw new Error("Something went wrong");
+        }).then((data)=>{
+            console.log(data);
+            initSuccess = true;
+            const { brand_name: brand_name, logo: logo, welcome_message: welcome_message } = data.bot_branding;
+            setupChatWidget(brand_name, logo, welcome_message);
+            (0, ($parcel$interopDefault($hzDL5$jquery)))(".post-logo-wrapper").hide();
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-loading-btn").hide();
+            (0, ($parcel$interopDefault($hzDL5$jquery)))(".error-message").hide();
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-form").submit(function(e) {
+                e.preventDefault();
+                const userMessage = (0, ($parcel$interopDefault($hzDL5$jquery)))("#user-input").val();
+                // 	scroll to bottom
+                // $('#chat-conversation').animate({
+                // 	scrollTop: $('#chat-conversation').get(0).scrollHeight
+                // }, 500);
+                addMessage(userMessage, true);
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#user-input").val("");
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#conversations-wrapper").append(loader);
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").prop("disabled", true);
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").addClass("cursor-not-allowed");
+                query(userMessage).then((response)=>{
+                    addMessage(response.response, false);
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))(".isLoading").remove();
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").prop("disabled", false);
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").removeClass("cursor-not-allowed");
+                }).catch((error)=>{
+                    console.log(error);
+                });
+            });
+            function query(userMessage) {
+                return fetch(BASE_URL + "/api/v1/query/", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "customer_email": email,
+                        "bot_id": BOT_ID,
+                        "query": userMessage
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((response)=>{
+                    if (response.ok) return response.json();
+                    else throw new Error("Something went wrong");
+                });
+            }
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-verification-form").submit(function(e) {
+                e.preventDefault();
+                const customerName = (0, ($parcel$interopDefault($hzDL5$jquery)))("#customer_name").val();
+                const customerEmail = (0, ($parcel$interopDefault($hzDL5$jquery)))("#email").val();
+                name = customerName;
+                email = customerEmail;
+                let formData = new FormData();
+                formData.append("name", customerName);
+                formData.append("email", customerEmail);
+                formData.append("bot_id", BOT_ID);
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-submit-btn").hide();
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-loading-btn").show();
+                fetch(BASE_URL + "/api/v1/bot-get-or-create/", {
+                    method: "POST",
+                    body: formData
+                }).then((response)=>{
+                    if (response.ok) return response.json();
+                    else throw new Error("Something went wrong");
+                }).then((data)=>{
+                    showLogoHeader();
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-verification").hide();
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-conversation").show();
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-form").slideDown();
+                    name = customerName;
+                    email = customerEmail;
+                    // addGreetingMessage("Hello there! How can I help you today?");
+                    chatHistory = data.chat_history;
+                    if (chatHistory.length > 0) {
+                        chatHistory.forEach((chat)=>{
+                            if (chat.type === "iq") addMessage(chat.message, false);
+                            else addMessage(chat.message, true);
+                        });
+                        (0, ($parcel$interopDefault($hzDL5$jquery)))("#conversations-wrapper").append(`
+                                    <div class="relative">
+                                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                            <div class="w-full border-t border-gray-300"></div>
                                         </div>
-                                    </div>`;
-								const userMsgDiv = document.createElement("div");
-								userMsgDiv.innerHTML = userMsg;
-								chat.appendChild(userMsgDiv);
-							}
-							// Append History of customer bot
-							for (const item of conversation_list) {
-								const iqResponse = item.find(message => message.type === "iq");
-								const userResponse = item.find(message => message.type === "user");
-
-								if (userResponse) {
-									appendMessage("user", userResponse.text);
-								}
-
-								if (iqResponse) {
-									const responseElement = document.getElementById("chat-conversation1");
-									const chat = document.querySelector(".msg-bubble");
-
-									const userMsg = `<div class="msg left-msg">
-                                        <div class="msg-bubble left-msg rounded-3xl">
-                                            <div class="msg-info">
-                                                <div class="msg-info-name">Chat iQ</div>
-                                            </div>
-                                            <div class="msg-text">
-                                            ${iqResponse.text}
-                                            </div>
+                                        <div class="relative flex justify-center">
+                                            <span class="bg-white px-2 text-sm text-gray-500">Continue</span>
                                         </div>
-                                    </div>`;
-									const userMsgDiv = document.createElement("div");
-									userMsgDiv.innerHTML = userMsg;
-									chat.appendChild(userMsgDiv);
-								}
-							}
-						} else {
-							alert("Associated bot has been deactivated. Contact to site owner")
-						}
-					})
-					.catch((error) => {
-						console.error("Error:", error);
-					});
-			});
+                                    </div>
+                                `);
+                        addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`);
+                    } else addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`);
+                }).catch((error)=>{
+                    console.error(error);
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-submit-btn").show();
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-loading-btn").hide();
+                    (0, ($parcel$interopDefault($hzDL5$jquery)))(".error-message").show();
+                });
+                console.log(customerName, customerEmail);
+            // hide the email form and show the chat conversation area
+            });
+            function addGreetingMessage(greetingMessage) {
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#conversations-wrapper").append(`
+				<div class="self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none">
+					  <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${greetingMessage}</p>
+					</div>
+				</div>
+			`);
+            }
+            function addMessage(message, isUser = false) {
+                let $message = null;
+                if (isUser) $message = (0, ($parcel$interopDefault($hzDL5$jquery)))(`
+				<div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
+					  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+					</svg>
 
-			// Auto close Alert
-			function closeModal() {
-				const alertElement = document.getElementById('my_modal_3');
-				setTimeout(function () {
-					console.log("close alert")
-					alertElement.close()
-				}, 3000);
-			}
-		})
-	}
+					<div class="bg-blue-400 text-blue-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+                else $message = (0, ($parcel$interopDefault($hzDL5$jquery)))(`
+				<div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
+					  	<path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+					</svg>
+					<div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+						<p>${message}</p>
+					</div>
+				</div>
+			`);
+                (0, ($parcel$interopDefault($hzDL5$jquery)))("#conversations-wrapper").append($message);
+                // Animate the message using anime.js
+                (0, ($parcel$interopDefault($hzDL5$animejs)))({
+                    targets: $message[0],
+                    translateY: [
+                        -10,
+                        0
+                    ],
+                    // opacity: [0, 1],
+                    duration: 300,
+                    easing: "easeOutQuad",
+                    complete: ()=>{
+                        // Scroll to the bottom of the container after the animation is complete
+                        const $chatConversation = (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-conversation");
+                        $chatConversation.animate({
+                            scrollTop: $chatConversation.get(0).scrollHeight
+                        }, 500);
+                    }
+                });
+            }
+        });
+    };
+    window.chatLib = chatLib;
+});
 
 
-	chatLib.initChat = initChat;
-
-	window.chatLib = chatLib;
-
-	// chatLib.initChat("your_bot_id", "https://your_base_url");
-
-})();
+//# sourceMappingURL=chatiq-applet.js.map

@@ -10,6 +10,11 @@
   "author": "Abhishek Choudhury",
   "license": "ISC",
   "readme": "Readme.md",
+  "dependencies": {
+    "animejs": "^3.2.2",
+    "jquery": "^3.7.1",
+    "typed.js": "^2.1.0"
+  },
   "devDependencies": {
     "animejs": "^3.2.2",
     "jquery": "^3.7.1",
