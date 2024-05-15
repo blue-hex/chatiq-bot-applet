@@ -5,7 +5,7 @@
   "main": "chatiq-applet.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build chatiq-applet-v2.js --out-dir dist --public-url ./"
+    "build": "NODE_ENV=production parcel build chatiq-applet-v2.js"
   },
   "author": "Abhishek Choudhury",
   "license": "ISC",
