@@ -5,7 +5,8 @@
   "main": "chatiq-applet.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "NODE_ENV=production parcel build chatiq-applet-v2.js"
+    "build": "NODE_ENV=production parcel build chatiq-applet-v2.js",
+    "dev": "vite"
   },
   "author": "Abhishek Choudhury",
   "license": "ISC",
@@ -13,7 +14,8 @@
   "dependencies": {
     "animejs": "^3.2.2",
     "jquery": "^3.7.1",
-    "typed.js": "^2.1.0"
+    "typed.js": "^2.1.0",
+    "vite": "^5.2.11"
   },
   "devDependencies": {
     "animejs": "^3.2.2",
