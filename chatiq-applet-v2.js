@@ -19,6 +19,8 @@ $(function () {
     let initSuccess = false;
     let bot_config = {};
 
+    let welcomeMessage = "Hello!";
+
     // setupChatWidget();
 
     //
@@ -209,6 +211,8 @@ $(function () {
                 initSuccess = true;
                 const { brand_name, logo, welcome_message } = data.bot_branding;
 
+                welcomeMessage = welcome_message;
+
                 setupChatWidget(brand_name, logo, welcome_message);
 
                 $('#toggle-chatbot-button').click(function () {
@@ -333,9 +337,9 @@ $(function () {
                                     </div>
                                 `);
 
-                                addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`)
+                                addMessage(`${welcomeMessage}`)
                             } else {
-                                addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`)
+                                addMessage(`${welcomeMessage}`)
                             }
 
 

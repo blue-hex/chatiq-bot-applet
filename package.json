@@ -2,10 +2,8 @@
   "name": "chatiq-applet",
   "version": "2.0.10",
   "description": "Chat-iQ employs advanced NLU technology to understand and interpret user queries and commands in natural language, facilitating more intuitive and human-like interactions.",
-  "main": "chatiq-applet.js",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "NODE_ENV=production parcel build chatiq-applet-v2.js",
     "dev": "vite"
   },
   "author": "Abhishek Choudhury",

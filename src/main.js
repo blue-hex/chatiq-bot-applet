@@ -19,6 +19,8 @@ $(function () {
     let initSuccess = false;
     let bot_config = {};
 
+    let welcomeMessage = "Hello!";
+
     // setupChatWidget();
 
     //
@@ -211,6 +213,11 @@ $(function () {
 
                 setupChatWidget(brand_name, logo, welcome_message);
 
+                // When it;s nothing there, API will still send it as "None", DO NOT CHANGE THIS!!!
+                if(welcome_message !== "" || welcome_message !== null) {
+                    welcomeMessage = welcome_message;
+                }
+
                 $('#toggle-chatbot-button').click(function () {
                     $('#chatbot-form').toggle();
                 })
@@ -333,9 +340,9 @@ $(function () {
                                     </div>
                                 `);
 
-                                addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`)
+                                addGreetingMessage(`${welcomeMessage}`)
                             } else {
-                                addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`)
+                                addGreetingMessage(`${welcomeMessage}`)
                             }
 
 
