@@ -6,6 +6,7 @@ $(function () {
 
     let BASE_URL = "";
     let BOT_ID = "";
+    let WS_URL = "";
 
     let chatHistory = [];
 
@@ -190,9 +191,10 @@ $(function () {
 
     const chatLib = {};
 
-    chatLib.initChatiQ = function (botId = "", baseUrl = "") {
+    chatLib.initChatiQ = function (botId = "", baseUrl = "", ws_url = "") {
         BASE_URL = baseUrl;
         BOT_ID = botId;
+        WS_URL = ws_url;
 
         let formData = new FormData();
         formData.append('bot_id', BOT_ID);
@@ -239,7 +241,7 @@ $(function () {
                     // 	scrollTop: $('#chat-conversation').get(0).scrollHeight
                     // }, 500);
 
-                    addMessage(userMessage, true);
+                    addMessageAsync(userMessage, true);
 
                     $('#user-input').val('');
 
@@ -249,14 +251,16 @@ $(function () {
                     $('#send-button').addClass('cursor-not-allowed');
 
 
-                    query(userMessage).then(response => {
-                        addMessage(response.response, false);
-                        $('.isLoading').remove();
-                        $('#send-button').prop('disabled', false);
-                        $('#send-button').removeClass('cursor-not-allowed');
-                    }).catch(error => {
-                        console.log(error)
-                    })
+                    // query(userMessage).then(response => {
+                    //     addMessage(response.response, false);
+                    //     $('.isLoading').remove();
+                    //     $('#send-button').prop('disabled', false);
+                    //     $('#send-button').removeClass('cursor-not-allowed');
+                    // }).catch(error => {
+                    //     console.log(error)
+                    // })
+
+                    asyncQuery(userMessage);
 
                 });
 
@@ -279,8 +283,84 @@ $(function () {
                             throw new Error('Something went wrong');
                         }
                     })
-
                 }
+
+                let socket = null;
+                let botId = BOT_ID;
+
+                function connectWebSocket() {
+                    socket = new WebSocket(`${WS_URL}` + botId + '/' + email + '/');
+
+                    socket.onopen = function(event) {
+                        console.log('WebSocket is connected.');
+                    };
+
+                    socket.onmessage = function(event) {
+                        let data = JSON.parse(event.data);
+                        console.log('Message received:', data);
+
+                        // addMessage(data.response, false);
+                        handleReceivedMessage(data.response);
+
+                        $('.isLoading').remove();
+                        $('#send-button').prop('disabled', false);
+                        $('#send-button').removeClass('cursor-not-allowed');
+                        // Handle the received message
+                    };
+
+                    socket.onclose = function(event) {
+                        console.log('WebSocket is closed.');
+                    };
+
+                    socket.onerror = function(error) {
+                        console.log('WebSocket error:', error);
+                    };
+                }
+
+                function handleReceivedMessage(message) {
+                    messageBuffer += message + ' ';
+                    if (!isDisplayingMessage) {
+                        displayMessageFromBuffer();
+                    }
+                }
+
+                function displayMessageFromBuffer(){
+                    if (messageBuffer.length === 0) {
+                        isDisplayingMessage = false;
+                        return;
+                    }
+
+                    isDisplayingMessage = true;
+                    var words = messageBuffer.split(' ');
+                    var word = words.shift();
+                    messageBuffer = words.join(' ');
+
+                    addMessageAsync(word, false);
+
+                    setTimeout(displayMessageFromBuffer, 500); // Adjust the delay as needed
+                }
+
+
+                function asyncQuery(userMessage) {
+                    if (socket && socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify({
+                            "email": email,
+                            "bot_id": botId,
+                            "message": userMessage
+                        }));
+                    } else {
+
+                        console.log('WebSocket is not open. Reconnecting...');
+
+                        connectWebSocket();
+
+                        setTimeout(function() {
+                            asyncQuery(userMessage);  // Retry the query after reconnecting
+                        }, 1000);
+                    }
+                }
+
+                connectWebSocket();
 
                 $('#email-verification-form').submit(function (e) {
                     e.preventDefault();
@@ -372,6 +452,56 @@ $(function () {
                             </div>
                         `
                     )
+                }
+
+                var messageBuffer = '';
+                var isDisplayingMessage = false;
+
+                function addMessageAsync(message, isUser = false) {
+                    let $message = null;
+
+                    if (isUser) {
+                        $message = $(`
+                            <div class="message self-start inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-blue-400 flex-none drop-shadow-lg">
+                                  <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+                                </svg>
+            
+                                <div class="bg-blue-400 text-blue-100 text-sm shadow px-3 py-3 rounded-md">
+                                    <p>${message}</p>
+                                </div>
+                            </div>
+                        `);
+                    } else {
+                        $message = $(`
+                            <div class="message self-end inline-flex space-x-1 items-center justify-end" style="max-width: 75%;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-green-500 flex-none drop-shadow-lg">
+                                    <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+                                </svg>
+                                <div class="bg-green-500 text-green-100 text-sm shadow px-3 py-3 rounded-md">
+                                    <p>${message}</p>
+                                </div>
+                            </div>
+                        `);
+                    }
+
+                    $('#conversations-wrapper').append($message);
+
+                    // Animate the message using anime.js
+                    anime({
+                        targets: $message[0],
+                        translateY: [-10, 0],
+                        duration: 300,
+                        easing: 'easeOutQuad',
+                        complete: () => {
+                            // Scroll to the bottom of the container after the animation is complete
+                            const $chatConversation = $('#chat-conversation');
+                            $chatConversation.animate({
+                                scrollTop: $chatConversation.get(0).scrollHeight
+                            }, 500);
+                        }
+                    });
+
                 }
 
                 function addMessage(message, isUser = false) {
