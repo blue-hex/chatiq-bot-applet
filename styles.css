@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*@tailwind base;*/
+/*@tailwind components;*/
+/*@tailwind utilities;*/
 
 .loader {
   width: 30px;
@@ -11,3 +11,4 @@
 }
 
 @keyframes l1 {to{clip-path: inset(0 -34% 0 0)}}
+

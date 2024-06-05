@@ -11,36 +11,25 @@ The primary methods to install ChatiQ-Applet:
 **Using CDN**
 
 **Development Guide**
+
 ```
 npm install
 ```
 
+### Run this regularly to build tailwind
 ```
-npx parcel chatiq-applet-v2.js
-```
-
-If you face any issues with above command, remove `.parcel-cache` folder and try again.
-
-1. **Include the script:** Directly reference the ChatiQ-Applet script from the unpkg CDN in your HTML file's `<head>` section:
-
-   ```html
-    <script src="https://cdn.jsdelivr.net/npm/chatiq-applet"></script>
-    <link href="https://cdn.jsdelivr.net/npm/chatiq-applet/main.css" rel="stylesheet">
-   ```
-
-
-2. Once installed, you can leverage ChatiQ-Applet's functionality within your JavaScript code:
-
-```javascript
-   <script>
-   	chatLib.initChat('pass_your_unique_bot_id'); // intialize your iQ bot
-   </script>
+npm run tw-build
 ```
 
-3. Optional (If your application is blocking the Network API Call)
+### Run this to start the development server
+```
+npm run dev
+```
 
-- Include https://chatiq.iqsuite.in in CORS
-
+### Run this to build the project
+```
+npm run build
+```
 
 
 **Important:**
