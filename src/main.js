@@ -1,6 +1,3 @@
-
-
-
 const chatbotButton = `
     <button id="toggle-chatbot-button" style="border: 0; background: transparent;" class="fixed bottom-10 right-10 active:scale-95">
         <img src="https://iqsuite.io/assets/iq.png" class="w-12 h-12 rounded-full">
@@ -58,11 +55,11 @@ const iQChatbot = `
     <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="">
         <div x-show="showChatBotToggleButton" class="fixed bottom-10 right-10">
             <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;" class="active:scale-95">
-                <img src="https://iqsuite.io/assets/iq.png" class="w-12 h-12 rounded-full">
+                <img :src="botBranding.logo ? botBranding.logo : 'https://iqsuite.io/assets/iq.png'" class="w-12 h-12 rounded-full">
             </button>
         </div>
 
-        <div class="fixed bottom-16 right-16 bg-white rounded-lg shadow-lg border border-slate-100 overflow-hidden" style="width: 450px;" x-show="showChatbotMainScreen" x-transition>
+        <div class="fixed bottom-16 right-16 bg-white rounded-lg shadow-lg border border-slate-100 overflow-hidden" style="width: 510px;" x-show="showChatbotMainScreen" x-transition>
             <header class="px-3 py-3 bg-slate-50 border-b border-slate-50">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl" x-text="botBranding.name"></h3>
@@ -99,16 +96,29 @@ const iQChatbot = `
 
 
                 <div x-show="showChatScreen" class="">
-                    <div class="flex-none flex flex-col h-full space-y-4 px-3 py-3 max-w-lg mx-auto rounded-lg mt-0 mb-0 overflow-y-auto max-h-80 w-full" style="overflow-y: auto;" x-ref="messagesContainer">
+                    <div class="flex-none flex flex-col h-full space-y-4 px-3 py-3 max-w-lg mx-auto rounded-lg mt-0 mb-0 overflow-y-auto w-full" style="overflow-y: auto; max-height: 50vh;" x-ref="messagesContainer">
                         <!-- AI Message -->
                         <template x-for="message in chatHistory">
-                            <div :class="message.type == 'iq' ? 'mr-auto bg-green-500' : 'ml-auto chat-message-user' " class="block bg-green-500 shadow px-3 py-2 rounded-md" style="max-width: 75%;">
-                                <p class=" text-sm" :class="message.type == 'iq' ? 'text-green-100' : 'text-gray-600'">
-                                    <span x-text="message.message"></span>
-                                </p>
+                            <div class="flex flex-col">
+                                <div x-show="message.type == 'iq'" class="block mr-auto shadow px-3 py-2 rounded-md" style="max-width: 75%; background-color: #DFFFEA;">
+                                    <div x-html="message.message" class="text-sm font-sans text-green-900 iq-message-wrapper"></div>
+                                </div>
+
+                                <div x-show="message.type == 'user'" class="block ml-auto bg-gray-500 shadow px-3 py-2 rounded-md chat-message-user" style="max-width: 75%; background-color: #E9F3FF;">
+                                    <span x-text="message.message" class="text-sm font-sans"></span>
+                                </div>
+
+                                <div class="relative" x-show="message.type == 'divider'">
+                                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div class="w-full border-t border-gray-300"></div>
+                                    </div>
+                                    <div class="relative flex justify-center">
+                                        <span class="bg-white px-2 text-sm text-gray-500">Continue</span>
+                                    </div>
+                                </div>
+
                             </div>
                         </template>
-
                     </div>
                     
                     <form id="chat-form" class="space-y-4 mt-auto" x-on:submit="handleChatbotFormSubmit">
@@ -125,6 +135,8 @@ const iQChatbot = `
                         </div>
                     </form>
                 </div>
+
+                <a href="https://iqsuite.io" target="_blank" class="text-xs my-3 text-center text-gray-300">&copy; <span x-text="currentYear"></span> | Powered by iQ Suite</a>
             </main>
         </div>
     </div>
@@ -161,6 +173,7 @@ function chatiQApplet() {
         base_url: localStorage.getItem('base_url'),
         ws_url: localStorage.getItem('ws_url'),
         bot_id: localStorage.getItem('bot_id'),
+        welcome_message: "",
         
         name: "",
         email: "",
@@ -173,6 +186,8 @@ function chatiQApplet() {
             name: 'Chat iQ',
             logo: 'https://iqsuite.io/assets/iq.png',
         },
+
+        currentYear: new Date().getFullYear(),
 
         initChatbot: function() {
             let base_url = localStorage.getItem('base_url');
@@ -196,10 +211,11 @@ function chatiQApplet() {
                 this.botBranding.name = r.bot_branding.brand_name;
                 this.botBranding.welcome_message = r.bot_branding.welcome_message;
 
-                this.chatHistory.push({
-                    type: 'iq',
-                    message: this.botBranding.welcome_message,
-                })
+                if ( r.bot_branding.logo ) {
+                    this.botBranding.logo = this.base_url + r.bot_branding.logo;
+                }
+
+                this.welcome_message = r.bot_branding.welcome_message;
             })
 
         },
@@ -226,10 +242,6 @@ function chatiQApplet() {
             })
             .then(response => response.ok ? response.json() : Promise.reject(response))
             .then(r => {
-                console.log(r);
-                console.log(this.email)
-                console.log(this.bot_id)
-
                 this.emailVerified = true;
                 this.showEmailVerification = false;
 
@@ -237,9 +249,29 @@ function chatiQApplet() {
 
                 this.chatHistory = r.chat_history;
 
+                if (r.chat_history.length > 0) {
+                    this.chatHistory.push({
+                        type: 'divider',
+                        message: ""
+                    })
+
+                    // loop through the chat history and parse the markdown
+                    this.chatHistory.forEach(ch => {
+                        if (ch.type == 'iq') {
+                            ch.message = marked.parse(ch.message);
+                        }
+                    })
+                }
+
                 this.isLoading = false;
 
                 this.setupWebsocket();
+
+                this.chatHistory.push({
+                    type: 'iq',
+                    message: this.welcome_message,
+                    tag: 'welcome_message'
+                })
 
                 setTimeout(() => {
                     this.scrollToBottom();
@@ -283,6 +315,16 @@ function chatiQApplet() {
                         // strip whitespaces in the beginning and end
                         chObject.message += data.message;
                     }
+                } else if ( data.event === 'on_parser_end' && this.ongoingStream && data.run_id == this.ongoingStream.id ) {
+                    console.log("Parser end event");
+                    
+                    this.scrollToBottom();
+                    this.ongoingStream = null;
+
+                    // Get the last item of chatHistory
+                    let chObject = this.chatHistory[this.chatHistory.length - 1];
+
+                    chObject.message = marked.parse(chObject.message);
                 }
 
                 this.$nextTick(() => {

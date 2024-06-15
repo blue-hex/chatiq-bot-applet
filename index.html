@@ -21,7 +21,7 @@
     <!--<script src="https://njoczvfqhazcnhvttqas.supabase.co/storage/v1/object/public/Chat-IQ%20Production-donotdelete/chatiq-applet-v2.js?t=2024-05-17T13%3A27%3A56.947Z"></script>-->
     <!--<link href="https://njoczvfqhazcnhvttqas.supabase.co/storage/v1/object/public/Chat-IQ%20Production-donotdelete/chatiq-applet-v2.css?t=2024-05-17T13%3A28%3A06.673Z" rel="stylesheet">-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="//unpkg.com/alpinejs"></script>
     <!-- <script src="/src/main.js"></script> -->
 
@@ -32,12 +32,10 @@
     <!-- For testing build JS -->
     <!-- <script src="dist/chatbot.bundle.js"></script> -->
     
-
-    
     <script>
         window.onload = function () {
             // chatLib.initChatiQ('70b989fe-b85c-42c9-9d47-dc3ec6b527ec', 'http://localhost:3699', 'ws://localhost:3699/ws/chat/')
-            let chatLib = new ChatLib('70b989fe-b85c-42c9-9d47-dc3ec6b527ec', 'http://localhost:3699', 'ws://localhost:3699/ws/chat/');
+            let chatLib = new ChatLib('f40aa6b6-d07a-4f38-a3f5-a66d16e1ca80', 'http://localhost:3699', 'ws://localhost:3699/ws/chat/');
             // chatLib.init('70b989fe-b85c-42c9-9d47-dc3ec6b527ec', 'http://localhost:3699', 'ws://localhost:3699/ws/chat/')
             // document.body.insertAdjacentHTML('beforeend', "<div id='chatiQ-applet'></div>");
             

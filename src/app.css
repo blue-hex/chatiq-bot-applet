@@ -80,3 +80,8 @@
 .chat-message-user {
     background-color: #ddd;
 }
+
+.iq-message-wrapper > a {
+    text-decoration: underline !important;
+    font-weight: bold;
+}

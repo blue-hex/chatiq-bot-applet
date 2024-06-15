@@ -8,6 +8,7 @@ module.exports = {
   },
   externals: {
     'alpinejs': 'Alpine',
+    'marked': 'marked',
   },
   devServer: {
     static: {

@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+a {
+    text-decoration: underline !important;
+    font-weight: bold;
+}
+
+.iq-message-wrapper > a {
+    text-decoration: underline !important;
+}
