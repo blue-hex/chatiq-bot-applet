@@ -40,8 +40,8 @@ const iQChatbot = `
                     <span class="absolute bottom-0 right-0 block w-3 h-3 bg-emerald-500 rounded-md border-2 border-white"></span>
                   </div>
                   <div>
-                    <h4 class="text-xl font-medium" x-text="botBranding.name"></h4>
-                    <p class="font-light text-sm">Gen AI-Powered Chatbot</p>
+                    <h4 class="text-xl font-medium font-redhat" x-text="botBranding.name"></h4>
+                    <p class="font-light text-sm font-redhat">Gen AI-Powered Chatbot</p>
                   </div>
                 </div>
                 <button type="button" @click="showChatbotMainScreen = false"> 
