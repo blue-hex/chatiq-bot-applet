@@ -4,12 +4,12 @@ var $hzDL5$animejs = require("animejs");
 
 
 function $parcel$interopDefault(a) {
-  return a && a.__esModule ? a.default : a;
+    return a && a.__esModule ? a.default : a;
 }
 
 
 
-(0, ($parcel$interopDefault($hzDL5$jquery)))(function() {
+(0, ($parcel$interopDefault($hzDL5$jquery)))(function () {
     let BASE_URL = "";
     let BOT_ID = "";
     let chatHistory = [];
@@ -21,10 +21,10 @@ function $parcel$interopDefault(a) {
     let bot_config = {};
     // setupChatWidget();
     //
-    (0, ($parcel$interopDefault($hzDL5$jquery)))("#toggle-chatbot-button").click(function() {
+    (0, ($parcel$interopDefault($hzDL5$jquery)))("#toggle-chatbot-button").click(function () {
         (0, ($parcel$interopDefault($hzDL5$jquery)))("#chatbot-form").toggle();
     });
-    (0, ($parcel$interopDefault($hzDL5$jquery)))("#close-start-conversation").click(function() {
+    (0, ($parcel$interopDefault($hzDL5$jquery)))("#close-start-conversation").click(function () {
         (0, ($parcel$interopDefault($hzDL5$jquery)))("#chatbot-form").hide();
     });
     function showLogoHeader() {
@@ -160,7 +160,7 @@ function $parcel$interopDefault(a) {
                 1
             ],
             duration: 1500,
-            update: ()=>{
+            update: () => {
                 // let options = {
                 // 	strings: ["Hello! How are you doing? Please enter your details to get started!. This helps me remember if we have spoken before and provide you with better assistance!"],
                 // 	typeSpeed: 6,
@@ -190,7 +190,7 @@ function $parcel$interopDefault(a) {
     }
     // CHAT FORM
     const chatLib = {};
-    chatLib.initChatiQ = function(botId = "", baseUrl = "") {
+    chatLib.initChatiQ = function (botId = "", baseUrl = "") {
         BASE_URL = baseUrl;
         BOT_ID = botId;
         let formData = new FormData();
@@ -199,24 +199,24 @@ function $parcel$interopDefault(a) {
         fetch(BASE_URL + "/api/v1/init/", {
             method: "POST",
             body: formData
-        }).then((response)=>{
+        }).then((response) => {
             if (response.ok) return response.json();
             else throw new Error("Something went wrong");
-        }).then((data)=>{
+        }).then((data) => {
             console.log(data);
             initSuccess = true;
             const { brand_name: brand_name, logo: logo, welcome_message: welcome_message } = data.bot_branding;
             setupChatWidget(brand_name, logo, welcome_message);
-            (0, ($parcel$interopDefault($hzDL5$jquery)))("#toggle-chatbot-button").click(function() {
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#toggle-chatbot-button").click(function () {
                 (0, ($parcel$interopDefault($hzDL5$jquery)))("#chatbot-form").toggle();
             });
-            (0, ($parcel$interopDefault($hzDL5$jquery)))("#close-start-conversation").click(function() {
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#close-start-conversation").click(function () {
                 (0, ($parcel$interopDefault($hzDL5$jquery)))("#chatbot-form").hide();
             });
             (0, ($parcel$interopDefault($hzDL5$jquery)))(".post-logo-wrapper").hide();
             (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-loading-btn").hide();
             (0, ($parcel$interopDefault($hzDL5$jquery)))(".error-message").hide();
-            (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-form").submit(function(e) {
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-form").submit(function (e) {
                 e.preventDefault();
                 const userMessage = (0, ($parcel$interopDefault($hzDL5$jquery)))("#user-input").val();
                 // 	scroll to bottom
@@ -228,12 +228,12 @@ function $parcel$interopDefault(a) {
                 (0, ($parcel$interopDefault($hzDL5$jquery)))("#conversations-wrapper").append(loader);
                 (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").prop("disabled", true);
                 (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").addClass("cursor-not-allowed");
-                query(userMessage).then((response)=>{
+                query(userMessage).then((response) => {
                     addMessage(response.response, false);
                     (0, ($parcel$interopDefault($hzDL5$jquery)))(".isLoading").remove();
                     (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").prop("disabled", false);
                     (0, ($parcel$interopDefault($hzDL5$jquery)))("#send-button").removeClass("cursor-not-allowed");
-                }).catch((error)=>{
+                }).catch((error) => {
                     console.log(error);
                 });
             });
@@ -248,12 +248,12 @@ function $parcel$interopDefault(a) {
                     headers: {
                         "Content-Type": "application/json"
                     }
-                }).then((response)=>{
+                }).then((response) => {
                     if (response.ok) return response.json();
                     else throw new Error("Something went wrong");
                 });
             }
-            (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-verification-form").submit(function(e) {
+            (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-verification-form").submit(function (e) {
                 e.preventDefault();
                 const customerName = (0, ($parcel$interopDefault($hzDL5$jquery)))("#customer_name").val();
                 const customerEmail = (0, ($parcel$interopDefault($hzDL5$jquery)))("#email").val();
@@ -268,10 +268,10 @@ function $parcel$interopDefault(a) {
                 fetch(BASE_URL + "/api/v1/bot-get-or-create/", {
                     method: "POST",
                     body: formData
-                }).then((response)=>{
+                }).then((response) => {
                     if (response.ok) return response.json();
                     else throw new Error("Something went wrong");
-                }).then((data)=>{
+                }).then((data) => {
                     showLogoHeader();
                     (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-verification").hide();
                     (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-conversation").show();
@@ -281,7 +281,7 @@ function $parcel$interopDefault(a) {
                     // addGreetingMessage("Hello there! How can I help you today?");
                     chatHistory = data.chat_history;
                     if (chatHistory.length > 0) {
-                        chatHistory.forEach((chat)=>{
+                        chatHistory.forEach((chat) => {
                             if (chat.type === "iq") addMessage(chat.message, false);
                             else addMessage(chat.message, true);
                         });
@@ -297,14 +297,14 @@ function $parcel$interopDefault(a) {
                                 `);
                         addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`);
                     } else addGreetingMessage(`${welcome_message ? welcome_message : "Hello there! How can I help you today?"}`);
-                }).catch((error)=>{
+                }).catch((error) => {
                     console.error(error);
                     (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-submit-btn").show();
                     (0, ($parcel$interopDefault($hzDL5$jquery)))("#email-loading-btn").hide();
                     (0, ($parcel$interopDefault($hzDL5$jquery)))(".error-message").show();
                 });
                 console.log(customerName, customerEmail);
-            // hide the email form and show the chat conversation area
+                // hide the email form and show the chat conversation area
             });
             function addGreetingMessage(greetingMessage) {
                 (0, ($parcel$interopDefault($hzDL5$jquery)))("#conversations-wrapper").append(`
@@ -352,7 +352,7 @@ function $parcel$interopDefault(a) {
                     // opacity: [0, 1],
                     duration: 300,
                     easing: "easeOutQuad",
-                    complete: ()=>{
+                    complete: () => {
                         // Scroll to the bottom of the container after the animation is complete
                         const $chatConversation = (0, ($parcel$interopDefault($hzDL5$jquery)))("#chat-conversation");
                         $chatConversation.animate({
