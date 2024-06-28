@@ -31,7 +31,7 @@ const iQChatbot = `
       </div>
 
 
-        <div class="fixed bottom-16 right-16 backdrop-blur-2xl bg-white/90 h-[700px] rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="width: 450px;" x-show="showChatbotMainScreen" x-transition>
+        <div class="fixed bottom-16 right-16 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="width: 450px;" x-show="showChatbotMainScreen" x-transition>
             <div class="flex flex-col justify-between">
               <header class="px-4 py-4 flex justify-between w-full items-center">
                   <div class="flex items-center gap-3">
@@ -66,23 +66,23 @@ const iQChatbot = `
                                     <p class="text-red-500 text-xs text-left">Oops, something went wrong, please try again.</p>
                                 </div>
                             
-                                <input x-model="name" type="text" name="name" id="customer_name" autofocus autocapitalize="words" required class="w-full border border-neutral-200 rounded-2xl px-3 py-3 bg-gray-50 text-base focus:outline-none font-normal" placeholder="Full Name" />
-                                <input x-model="email" type="email" name="email" id="email" required class="w-full border border-neutral-200 rounded-2xl px-3 py-3 text-base focus:outline-none bg-gray-50 font-normal" placeholder="E-Mail Address" />
+                                <input x-model="name" type="text" name="name" id="customer_name" autofocus autocapitalize="words" required class="w-full border border-neutral-200 rounded-md px-3 py-3 bg-neutral-50 text-base focus:outline-none font-normal" placeholder="Full Name" />
+                                <input x-model="email" type="email" name="email" id="email" required class="w-full border border-neutral-200 rounded-md px-3 py-3 text-base focus:outline-none bg-neutral-50 font-normal" placeholder="E-Mail Address" />
                                 
-                                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="bg-black text-center text-white py-3 px-8 rounded-2xl text-base font-light hover:bg-neutral-950 transition duration-300 ease-in bt-wid my-2">
+                                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="bg-black text-center text-white py-3 px-8 rounded-md text-base font-light hover:bg-neutral-950 transition duration-300 ease-in bt-wid my-2">
                                     <span x-show="!isLoading">Continue</span>
                                     <svg x-show="isLoading" class="animate-spin mx-auto h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 </button>
-                                <p class="text-center text-sm font-light mt-4 mb-2 opacity-60"> Powered By <a href="https://iqsuite.io/" class="text-blue-950" target="_blank"> iQ Suite </a> </p>
+                                <p class="text-center text-sm inline-flex justify-center items-center font-light mt-4 gap-1 mb-2"> Powered By <img class="h-4 w-4" src="https://iqsuite.io/assets/iq.png" /> <a href="https://iqsuite.io/" class="text-blue-950" target="_blank" class="no-underline"> iQ Suite </a> </p>
                             </div>
                         </form>
                     </div>
     
                     <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle">
-                        <div style="height: 28rem;" class="flex-none flex flex-col h-full space-y-4 max-w-lg mx-auto bg-neutral-50 border border-neutral-100 rounded-2xl mt-0 mb-0 overflow-y-auto w-full" sty x-ref="messagesContainer">
+                        <div style="height: 28rem;" class="flex-none flex flex-col h-full space-y-2 max-w-lg mx-auto mt-0 mb-0 overflow-y-auto w-full" sty x-ref="messagesContainer">
                             <template x-for="message in chatHistory">
                                 <div class="flex flex-col px-2.5 py-2">
                                   <!-- AI Message -->
@@ -90,7 +90,7 @@ const iQChatbot = `
                                         <div class="inline-flex flex-col justify-start items-start gap-2">
                                             <!-- Avatar for IQ message -->
                                             <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
-                                            <div x-html="message.message" class="text-sm text-white bg-emerald-600 font-light rounded-2xl p-3 iq-message-wrapper"></div>
+                                            <div x-html="message.message" class="text-sm text-black bg-neutral-200 font-light rounded-2xl p-3 iq-message-wrapper"></div>
                                         </div>
                                     </div>
     
@@ -98,10 +98,10 @@ const iQChatbot = `
                                     <div x-show="message.type == 'user'" class="flex flex-row justify-end items-end gap-2">
                                         <div class="inline-flex flex-col justify-start items-end gap-2">
                                             <!-- Avatar for User message -->
-                                            <div class="flex items-center justify-center h-8 w-8 rounded-full bg-neutral-900">
-                                                <span class="text-white font-light text-sm uppercase" x-text="name.charAt(0)"></span>
+                                            <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                                                <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
                                             </div>
-                                            <span x-text="message.message" class="text-sm text-white bg-blue-600 font-light rounded-2xl p-3"></span>
+                                            <span x-text="message.message" class="text-sm text-white bg-neutral-900 font-light rounded-2xl p-3"></span>
                                         </div>
                                     </div>
     
@@ -110,27 +110,31 @@ const iQChatbot = `
                                             <div class="w-full border-t border-gray-300"></div>
                                         </div>
                                         <div class="relative flex justify-center">
-                                            <span class="px-2 text-sm bg-neutral-50 text-gray-500">Today</span>
+                                            <span class="px-2 text-sm bg-white text-gray-300">Today</span>
                                         </div>
                                     </div>
                                 </div>
                             </template>
                         </div>
                         
-                        <form id="chat-form" x-on:submit="handleChatbotFormSubmit">
-                            <div class="my-2 flex">
-                                <input x-model="message" required type="text" id="user-input" class="w-full border border-slate-200 rounded-2xl px-3 py-3 text-sm focus:outline-none font-normal" placeholder="Ask your query here" required />
-                                
-                                <button :disabled="isLoading" type="submit" id="send-button" class="bg-transparent text-white rounded-xl ml-2 inline-flex justify-center items-center disabled:text-gray-400 disabled:cursor-not-allowed">
-                                    <svg x-show="!isLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-black m-2">
-                                        <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-                                    </svg>
-                                    
-                                    <div class="isLoading loader self-start" x-show="isLoading"></div>
-                                </button>
-                            </div>
-                             <p class="text-center text-sm font-light py-4 opacity-60"> Powered By <a href="https://iqsuite.io/" class="text-blue-950" target="_blank"> iQ Suite </a> </p>
+                        <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative">
+                          <div class="my-2 flex items-center w-full relative">
+                            <textarea x-model="message" required id="user-input" rows="1" class="w-full border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden" placeholder="Ask your query here"></textarea>
+                            <button :disabled="isLoading" type="submit" id="send-button" class="absolute right-0 top-0 h-full px-3 bg-transparent text-white rounded-r-md inline-flex justify-center items-center disabled:text-gray-400 disabled:cursor-not-allowed">
+                              <svg x-show="!isLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-black bg-white">
+                                <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+                              </svg>
+                              <div class="isLoading loader" x-show="isLoading"></div>
+                            </button>
+                          </div>
+                          <div class="flex justify-center items-center">
+                            <p class="text-center text-sm font-light py-4 inline-flex justify-center items-center gap-1">Powered By <img class="h-4 w-4" src="https://iqsuite.io/assets/iq.png" /> <a href="https://iqsuite.io/" class="text-blue-950" target="_blank">iQ Suite</a></p>
+                          </div>
                         </form>
+
+
+
+
                     </div>
                 </main>
             </div>
