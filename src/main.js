@@ -20,8 +20,8 @@ const chatWrapper = `
 `;
 
 const iQChatbot = `
-    <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat" style="z-index: 99;">
-      <div x-show="showChatBotToggleButton" class="fixed bottom-10 right-10">
+    <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
+      <div x-show="showChatBotToggleButton" class="fixed bottom-10 right-10" style="z-index: 999 !important;">
         <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;" class="relative">
             <img :src="botBranding.logo ? botBranding.logo : 'https://iqsuite.io/assets/iq.png'" class="w-16 h-16 rounded-full shadow-xl">
             <!-- Green circle indicator for online status -->
@@ -65,8 +65,8 @@ const iQChatbot = `
                                     <p class="text-red-500 text-xs text-left">Oops, something went wrong, please try again.</p>
                                 </div>
                             
-                                <input x-model="name" type="text" style="border-radius: 8px !important;" name="name" id="customer_name" autofocus autocapitalize="words" required class="w-full font-redhat border rounded-md px-3 py-3 bg-neutral-50 text-base focus:outline-none font-normal" placeholder="Full Name" />
-                                <input style="border-radius: 8px !important;" x-model="email" type="email" name="email" id="email" required class="w-full border font-redhat rounded-md px-3 py-3 text-base focus:outline-none bg-neutral-50 font-normal" placeholder="E-Mail Address" />
+                                <input x-model="name" type="text" name="name" id="customer_name" autofocus autocapitalize="words" required class="w-full font-redhat border px-3 py-3 bg-neutral-50 text-base focus:outline-none font-normal" placeholder="Full Name" />
+                                <input x-model="email" type="email" name="email" id="email" required class="w-full border font-redhat px-3 py-3 text-base focus:outline-none bg-neutral-50 font-normal" placeholder="E-Mail Address" />
                                 
                                 <button id="email-submit-btn" :disabled="isLoading" type="submit" class="bg-black text-center text-white py-3 px-8 font-redhat font-medium rounded-md text-base hover:bg-neutral-950 transition duration-300 ease-in bt-wid my-2">
                                     <span x-show="!isLoading">Continue</span>
@@ -89,7 +89,7 @@ const iQChatbot = `
                                         <div class="inline-flex flex-col justify-start items-start gap-2">
                                             <!-- Avatar for IQ message -->
                                             <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
-                                            <div x-html="message.message" style="white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper"></div>
+                                            <div x-html="message.message" style="font-family: "Red Hat Display", sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper"></div>
                                         </div>
                                     </div>
     
@@ -117,15 +117,29 @@ const iQChatbot = `
                         </div>
                         
                         <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative">
-                          <div class="my-2 flex items-center w-full relative">
-                            <input x-model="message" style="border-radius: 8px !important; border-color: #a3a3a3 !important;" required id="user-input" type="text" class="w-full inline-flex font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden" placeholder="Ask your query here" />
-                            <button :disabled="isLoading" type="submit" id="send-button" class="absolute right-0 top-0 h-full px-3 bg-transparent text-white rounded-r-md inline-flex justify-center items-center disabled:text-gray-400 disabled:cursor-not-allowed">
-                              <svg x-show="!isLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-black">
-                                <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-                              </svg>
-                              <div class="isLoading loader" x-show="isLoading"></div>
-                            </button>
+                         <div class="my-2 inline-flex justify-center items-center align-center w-full relative">
+                            <input x-model="message"  
+                                 required="" id="user-input" 
+                                 type="text" 
+                                 class="w-full font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden" 
+                                 placeholder="Ask your query here" />
+                               
+                                 <button :disabled="isLoading"
+                                  type="submit" 
+                                  id="send-button" 
+                                  class="px-4 bg-transparent text-white rounded-r-md disabled:text-gray-400 disabled:cursor-not-allowed"
+                      >
+                                  <svg x-show="!isLoading" 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    viewBox="0 0 24 24" 
+                                    fill="currentColor" 
+                                    class="w-8 h-8 text-black">
+                                    <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z"></path>
+                                  </svg>
+                                  <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
+                                </button>
                           </div>
+                        
                           <div class="flex justify-center items-center">
                              <p class="text-center text-xs inline-flex font-redhat justify-center items-center font-light mt-4 gap-1 mb-2"> Powered By <a href="https://chat.iqsuite.io/" style="text-decoration: none !important;" class="text-blue-950 inline-flex justify-center items-center gap-1 font-redhat" target="_blank" class="!no-underline"> Chat <img class="h-5 w-5" src="https://iqsuite.io/assets/iq.png"/></a></p>
                           </div>

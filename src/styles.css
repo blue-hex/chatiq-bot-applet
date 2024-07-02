@@ -10,3 +10,15 @@ a {
 .iq-message-wrapper > a {
     text-decoration: underline !important;
 }
+
+.iq-message-wrapper > p {
+    font-family: "Red Hat Display", sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 300 !important;
+
+}
+
+.iq-message-wrapper > strong {
+    font-family: "Red Hat Display", sans-serif !important;
+    font-size: 14px !important;
+}
