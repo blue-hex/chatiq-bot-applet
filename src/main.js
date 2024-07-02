@@ -41,7 +41,7 @@ const iQChatbot = `
                     </div>
                     <div>
                       <h4 class="text-xl font-medium font-redhat" x-text="botBranding.name"></h4>
-                      <p class="font-light text-sm font-redhat">Gen AI-Powered Chatbot</p>
+                      <p class="font-light text-sm font-redhat">Gen-AI Powered Chatbot</p>
                     </div>
                   </div>
                   <button type="button" @click="showChatbotMainScreen = false"> 
@@ -120,7 +120,7 @@ const iQChatbot = `
                          <div class="my-2 inline-flex justify-center items-center align-center w-full relative">
                             <input x-model="message"  
                                  required="" id="user-input" 
-                                 type="text" 
+                                 type="text"  style='margin-bottom: 0 !important;'
                                  class="w-full font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden" 
                                  placeholder="Ask your query here" />
                                
@@ -220,7 +220,7 @@ function chatiQApplet() {
         )
         .then((r) => {
           this.showChatBotToggleButton = true;
-          this.showChatbotMainScreen = true;
+          this.showChatbotMainScreen = false;
 
           // NOTE change this
           this.showChatScreen = false;

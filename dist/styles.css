@@ -948,6 +948,22 @@ a {
     font-size: 14px !important;
 }
 
+b, strong {
+    font-family: "Red Hat Display", sans-serif !important;
+    font-size: 14px !important;
+}
+
+ol:not([class]) li:before {
+    font-family: "Red Hat Display", sans-serif !important;
+    font-size: 14px !important;
+}
+
+blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
+    margin: 0;
+    overflow-x: auto !important;
+    max-width: 22rem !important;
+}
+
 .hover\:bg-neutral-950:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(10 10 10 / var(--tw-bg-opacity));
