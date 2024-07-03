@@ -30,7 +30,7 @@ const iQChatbot = `
       </div>
 
 
-        <div class="fixed bottom-16 right-16 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="width: 450px; z-index:9999;" x-show="showChatbotMainScreen" x-transition>
+        <div class="fixed bottom-16 resizeable right-16 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="width: 450px; z-index:9999;" x-show="showChatbotMainScreen" x-transition>
             <div class="flex flex-col justify-between">
               <header class="px-4 py-4 flex justify-between w-full items-center">
                   <div class="flex items-center gap-3">
@@ -81,14 +81,14 @@ const iQChatbot = `
                     </div>
     
                     <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle">
-                        <div style="height: 28rem;" class="flex-none flex flex-col h-full space-y-2 max-w-lg mx-auto mt-0 mb-0 overflow-y-auto w-full" sty x-ref="messagesContainer">
+                        <div id="messages-container" style="height: 28rem;" class="flex-none flex flex-col h-full space-y-2 max-w-lg mx-auto mt-0 mb-0 overflow-y-auto w-full" x-ref="messagesContainer">
                             <template x-for="message in chatHistory">
                                 <div class="flex flex-col px-2.5 py-2">
                                   <!-- AI Message -->
                                    <div x-show="message.type == 'iq'">
                                         <div class="inline-flex flex-col justify-start items-start gap-2">
                                             <!-- Avatar for IQ message -->
-                                            <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
+                                            <div class="inline-flex justify-center items-center gap-2"> <img :src="botBranding.logo" class="w-8 h-8 rounded-full" /> <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small></div>
                                             <div x-html="message.message" style="font-family: "Red Hat Display", sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper"></div>
                                         </div>
                                     </div>
@@ -97,8 +97,11 @@ const iQChatbot = `
                                     <div x-show="message.type == 'user'" class="flex flex-row justify-end items-end gap-2">
                                         <div class="inline-flex flex-col justify-start items-end gap-2">
                                             <!-- Avatar for User message -->
-                                            <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
-                                                <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
+                                            <div class="inline-flex justify-center items-center gap-2">
+                                              <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
+                                               <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                                                  <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
+                                              </div>
                                             </div>
                                             <span x-text="message.message" class="text-sm text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3"></span>
                                         </div>
@@ -139,7 +142,12 @@ const iQChatbot = `
                                   <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
                                 </button>
                           </div>
-                        
+                          <button @click="clear_local_storage" class="bg-green-200 font-redhat text-green-900 rounded-2xl px-2 py-1.5 text-xs inline-flex justify-center items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+                              <path fill-rule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clip-rule="evenodd" />
+                            </svg>
+                            Start Over
+                          </button>
                           <div class="flex justify-center items-center">
                              <p class="text-center text-xs inline-flex font-redhat justify-center items-center font-light mt-4 gap-1 mb-2"> Powered By <a href="https://chat.iqsuite.io/" style="text-decoration: none !important;" class="text-blue-950 inline-flex justify-center items-center gap-1 font-redhat" target="_blank" class="!no-underline"> Chat <img class="h-5 w-5" src="https://iqsuite.io/assets/iq.png"/></a></p>
                           </div>
@@ -173,7 +181,9 @@ function chatiQApplet() {
     count: 0,
     showChatBotToggleButton: false,
     emailVerified: false,
-    chatHistory: [],
+    chatHistory: localStorage.getItem("chat_history")
+      ? JSON.parse(localStorage.getItem("chat_history") || "[]")
+      : [],
     showEmailVerification: false,
     showChatScreen: false,
     showChatbotMainScreen: false,
@@ -182,11 +192,16 @@ function chatiQApplet() {
     base_url: localStorage.getItem("base_url"),
     ws_url: localStorage.getItem("ws_url"),
     bot_id: localStorage.getItem("bot_id"),
-    welcome_message:
-      "👋🏼 Hey There! What can I help you with today. I am a Gen AI powered chatbot trained to help customers with their queries.",
+    welcome_message: localStorage.getItem("welcome_message")
+      ? localStorage.getItem("welcome_message") || ""
+      : "👋🏼 Hey There! What can I help you with today. I am a Gen AI powered chatbot trained to help customers with their queries.",
 
-    name: "",
-    email: "",
+    name: localStorage.getItem("name")
+      ? localStorage.getItem("name") || ""
+      : "",
+    email: localStorage.getItem("email")
+      ? localStorage.getItem("email") || ""
+      : "",
     message: "",
     theme_hex: "ffffff",
 
@@ -194,8 +209,12 @@ function chatiQApplet() {
     ws: null,
 
     botBranding: {
-      name: "Chat iQ",
-      logo: "https://iqsuite.io/assets/iq.png",
+      name: localStorage.getItem("brand_name")
+        ? localStorage.getItem("name") || "Chat iQ"
+        : "",
+      logo: localStorage.getItem("logo_url")
+        ? localStorage.getItem("name") || ""
+        : "https://iqsuite.io/assets/iq.png",
     },
 
     currentYear: new Date().getFullYear(),
@@ -203,7 +222,6 @@ function chatiQApplet() {
     initChatbot: function () {
       let base_url = localStorage.getItem("base_url");
       let bot_id = localStorage.getItem("bot_id");
-      console.log(this.name);
 
       fetch(base_url + "/api/v1/init/", {
         method: "POST",
@@ -222,9 +240,15 @@ function chatiQApplet() {
           this.showChatBotToggleButton = true;
           this.showChatbotMainScreen = false;
 
-          // NOTE change this
-          this.showChatScreen = false;
-          this.showEmailVerification = true;
+          if (localStorage.getItem("email") == null) {
+            this.showChatScreen = false;
+            this.showEmailVerification = true;
+          } else {
+            this.fetch_chat_history();
+            this.showChatScreen = true;
+            this.showEmailVerification = false;
+            this.scrollToBottom();
+          }
 
           this.botBranding.name = r.bot_branding.brand_name;
           this.botBranding.welcome_message = r.bot_branding.welcome_message;
@@ -238,11 +262,19 @@ function chatiQApplet() {
           }
 
           this.welcome_message = r.bot_branding.welcome_message;
+
+          localStorage.setItem(
+            "welcome_message",
+            r.bot_branding.welcome_message
+          );
+          localStorage.setItem("logo_url", this.base_url + r.bot_branding.logo);
+          localStorage.setItem("brand_name", r.bot_branding.brand_name);
         });
     },
 
     toggleChatbotButton: function () {
       this.showChatbotMainScreen = !this.showChatbotMainScreen;
+      this.scrollToBottom();
     },
 
     handleEmailVerificationSubmit: function (e) {
@@ -271,6 +303,8 @@ function chatiQApplet() {
           this.showChatScreen = true;
 
           this.chatHistory = r.chat_history;
+          localStorage.setItem("name", r.user_data.name);
+          localStorage.setItem("email", r.user_data.email);
 
           if (r.chat_history.length > 0) {
             this.chatHistory.push({
@@ -284,6 +318,10 @@ function chatiQApplet() {
                 ch.message = marked.parse(ch.message);
               }
             });
+            localStorage.setItem(
+              "chat_history",
+              JSON.stringify(r.chat_history)
+            );
           }
 
           this.isLoading = false;
@@ -294,6 +332,7 @@ function chatiQApplet() {
             type: "iq",
             message: this.welcome_message,
             tag: "welcome_message",
+            created_at: new Date().toISOString(),
           });
 
           setTimeout(() => {
@@ -327,6 +366,7 @@ function chatiQApplet() {
             type: "iq",
             id: data.run_id,
             message: "",
+            created_at: new Date().toISOString(),
           });
         } else if (
           data.event === "on_chat_model_stream" &&
@@ -378,21 +418,123 @@ function chatiQApplet() {
 
     handleChatbotFormSubmit: function (e) {
       e.preventDefault();
+
       this.chatHistory.push({
         type: "user",
         message: this.message,
+        created_at: new Date().toISOString(),
       });
 
       this.isLoading = true;
       this.ws.send(JSON.stringify({ message: this.message }));
       this.message = null;
       this.isLoading = false;
+      this.scrollToBottom();
     },
 
     scrollToBottom: function () {
-      console.log("Scrolling");
-      this.$refs.messagesContainer.scrollTop =
-        this.$refs.messagesContainer.scrollHeight;
+      this.$nextTick(() => {
+        this.$refs.messagesContainer.scrollTo(
+          0,
+          this.$refs.messagesContainer.scrollHeight
+        );
+      });
+    },
+
+    clear_local_storage: function () {
+      localStorage.removeItem("name");
+      localStorage.removeItem("email");
+      localStorage.removeItem("chat_history");
+      localStorage.removeItem("logo_url");
+      localStorage.removeItem("brand_name");
+      localStorage.removeItem("welcome_message");
+      this.showChatScreen = false;
+      this.showEmailVerification = true;
+    },
+
+    fetch_chat_history: function (e) {
+      fetch(this.base_url + "/api/v1/bot-get-or-create/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: this.email,
+          name: this.name,
+          bot_id: this.bot_id,
+        }),
+      })
+        .then((response) =>
+          response.ok ? response.json() : Promise.reject(response)
+        )
+        .then((r) => {
+          this.chatHistory = r.chat_history;
+
+          if (r.chat_history.length > 0) {
+            this.chatHistory.push({
+              type: "divider",
+              message: "",
+            });
+
+            // loop through the chat history and parse the markdown
+            this.chatHistory.forEach((ch) => {
+              if (ch.type == "iq") {
+                ch.message = marked.parse(ch.message);
+              }
+            });
+            localStorage.setItem(
+              "chat_history",
+              JSON.stringify(r.chat_history)
+            );
+          }
+          this.setupWebsocket();
+
+          this.chatHistory.push({
+            type: "iq",
+            message: this.welcome_message,
+            tag: "welcome_message",
+            created_at: new Date().toISOString(),
+          });
+
+          // setTimeout(() => {
+          //   this.scrollToBottom();
+          // }, 200);
+        })
+        .catch((error) => {
+          console.error(error);
+          this.isLoading = false;
+          this.isErrored = true;
+        });
+    },
+
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      };
+
+      const formattedDate = date.toLocaleDateString("en-US", options);
+      const time = date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+
+      const day = date.getDate();
+      const suffix = this.getDaySuffix(day);
+
+      return formattedDate.replace(/\d+/, `${day}${suffix}`);
+    },
+    getDaySuffix(day) {
+      const suffixes = ["th", "st", "nd", "rd"];
+      const relevantDigits = day < 30 ? day % 20 : day % 30;
+      return relevantDigits <= 3 ? suffixes[relevantDigits] : suffixes[0];
     },
   };
 }
