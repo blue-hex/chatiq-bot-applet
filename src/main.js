@@ -44,11 +44,29 @@ const iQChatbot = `
                       <p class="font-light text-sm font-redhat">Gen-AI Powered Chatbot</p>
                     </div>
                   </div>
-                  <button type="button" @click="showChatbotMainScreen = false"> 
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
-                      <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
-                    </svg>
-                  </button>
+                  <div class="inline-flex justify-center items-center gap-2"> 
+                    <div class="inline-flex justify-center items-center gap-2" x-data="{ disable_sound: JSON.parse(localStorage.getItem('isSoundDisabled')) ?? false }">
+                        <!-- Button to enable sound -->
+                        <button type="button" @click="disable_sound = false; enableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
+                          <svg x-show="disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                            <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
+                            <path d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
+                          </svg>
+                        </button>
+                        <!-- Button to disable sound -->
+                        <button type="button" @click="disable_sound = true; disableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
+                          <svg x-show="!disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                            <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM17.78 9.22a.75.75 0 1 0-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L20.56 12l1.72-1.72a.75.75 0 1 0-1.06-1.06l-1.72 1.72-1.72-1.72Z" />
+                          </svg>
+                        </button>
+                    </div>
+                    <button type="button" @click="showChatbotMainScreen = false"> 
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                  
                 </header>
                 <main class="flex flex-col overflow-hidden">
                   <div x-show="showEmailVerification" class="p-4 flex flex-col justify-between">
@@ -85,27 +103,41 @@ const iQChatbot = `
                             <template x-for="message in chatHistory">
                                 <div class="flex flex-col px-2.5 py-2">
                                   <!-- AI Message -->
-                                   <div x-show="message.type == 'iq'">
-                                        <div class="inline-flex flex-col justify-start items-start gap-2">
-                                            <!-- Avatar for IQ message -->
-                                            <div class="inline-flex justify-center items-center gap-2"> <img :src="botBranding.logo" class="w-8 h-8 rounded-full" /> <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small></div>
-                                            <div x-html="message.message" style="font-family: "Red Hat Display", sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper"></div>
-                                        </div>
-                                    </div>
+                                  <div x-show="message.type == 'iq'" 
+                                       class="flex flex-row justify-start items-start gap-2" 
+                                       style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
+                                       x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
+                                      <div class="inline-flex flex-col justify-start items-start gap-2">
+                                          <!-- Avatar for IQ message -->
+                                          <div class="inline-flex justify-center items-center gap-2">
+                                              <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
+                                              <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
+                                          </div>
+                                          <div x-html="message.message" 
+                                               style="font-family: 'Red Hat Display', sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" 
+                                               class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
+                                          </div>
+                                      </div>
+                                  </div>
+
     
                                      <!-- User Message -->
-                                    <div x-show="message.type == 'user'" class="flex flex-row justify-end items-end gap-2">
-                                        <div class="inline-flex flex-col justify-start items-end gap-2">
-                                            <!-- Avatar for User message -->
-                                            <div class="inline-flex justify-center items-center gap-2">
+                                   <div x-show="message.type == 'user'" 
+                                       class="flex flex-row justify-end items-end gap-2" 
+                                       style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
+                                       x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
+                                      <div class="inline-flex flex-col justify-start items-end gap-2">
+                                          <!-- Avatar for User message -->
+                                          <div class="inline-flex justify-center items-center gap-2">
                                               <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
-                                               <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                                              <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
                                                   <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
                                               </div>
-                                            </div>
-                                            <span x-text="message.message" class="text-sm text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3"></span>
-                                        </div>
-                                    </div>
+                                          </div>
+                                          <span x-text="message.message" class="text-sm text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3"></span>
+                                      </div>
+                                  </div>
+
     
                                     <div class="relative" x-show="message.type == 'divider'">
                                         <div class="absolute inset-0 flex items-center" aria-hidden="true">
@@ -169,6 +201,10 @@ class ChatLib {
     localStorage.setItem("bot_id", bot_id);
     localStorage.setItem("base_url", base_url);
     localStorage.setItem("ws_url", ws_url);
+    localStorage.setItem(
+      "isSoundDisabled",
+      localStorage.getItem("isSoundDisabled") === "true" ? "true" : "false"
+    );
   }
 }
 // ----------------------------
@@ -187,6 +223,9 @@ function chatiQApplet() {
     showEmailVerification: false,
     showChatScreen: false,
     showChatbotMainScreen: false,
+    isSoundDisabled: localStorage.getItem("isSoundDisabled")
+      ? localStorage.getItem("isSoundDisabled") || ""
+      : false,
     isErrored: false,
     isLoading: false,
     base_url: localStorage.getItem("base_url"),
@@ -398,6 +437,7 @@ function chatiQApplet() {
           let chObject = this.chatHistory[this.chatHistory.length - 1];
 
           chObject.message = marked.parse(chObject.message);
+          this.playsound();
         }
 
         this.$nextTick(() => {
@@ -424,6 +464,7 @@ function chatiQApplet() {
         message: this.message,
         created_at: new Date().toISOString(),
       });
+      this.playsound();
 
       this.isLoading = true;
       this.ws.send(JSON.stringify({ message: this.message }));
@@ -441,6 +482,25 @@ function chatiQApplet() {
       });
     },
 
+    playsound: function () {
+      if (localStorage.getItem("isSoundDisabled") === "false") {
+        const audio = new Audio(
+          "https://chatiq.blob.core.windows.net/static-files/chatiq-message-alert.mp3"
+        );
+        audio.play();
+      }
+    },
+
+    enableSound: function () {
+      localStorage.setItem("isSoundDisabled", false);
+      this.isSoundDisabled = false;
+    },
+
+    disableSound: function () {
+      localStorage.setItem("isSoundDisabled", true);
+      this.isSoundDisabled = true;
+    },
+
     clear_local_storage: function () {
       localStorage.removeItem("name");
       localStorage.removeItem("email");
@@ -448,8 +508,10 @@ function chatiQApplet() {
       localStorage.removeItem("logo_url");
       localStorage.removeItem("brand_name");
       localStorage.removeItem("welcome_message");
+      localStorage.setItem("isSoundDisabled", false);
       this.showChatScreen = false;
       this.showEmailVerification = true;
+      location.reload()
     },
 
     fetch_chat_history: function (e) {
@@ -495,10 +557,6 @@ function chatiQApplet() {
             tag: "welcome_message",
             created_at: new Date().toISOString(),
           });
-
-          // setTimeout(() => {
-          //   this.scrollToBottom();
-          // }, 200);
         })
         .catch((error) => {
           console.error(error);
