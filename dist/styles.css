@@ -599,6 +599,9 @@ video {
 .w-8 {
   width: 2rem;
 }
+.w-\[28rem\] {
+  width: 28rem;
+}
 .w-full {
   width: 100%;
 }
@@ -990,8 +993,8 @@ blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
     height: 36rem;
   }
 
-  .sm\:w-auto {
-    width: auto;
+  .sm\:w-\[40rem\] {
+    width: 40rem;
   }
 }
 @media (min-width: 768px) {
