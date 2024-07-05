@@ -38,3 +38,33 @@ blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
     overflow-x: auto !important;
     max-width: 22rem !important;
 } */
+
+/* Default styles */
+.responsive-box {
+    width: 440px;
+    height: 390px;
+}
+
+/* Large screens (desktops, 1200px and above) */
+@media (min-width: 1200px) {
+    .responsive-box {
+        width: 600px;
+        height: 500px;
+    }
+}
+
+/* Medium screens (tablets, 768px to 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .responsive-box {
+        width: 80%;
+        height: auto;
+    }
+}
+
+/* Small screens (phones, less than 768px) */
+@media (max-width: 767px) {
+    .responsive-box {
+        width: 100%;
+        height: auto;
+    }
+}
