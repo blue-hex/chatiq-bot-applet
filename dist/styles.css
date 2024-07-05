@@ -602,6 +602,9 @@ video {
 .w-\[28rem\] {
   width: 28rem;
 }
+.w-fill-available {
+  width: -webkit-fill-available;
+}
 .w-full {
   width: 100%;
 }

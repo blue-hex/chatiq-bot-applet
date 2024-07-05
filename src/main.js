@@ -9,7 +9,7 @@ const iQChatbot = `
       </div>
 
 
-        <div class="fixed bottom-10 h-fill-available sm:h-[36rem] overflow-y-auto md:h-4/5 max-w-md w-[28rem] sm:w-[40rem] right-0 sm:right-10 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="z-index:9999;" x-show="showChatbotMainScreen" x-transition>
+        <div class="fixed bottom-10 h-fill-available w-fill-available sm:h-[36rem] overflow-y-auto md:h-4/5 max-w-md w-[28rem] sm:w-[40rem] right-0 sm:right-10 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="z-index:9999;" x-show="showChatbotMainScreen" x-transition>
             <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
 
               <!-- Header For Branding And Logo -->
