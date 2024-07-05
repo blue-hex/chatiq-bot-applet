@@ -38,3 +38,9 @@ blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
     overflow-x: auto !important;
     max-width: 22rem !important;
 } */
+
+input[type=text], input[type=email], input[type=url], input[type=password], input[type=number], input[type=tel], input[type=range], input[type=date], input[type=month], input[type=week], input[type=time], input[type=datetime], input[type=datetime-local], input[type=color], textarea, input.form-control {
+    /* border: solid 2px #649696; */
+    /* background-color: transparent; */
+    /* color: #333333;
+}

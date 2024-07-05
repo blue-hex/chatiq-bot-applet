@@ -5,7 +5,7 @@ const chatbotButton = `
 `;
 
 const chatWrapper = `
-    <div class="fixed bg-white rounded-lg shadow-xl border border-slate-100 bottom-16 right-16 px-0 py-0" style="width: 440px; height: 390px;">
+    <div class="fixed bg-white rounded-lg shadow-xl border border-slate-100 bottom-16 right-16 px-0 py-0 responsive-box" >
         <header class="flex w-full items-center justify-between px-3 py-3 border-b border-slate-100 bg-slate-50">
             <h3 class="text-xl">Chat iQ</h3>
             <button>
@@ -22,7 +22,7 @@ const chatWrapper = `
 const iQChatbot = `
     <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
       <div x-show="showChatBotToggleButton" class="fixed bottom-10 right-10" style="z-index: 999 !important;">
-        <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;" class="relative">
+        <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: fff;" class="relative">
             <img :src="botBranding.logo ? botBranding.logo : 'https://iqsuite.io/assets/iq.png'" class="w-16 h-16 rounded-full shadow-xl">
             <!-- Green circle indicator for online status -->
             <span class="absolute bottom-0 right-1 block w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
@@ -30,32 +30,32 @@ const iQChatbot = `
       </div>
 
 
-        <div class="fixed bottom-16 resizeable right-16 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="width: 450px; z-index:9999;" x-show="showChatbotMainScreen" x-transition>
+        <div class="fixed bottom-16 resizeable h-fill-available sm:h-4/5 max-w-sm sm:w-auto right-0 sm:right-16 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style=" z-index:9999;" x-show="showChatbotMainScreen" x-transition>
             <div class="flex flex-col justify-between">
-              <header class="px-4 py-4 flex justify-between w-full items-center">
-                  <div class="flex items-center gap-3">
+              <header class="px-2.5 py-2.5 flex justify-between w-full items-center">
+                  <div class="flex items-center gap-2">
                     <div class="relative">
                       <img :src="botBranding.logo ? botBranding.logo : 'https://iqsuite.io/assets/iq.png'" class="w-14 h-14 shadow-sm rounded-full">
                       <!-- Green circle indicator for online status -->
                       <span class="absolute bottom-0 right-0 block w-3 h-3 bg-emerald-500 rounded-md border-2 border-white"></span>
                     </div>
                     <div>
-                      <h4 class="text-xl font-medium font-redhat" x-text="botBranding.name"></h4>
-                      <p class="font-light text-sm font-redhat">Gen-AI Powered Chatbot</p>
+                      <h4 class="text-base font-medium font-redhat" x-text="botBranding.name"></h4>
+                      <p class="font-light text-xs font-redhat">Gen-AI Powered Chatbot</p>
                     </div>
                   </div>
                   <div class="inline-flex justify-center items-center gap-2"> 
                     <div class="inline-flex justify-center items-center gap-2" x-data="{ disable_sound: JSON.parse(localStorage.getItem('isSoundDisabled')) ?? false }">
                         <!-- Button to enable sound -->
                         <button type="button" @click="disable_sound = false; enableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
-                          <svg x-show="disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                          <svg x-show="disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
                             <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
                             <path d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
                           </svg>
                         </button>
                         <!-- Button to disable sound -->
                         <button type="button" @click="disable_sound = true; disableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
-                          <svg x-show="!disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                          <svg x-show="!disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
                             <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM17.78 9.22a.75.75 0 1 0-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L20.56 12l1.72-1.72a.75.75 0 1 0-1.06-1.06l-1.72 1.72-1.72-1.72Z" />
                           </svg>
                         </button>
@@ -93,7 +93,7 @@ const iQChatbot = `
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 </button>
-                                <p class="text-center text-xs font-redhat inline-flex justify-center items-center font-light mt-4 gap-1 mb-2"> Powered By <a href="https://chat.iqsuite.io/" style="text-decoration: none !important;" class="text-blue-950 inline-flex justify-center items-center gap-1 font-redhat" target="_blank" class="!no-underline"> Chat <img class="h-5 w-5" src="https://iqsuite.io/assets/iq.png"/></a></p>
+                                <p class="text-center text-xs font-redhat inline-flex justify-center text-neutral-400 items-center font-light mt-4 gap-1 mb-2"> Powered By <a href="https://chat.iqsuite.io/" style="text-decoration: none !important;" class="text-neutral-400 inline-flex justify-center items-center gap-1 font-redhat" target="_blank" class="!no-underline"> Chat <img class="h-5 w-5" src="https://iqsuite.io/assets/iq.png"/></a></p>
                             </div>
                         </form>
                     </div>
@@ -103,7 +103,7 @@ const iQChatbot = `
                             <template x-for="message in chatHistory">
                                 <div class="flex flex-col px-2.5 py-2">
                                   <!-- AI Message -->
-                                  <div x-show="message.type == 'iq'" 
+                                  <div x-show="message.type == 'iq'" id="ai-message"
                                        class="flex flex-row justify-start items-start gap-2" 
                                        style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
                                        x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
@@ -114,7 +114,7 @@ const iQChatbot = `
                                               <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
                                           </div>
                                           <div x-html="message.message" 
-                                               style="font-family: 'Red Hat Display', sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" 
+                                               style="font-family: 'Red Hat Display', sans-serif !important; white-space: break-spaces; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" 
                                                class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
                                           </div>
                                       </div>
@@ -134,7 +134,7 @@ const iQChatbot = `
                                                   <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
                                               </div>
                                           </div>
-                                          <span x-text="message.message" class="text-sm text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3"></span>
+                                          <span x-text="message.message" class="text-sm max-w-xs text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3" style="font-family: 'Red Hat Display', sans-serif !important; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" ></span>
                                       </div>
                                   </div>
 
@@ -148,42 +148,41 @@ const iQChatbot = `
                                         </div>
                                     </div>
                                 </div>
-                            </template>
+                          </template>
                         </div>
                         
-                        <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative">
-                         <div class="my-2 inline-flex justify-center items-center align-center w-full relative">
-                            <input x-model="message"  
-                                 required="" id="user-input" 
-                                 type="text"  style='margin-bottom: 0 !important;'
-                                 class="w-full font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden" 
-                                 placeholder="Ask your query here" />
-                               
-                                 <button :disabled="isLoading"
-                                  type="submit" 
-                                  id="send-button" 
-                                  class="px-4 bg-transparent text-white rounded-r-md disabled:text-gray-400 disabled:cursor-not-allowed"
-                      >
-                                  <svg x-show="!isLoading" 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    viewBox="0 0 24 24" 
-                                    fill="currentColor" 
-                                    class="w-8 h-8 text-black">
-                                    <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z"></path>
-                                  </svg>
-                                  <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
+                        <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative w-full">
+                            <div class="my-2 inline-flex justify-between items-center w-full relative bg-white border border-gray-300 rounded-full px-4 py-2 shadow-sm">
+                                <input x-model="message"  
+                                    required="" id="user-input" 
+                                    type="text" 
+                                    class="w-full font-redhat text-gray-700 focus:ring-neutral-800 focus:text-black text-sm focus:outline-none pr-4 resize-none overflow-hidden placeholder-gray-400" 
+                                    placeholder="Message..." />
+
+                                <button :disabled="isLoading"
+                                    type="submit" 
+                                    id="send-button" 
+                                    class="ml-2 bg-transparent text-gray-500 disabled:text-gray-400 disabled:cursor-not-allowed">
+                                    <svg x-show="!isLoading" 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        viewBox="0 0 24 24" 
+                                        fill="currentColor" 
+                                        class="w-6 h-6">
+                                        <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z"></path>
+                                    </svg>
+                                    <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
                                 </button>
-                          </div>
-                          <button @click="clear_local_storage" class="bg-green-200 font-redhat text-green-900 rounded-2xl px-2 py-1.5 text-xs inline-flex justify-center items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
-                              <path fill-rule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clip-rule="evenodd" />
-                            </svg>
-                            Start Over
-                          </button>
-                          <div class="flex justify-center items-center">
-                             <p class="text-center text-xs inline-flex font-redhat justify-center items-center font-light mt-4 gap-1 mb-2"> Powered By <a href="https://chat.iqsuite.io/" style="text-decoration: none !important;" class="text-blue-950 inline-flex justify-center items-center gap-1 font-redhat" target="_blank" class="!no-underline"> Chat <img class="h-5 w-5" src="https://iqsuite.io/assets/iq.png"/></a></p>
-                          </div>
-                        </form>
+                            </div>                        
+
+                            <div class="flex justify-center items-center gap-2 mt-2">
+                                <button @click="clear_local_storage" class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">Start New Conversation</button>
+                                <p class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">|</p>
+                                <a href="https://chat.iqsuite.io/" target="_blank" style="text-decoration: none !important;" class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2"> 
+                                  Powered By Chat iQ
+                                </a>
+                            </div>
+                          </form>
+
                     </div>
                 </main>
             </div>
@@ -568,9 +567,9 @@ function chatiQApplet() {
     formatDate(dateString) {
       const date = new Date(dateString);
       const options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
+        weekday: "short",
+        //year: "numeric",
+        month: "short",
         day: "numeric",
         hour: "numeric",
         minute: "numeric",
