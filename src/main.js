@@ -90,7 +90,7 @@ const iQChatbot = `
                 <main id="chat-ui" class="flex flex-col h-full">
                   <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle h-full">
                     <!-- Messages Container -->
-                    <div id="messages-container" class="flex-grow overflow-y-auto max-w-lg mx-auto w-full">
+                    <div id="messages-container" class="flex-grow overflow-y-auto max-w-lg mx-auto w-full" x-ref="messagesContainer">
                       <template x-for="message in chatHistory">
                         <div class="flex flex-col px-2.5 py-2">
                           <!-- AI Message -->
