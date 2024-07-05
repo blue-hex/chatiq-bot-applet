@@ -1,9 +1,3 @@
-const chatbotButton = `
-    <button id="toggle-chatbot-button" style="border: 0; background: transparent;" class="fixed bottom-10 right-10 active:scale-95">
-        <img src="https://iqsuite.io/assets/iq.png" class="w-12 h-12 rounded-full">
-    </button>
-`;
-
 const iQChatbot = `
     <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
       <div x-show="showChatBotToggleButton" class="fixed bottom-10 right-10" style="z-index: 999 !important;">
@@ -15,10 +9,12 @@ const iQChatbot = `
       </div>
 
 
-        <div class="fixed bottom-16 resizeable h-fill-available sm:h-[36rem] overflow-y-auto md:h-4/5 max-w-sm sm:w-auto right-0 sm:right-16 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="z-index:9999;" x-show="showChatbotMainScreen" x-transition>
-            <div class="flex flex-col justify-between">
-              <header class="px-2.5 py-2.5 flex justify-between w-full items-center">
-                  <div class="flex items-center gap-3">
+        <div class="fixed bottom-10 h-fill-available sm:h-[36rem] overflow-y-auto md:h-4/5 max-w-md sm:w-auto right-0 sm:right-10 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden" style="z-index:9999;" x-show="showChatbotMainScreen" x-transition>
+            <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
+
+              <!-- Header For Branding And Logo -->
+              <header class="px-3 py-2 flex justify-between w-full items-center border-b border-neutral-100">
+                  <div class="flex items-center gap-2">
                     <div class="relative">
                       <img :src="botBranding.logo ? botBranding.logo : 'https://iqsuite.io/assets/iq.png'" class="w-14 h-14 shadow-sm rounded-full">
                       <!-- Green circle indicator for online status -->
@@ -29,6 +25,7 @@ const iQChatbot = `
                       <p class="font-light text-xs font-redhat">Gen-AI Powered Chatbot</p>
                     </div>
                   </div>
+
                   <div class="inline-flex justify-center items-center gap-2"> 
                     <div class="inline-flex justify-center items-center gap-2" x-data="{ disable_sound: JSON.parse(localStorage.getItem('isSoundDisabled')) ?? false }">
                         <!-- Button to enable sound -->
@@ -51,17 +48,20 @@ const iQChatbot = `
                       </svg>
                     </button>
                   </div>
-                  
                 </header>
-                <main class="flex flex-col overflow-hidden">
-                  <div x-show="showEmailVerification" class="p-4 flex flex-col justify-between">
-                       <div>
-                         <p class="text-left my-2 text-black font-redhat font-medium text-3xl" id="welcome-message">
-                            👋🏼 Welcome <br/> We're happy to assist you.
-                        </p>
-                        <p class="text-neutral-600 text-lg font-light my-4 font-redhat"> To personalize your experience and ensure we can connect you with the most relevant information, could you please share a few details. </p>
+                <!-- Closing Header For Branding And Logo -->
+
+                <!-- Body Content And Description -->
+                <main id="body-ui" style="display: flex; height: 100%; flex-direction: row;">
+                    <div x-show="showEmailVerification" class="px-3 py-2 flex flex-col justify-between">
+                       <div class="py-4">
+                          <p class="text-left my-2 text-black font-redhat font-medium text-3xl" id="welcome-message">
+                             👋🏼 Welcome <br/> We're happy to assist you.
+                          </p>
+                          <p class="text-neutral-600 text-lg font-light my-4 font-redhat"> To personalize your experience and ensure we can connect you with the most relevant information, could you please share a few details. </p>
                        </div>
-    
+
+                        <!-- E-Mail Verification Form -->
                         <form id="email-verification-form" x-on:submit="handleEmailVerificationSubmit">
                             <div class="flex flex-col space-y-2 mt-16">
                                 <div class="error-message block mb-3" x-show="isErrored">
@@ -81,94 +81,94 @@ const iQChatbot = `
                                 <p class="text-center text-neutral-400 text-xs font-redhat inline-flex justify-center items-center font-light mt-4 gap-1 mb-2"> Powered By <a href="https://chat.iqsuite.io/" style="text-decoration: none !important;" class="text-neutral-400 inline-flex justify-center items-center gap-1 font-redhat" target="_blank" class="!no-underline"> Chat <img class="h-5 w-5" src="https://iqsuite.io/assets/iq.png"/></a></p>
                             </div>
                         </form>
-                    </div>
-    
-                    <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle">
-                        <div id="messages-container" style="height: 28rem;" class="flex-none flex flex-col h-full space-y-2 max-w-lg mx-auto mt-0 mb-0 overflow-y-auto w-full" x-ref="messagesContainer">
-                            <template x-for="message in chatHistory">
-                                <div class="flex flex-col px-2.5 py-2">
-                                  <!-- AI Message -->
-                                  <div x-show="message.type == 'iq'" 
-                                       class="flex flex-row justify-start items-start gap-2" 
-                                       style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
-                                       x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
-                                      <div class="inline-flex flex-col justify-start items-start gap-2">
-                                          <!-- Avatar for IQ message -->
-                                          <div class="inline-flex justify-center items-center gap-2">
-                                              <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
-                                              <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
-                                          </div>
-                                          <div x-html="message.message" 
-                                               style="font-family: 'Red Hat Display', sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;" 
-                                               class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
-                                          </div>
-                                      </div>
-                                  </div>
-
-    
-                                     <!-- User Message -->
-                                   <div x-show="message.type == 'user'" 
-                                       class="flex flex-row justify-end items-end gap-2" 
-                                       style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
-                                       x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
-                                      <div class="inline-flex flex-col justify-start items-end gap-2">
-                                          <!-- Avatar for User message -->
-                                          <div class="inline-flex justify-center items-center gap-2">
-                                              <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
-                                              <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
-                                                  <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
-                                              </div>
-                                          </div>
-                                          <span x-text="message.message" class="text-sm max-w-xs text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3" style="font-family: 'Red Hat Display', sans-serif !important; word-wrap: break-word; text-align: start; overflow-wrap: break-word;"></span>
-                                      </div>
-                                  </div>
-
-    
-                                    <div class="relative" x-show="message.type == 'divider'">
-                                        <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                                            <div class="w-full border-t border-gray-300"></div>
-                                        </div>
-                                        <div class="relative flex justify-center">
-                                            <span class="px-2 text-sm bg-white text-gray-300 font-redhat">Today</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                        
-                        <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative">
-                         <div class="my-2 inline-flex justify-center items-center align-center w-full relative">
-                            <input x-model="message"  
-                                 required="" id="user-input" 
-                                 type="text"  style='margin-bottom: 0 !important;'
-                                 class="w-full font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden" 
-                                 placeholder="Ask your query here" />
-                               
-                                 <button :disabled="isLoading"
-                                  type="submit" 
-                                  id="send-button" 
-                                  class="px-4 bg-transparent text-white rounded-r-md disabled:text-gray-400 disabled:cursor-not-allowed"
-                      >
-                                  <svg x-show="!isLoading" 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    viewBox="0 0 24 24" 
-                                    fill="currentColor" 
-                                    class="w-8 h-8 text-black">
-                                    <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z"></path>
-                                  </svg>
-                                  <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
-                                </button>
-                          </div>
-                          <div class="flex justify-center items-center gap-2 mt-2">
-                                <button @click="clear_local_storage" class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">Start New Conversation</button>
-                                <p class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">|</p>
-                                <a href="https://chat.iqsuite.io/" target="_blank" style="text-decoration: none !important;" class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2"> 
-                                  Powered By Chat iQ
-                                </a>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Closing E-Mail Verification Form -->
+                  </div>
                 </main>
+                <!-- Closing Body Content And Description -->
+
+                <!-- Chat UI And Form -->
+                <main id="chat-ui" class="flex flex-col h-full">
+                  <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle h-full">
+                    <!-- Messages Container -->
+                    <div id="messages-container" class="flex-grow overflow-y-auto max-w-lg mx-auto w-full">
+                      <template x-for="message in chatHistory">
+                        <div class="flex flex-col px-2.5 py-2">
+                          <!-- AI Message -->
+                          <div x-show="message.type == 'iq'" class="flex flex-row justify-start items-start gap-2"
+                               style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
+                               x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
+                            <div class="inline-flex flex-col justify-start items-start gap-2">
+                              <!-- Avatar for IQ message -->
+                              <div class="inline-flex justify-center items-center gap-2">
+                                <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
+                                <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
+                              </div>
+                              <div x-html="message.message"
+                                   style="font-family: 'Red Hat Display', sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;"
+                                   class="text-sm text-black bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- User Message -->
+                          <div x-show="message.type == 'user'" class="flex flex-row justify-end items-end gap-2"
+                               style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
+                               x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
+                            <div class="inline-flex flex-col justify-start items-end gap-2">
+                              <!-- Avatar for User message -->
+                              <div class="inline-flex justify-center items-center gap-2">
+                                <small class="font-redhat text-neutral-500 text-xs font-light" x-text="formatDate(message.created_at)"></small>
+                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                                  <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
+                                </div>
+                              </div>
+                              <span x-text="message.message" class="text-sm max-w-xs text-white font-redhat bg-neutral-900 font-light rounded-2xl p-3"
+                                    style="font-family: 'Red Hat Display', sans-serif !important; word-wrap: break-word; text-align: start; overflow-wrap: break-word;"></span>
+                            </div>
+                          </div>
+
+                          <div class="relative" x-show="message.type == 'divider'">
+                            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                              <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center">
+                              <span class="px-2 text-sm bg-white text-gray-300 font-redhat">Today</span>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+                    </div>
+
+                    <!-- Chat Form -->
+                    <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative mt-4">
+                      <div class="inline-flex justify-center items-center align-center w-full relative">
+                        <input x-model="message" required="" id="user-input" type="text" style='margin-bottom: 0 !important;'
+                               class="w-full font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden"
+                               placeholder="Ask your query here" />
+                        <button :disabled="isLoading" type="submit" id="send-button"
+                                class="px-4 bg-transparent text-white rounded-r-md disabled:text-gray-400 disabled:cursor-not-allowed">
+                          <svg x-show="!isLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                               class="w-8 h-8 text-black">
+                            <path
+                              d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z"></path>
+                          </svg>
+                          <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
+                        </button>
+                      </div>
+                      <div class="flex justify-center items-center gap-2 mt-2">
+                        <button @click="clear_local_storage"
+                                class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">Start New Conversation
+                        </button>
+                        <p class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">|</p>
+                        <a href="https://chat.iqsuite.io/" target="_blank" style="text-decoration: none !important;"
+                           class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">
+                          Powered By Chat iQ
+                        </a>
+                      </div>
+                    </form>
+                  </div>
+                </main>
+                <!-- Chat UI And Form -->
             </div>
         </div>
     </div>
@@ -228,6 +228,8 @@ function chatiQApplet() {
     theme_hex: "ffffff",
 
     ongoingStream: null,
+    chat_ui_frame : document.getElementById("chat-ui"),
+    body_ui_frame : document.getElementById("body-ui"),
     ws: null,
 
     botBranding: {
@@ -244,6 +246,8 @@ function chatiQApplet() {
     initChatbot: function () {
       let base_url = localStorage.getItem("base_url");
       let bot_id = localStorage.getItem("bot_id");
+      this.body_ui_frame.style.display = 'flex';
+      this.chat_ui_frame.style.display = 'none';
 
       fetch(base_url + "/api/v1/init/", {
         method: "POST",
@@ -261,13 +265,18 @@ function chatiQApplet() {
         .then((r) => {
           this.showChatBotToggleButton = true;
           this.showChatbotMainScreen = false;
+          this.chat_ui_frame.style.display = 'none';
 
           if (localStorage.getItem("email") == null) {
             this.showChatScreen = false;
+            this.body_ui_frame.style.display = 'flex';
+            this.chat_ui_frame.style.display = 'none';
             this.showEmailVerification = true;
           } else {
             this.fetch_chat_history();
             this.showChatScreen = true;
+            this.body_ui_frame.style.display = 'none';
+            this.chat_ui_frame.style.display = 'flex';
             this.showEmailVerification = false;
             this.scrollToBottom();
           }
@@ -323,7 +332,8 @@ function chatiQApplet() {
           this.showEmailVerification = false;
 
           this.showChatScreen = true;
-
+          this.body_ui_frame.style.display = 'none';
+          this.chat_ui_frame.style.display = 'flex';
           this.chatHistory = r.chat_history;
           localStorage.setItem("name", r.user_data.name);
           localStorage.setItem("email", r.user_data.email);
@@ -494,7 +504,7 @@ function chatiQApplet() {
       localStorage.setItem("isSoundDisabled", false);
       this.showChatScreen = false;
       this.showEmailVerification = true;
-      location.reload()
+      location.reload();
     },
 
     fetch_chat_history: function (e) {
