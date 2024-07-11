@@ -141,6 +141,15 @@ const iQChatbot = `
 
                     <!-- Chat Form -->
                     <form id="chat-form" x-on:submit="handleChatbotFormSubmit" class="relative mt-4">
+                    <div x-data="suggestions" class="w-full overflow-y-auto inline-flex my-2 gap-2">
+                      <template x-if="suggestions.length > 0">
+                        <div class="w-full overflow-y-auto my-1 space-x-1 space-y-1">
+                          <template x-for="suggestion in suggestions" :key="suggestion" >
+                            <button class="py-1.5 px-2 text-xs font-light rounded-3xl bg-neutral-100" x-text="suggestion" @click="send_suggestion(suggestion)" ></button>
+                          </template>
+                        </div>
+                      </template>
+                    </div>
                       <div class="inline-flex justify-center items-center align-center w-full relative">
                         <input x-model="message" required="" id="user-input" type="text" style='margin-bottom: 0 !important;'
                                class="w-full font-redhat border border-slate-200 rounded-md px-3 py-3 text-sm focus:outline-none font-normal pr-16 resize-none overflow-hidden"
@@ -204,6 +213,7 @@ function chatiQApplet() {
       ? JSON.parse(localStorage.getItem("chat_history") || "[]")
       : [],
     showEmailVerification: false,
+    suggestions: [],
     showChatScreen: false,
     showChatbotMainScreen: false,
     isSoundDisabled: localStorage.getItem("isSoundDisabled")
@@ -228,8 +238,8 @@ function chatiQApplet() {
     theme_hex: "ffffff",
 
     ongoingStream: null,
-    chat_ui_frame : document.getElementById("chat-ui"),
-    body_ui_frame : document.getElementById("body-ui"),
+    chat_ui_frame: document.getElementById("chat-ui"),
+    body_ui_frame: document.getElementById("body-ui"),
     ws: null,
 
     botBranding: {
@@ -246,8 +256,8 @@ function chatiQApplet() {
     initChatbot: function () {
       let base_url = localStorage.getItem("base_url");
       let bot_id = localStorage.getItem("bot_id");
-      this.body_ui_frame.style.display = 'flex';
-      this.chat_ui_frame.style.display = 'none';
+      this.body_ui_frame.style.display = "flex";
+      this.chat_ui_frame.style.display = "none";
 
       fetch(base_url + "/api/v1/init/", {
         method: "POST",
@@ -265,18 +275,18 @@ function chatiQApplet() {
         .then((r) => {
           this.showChatBotToggleButton = true;
           this.showChatbotMainScreen = false;
-          this.chat_ui_frame.style.display = 'none';
+          this.chat_ui_frame.style.display = "none";
 
           if (localStorage.getItem("email") == null) {
             this.showChatScreen = false;
-            this.body_ui_frame.style.display = 'flex';
-            this.chat_ui_frame.style.display = 'none';
+            this.body_ui_frame.style.display = "flex";
+            this.chat_ui_frame.style.display = "none";
             this.showEmailVerification = true;
           } else {
             this.fetch_chat_history();
             this.showChatScreen = true;
-            this.body_ui_frame.style.display = 'none';
-            this.chat_ui_frame.style.display = 'flex';
+            this.body_ui_frame.style.display = "none";
+            this.chat_ui_frame.style.display = "flex";
             this.showEmailVerification = false;
             this.scrollToBottom();
           }
@@ -332,8 +342,9 @@ function chatiQApplet() {
           this.showEmailVerification = false;
 
           this.showChatScreen = true;
-          this.body_ui_frame.style.display = 'none';
-          this.chat_ui_frame.style.display = 'flex';
+          this.body_ui_frame.style.display = "none";
+          this.chat_ui_frame.style.display = "flex";
+          this.suggestions = r.user_data.suggestions;
           this.chatHistory = r.chat_history;
           localStorage.setItem("name", r.user_data.name);
           localStorage.setItem("email", r.user_data.email);
@@ -494,6 +505,21 @@ function chatiQApplet() {
       this.isSoundDisabled = true;
     },
 
+    send_suggestion : function (suggestion_string){
+      this.chatHistory.push({
+        type: "user",
+        message: suggestion_string,
+        created_at: new Date().toISOString(),
+      });
+      this.playsound();
+
+      this.isLoading = true;
+      this.ws.send(JSON.stringify({ message: suggestion_string }));
+      this.message = null;
+      this.isLoading = false;
+      this.scrollToBottom();
+    },
+
     clear_local_storage: function () {
       localStorage.removeItem("name");
       localStorage.removeItem("email");
@@ -524,6 +550,7 @@ function chatiQApplet() {
         )
         .then((r) => {
           this.chatHistory = r.chat_history;
+          this.suggestions = r.user_data.suggestions;
 
           if (r.chat_history.length > 0) {
             this.chatHistory.push({
