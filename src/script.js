@@ -19,6 +19,7 @@ function chatiQApplet() {
     isErrored: false,
     isLoading: false,
     base_url: localStorage.getItem("base_url"),
+    domain: localStorage.getItem("domain"),
     ws_url: localStorage.getItem("ws_url"),
     bot_id: localStorage.getItem("bot_id"),
     welcome_message: localStorage.getItem("welcome_message")
@@ -58,6 +59,7 @@ function chatiQApplet() {
 
         let base_url = this.base_url;
         let bot_id = this.bot_id;
+        let domain = this.domain;
         this.body_ui_frame.style.display = "flex";
         this.chat_ui_frame.style.display = "none";
         this.send_alerts();
@@ -69,7 +71,7 @@ function chatiQApplet() {
           },
           body: JSON.stringify({
             bot_id: bot_id,
-            whitelisted_domain: data.domain,
+            whitelisted_domain: domain,
           }),
         })
           .then((response) =>
