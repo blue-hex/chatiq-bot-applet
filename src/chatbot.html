@@ -125,7 +125,8 @@
                   <a href="https://pyaw.ai/" target="_blank" style="text-decoration: none !important;"
                     class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">
                     Powered By Pyaw AI
-                  </a></p>
+                  </a>
+                </p>
               </div>
             </form>
             <!-- Closing E-Mail Verification Form -->
@@ -243,9 +244,14 @@
       const data = event.data;
       console.log('Data Sync Successfull');
 
-      localStorage.setItem('bot_id', data.chatbotId);
-      localStorage.setItem('base_url', data.baseUrl);
-      localStorage.setItem('ws_url', data.wsUrl);
+      if (data && data.baseUrl && data.wsUrl) {
+        console.log('DEBUG MODE');
+        localStorage.setItem('base_url', data.baseUrl);
+        localStorage.setItem('ws_url', data.wsUrl);
+      } else {
+        localStorage.setItem('base_url', 'https://chat.iqsuite.io');
+        localStorage.setItem('ws_url', 'wss://chat.iqsuite.io/ws/chat/');
+      }
 
       if (typeof chatiQApplet === 'function') {
         const applet = chatiQApplet();
