@@ -2,28 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+    background: transparent !important;
+    margin: 0;
+    padding: 0;
+}
+
+#chatbot-iframe {
+    background: transparent;
+}
+
 a {
     text-decoration: underline !important;
     font-weight: bold;
 }
 
-.iq-message-wrapper > a {
+.iq-message-wrapper>a {
     text-decoration: underline !important;
 }
 
-.iq-message-wrapper > p {
+.iq-message-wrapper>p {
     font-family: "Red Hat Display", sans-serif !important;
     font-size: 14px !important;
     font-weight: 300 !important;
 
 }
 
-.iq-message-wrapper > strong {
+.iq-message-wrapper>strong {
     font-family: "Red Hat Display", sans-serif !important;
     font-size: 14px !important;
 }
 
-b, strong {
+b,
+strong {
     font-family: "Red Hat Display", sans-serif !important;
     font-size: 14px !important;
 }
@@ -32,6 +44,7 @@ ol:not([class]) li:before {
     font-family: "Red Hat Display", sans-serif !important;
     font-size: 14px !important;
 }
+
 /* 
 blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
     margin: 0;
@@ -57,7 +70,7 @@ blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
 @media (min-width: 768px) and (max-width: 1199px) {
     .responsive-box {
         width: 80%;
-        height: auto;
+        height: 100%;
     }
 }
 
@@ -65,6 +78,61 @@ blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
 @media (max-width: 767px) {
     .responsive-box {
         width: 100%;
-        height: auto;
+        height: 100%;
     }
+}
+
+.alert-container {
+    position: fixed;
+    bottom: 8rem;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.alert {
+    background-color: #ffffff;
+    color: #333333;
+    text-align: start;
+    font-weight: normal;
+    font-size: 15px;
+    padding: 14px 36px 14px 16px;
+    margin: 5px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.5s;
+    transform: translateY(20px);
+    position: relative;
+    max-width: 20rem;
+    word-wrap: break-word;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    border: 1px solid #e0e0e0;
+}
+
+.alert.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.alert .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+    color: #999999;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
 }

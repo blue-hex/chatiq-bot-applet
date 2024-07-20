@@ -1,169 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bootstrap demo</title>
 
-    <!-- Bootstrap Styles -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <!-- Bootstrap Styles -->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bootstrap demo</title>
 
-    <!-- For local testing -->
-    <link href="/dist/styles.css" rel="stylesheet" />
-    <!-- For local testing -->
-  </head>
+  <!-- Bootstrap Styles -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+  <!-- Bootstrap Styles -->
 
-  <body>
-    <nav
-      class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
-      id="mainNav"
-    >
-      <div class="container px-4">
-        <a class="navbar-brand" href="#page-top">Start Bootstrap</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarResponsive"
-          aria-controls="navbarResponsive"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#about">About</a>
+  <!-- For local testing -->
+  <link href="/dist/styles.css" rel="stylesheet" />
+  <!-- For local testing -->
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <div class="container px-4">
+      <a class="navbar-brand" href="#page-top">Start Bootstrap</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#services">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Header-->
+  <header class="bg-primary bg-gradient text-white">
+    <div class="container px-4 text-center">
+      <h1 class="fw-bolder">Welcome to Scrolling Nav</h1>
+      <p class="lead">
+        A functional Bootstrap 5 boilerplate for one page scrolling websites
+      </p>
+      <a class="btn btn-lg btn-light" href="#about">Start scrolling!</a>
+    </div>
+  </header>
+  <section id="about">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>About this page</h2>
+          <p class="lead">
+            This is a great place to talk about your webpage. This template is
+            purposefully unstyled so you can use it as a boilerplate or
+            starting point for you own landing page designs! This template
+            features:
+          </p>
+          <ul>
+            <li>Clickable nav links that smooth scroll to page sections</li>
+            <li>
+              Responsive behavior when clicking nav links perfect for a one
+              page website
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#services">Services</a>
+            <li>
+              Bootstrap's scrollspy feature which highlights which section of
+              the page you're on in the navbar
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contact</a>
+            <li>
+              Minimal custom CSS so you are free to explore your own unique
+              design options
             </li>
           </ul>
         </div>
       </div>
-    </nav>
-    <!-- Header-->
-    <header class="bg-primary bg-gradient text-white">
-      <div class="container px-4 text-center">
-        <h1 class="fw-bolder">Welcome to Scrolling Nav</h1>
-        <p class="lead">
-          A functional Bootstrap 5 boilerplate for one page scrolling websites
-        </p>
-        <a class="btn btn-lg btn-light" href="#about">Start scrolling!</a>
-      </div>
-    </header>
-    <!-- About section-->
-    <section id="about">
-      <div class="container px-4">
-        <div class="row gx-4 justify-content-center">
-          <div class="col-lg-8">
-            <h2>About this page</h2>
-            <p class="lead">
-              This is a great place to talk about your webpage. This template is
-              purposefully unstyled so you can use it as a boilerplate or
-              starting point for you own landing page designs! This template
-              features:
-            </p>
-            <ul>
-              <li>Clickable nav links that smooth scroll to page sections</li>
-              <li>
-                Responsive behavior when clicking nav links perfect for a one
-                page website
-              </li>
-              <li>
-                Bootstrap's scrollspy feature which highlights which section of
-                the page you're on in the navbar
-              </li>
-              <li>
-                Minimal custom CSS so you are free to explore your own unique
-                design options
-              </li>
-            </ul>
-          </div>
+    </div>
+  </section>
+  <!-- Services section-->
+  <section class="bg-light" id="services">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>Services we offer</h2>
+          <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut
+            optio velit inventore, expedita quo laboriosam possimus ea
+            consequatur vitae, doloribus consequuntur ex. Nemo assumenda
+            laborum vel, labore ut velit dignissimos.
+          </p>
         </div>
       </div>
-    </section>
-    <!-- Services section-->
-    <section class="bg-light" id="services">
-      <div class="container px-4">
-        <div class="row gx-4 justify-content-center">
-          <div class="col-lg-8">
-            <h2>Services we offer</h2>
-            <p class="lead">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut
-              optio velit inventore, expedita quo laboriosam possimus ea
-              consequatur vitae, doloribus consequuntur ex. Nemo assumenda
-              laborum vel, labore ut velit dignissimos.
-            </p>
-          </div>
+    </div>
+  </section>
+  <!-- Contact section-->
+  <section id="contact">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>Contact us</h2>
+          <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero
+            odio fugiat voluptatem dolor, provident officiis, id iusto!
+            Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa
+            exercitationem, in, quo totam.
+          </p>
         </div>
       </div>
-    </section>
-    <!-- Contact section-->
-    <section id="contact">
-      <div class="container px-4">
-        <div class="row gx-4 justify-content-center">
-          <div class="col-lg-8">
-            <h2>Contact us</h2>
-            <p class="lead">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero
-              odio fugiat voluptatem dolor, provident officiis, id iusto!
-              Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa
-              exercitationem, in, quo totam.
-            </p>
-          </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>About this page</h2>
+          <p class="lead">
+            This is a great place to talk about your webpage. This template is
+            purposefully unstyled so you can use it as a boilerplate or
+            starting point for you own landing page designs! This template
+            features:
+          </p>
+          <ul>
+            <li>Clickable nav links that smooth scroll to page sections</li>
+            <li>
+              Responsive behavior when clicking nav links perfect for a one
+              page website
+            </li>
+            <li>
+              Bootstrap's scrollspy feature which highlights which section of
+              the page you're on in the navbar
+            </li>
+            <li>
+              Minimal custom CSS so you are free to explore your own unique
+              design options
+            </li>
+          </ul>
         </div>
       </div>
-    </section>
-    <!-- Footer-->
-    <footer class="py-5 bg-dark">
-      <div class="container px-4">
-        <p class="m-0 text-center text-white">
-          Copyright &copy; Your Website 2023
-        </p>
+    </div>
+  </section>
+  <!-- Services section-->
+  <section class="bg-light" id="services">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>Services we offer</h2>
+          <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut
+            optio velit inventore, expedita quo laboriosam possimus ea
+            consequatur vitae, doloribus consequuntur ex. Nemo assumenda
+            laborum vel, labore ut velit dignissimos.
+          </p>
+        </div>
       </div>
-    </footer>
+    </div>
+  </section>
+  <!-- Contact section-->
+  <section id="contact">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>Contact us</h2>
+          <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero
+            odio fugiat voluptatem dolor, provident officiis, id iusto!
+            Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa
+            exercitationem, in, quo totam.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer-->
+  <footer class="py-5 bg-dark">
+    <div class="container px-4">
+      <p class="m-0 text-center text-white">
+        Copyright &copy; Your Website 2023
+      </p>
+    </div>
+  </footer>
+  <!-- Footer-->
+  <footer class="py-5 bg-dark">
+    <div class="container px-4">
+      <p class="m-0 text-center text-white">
+        Copyright &copy; Your Website 2023
+      </p>
+    </div>
+  </footer>
+  <!-- About section-->
+  <section id="about">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>About this page</h2>
+          <p class="lead">
+            This is a great place to talk about your webpage. This template is
+            purposefully unstyled so you can use it as a boilerplate or
+            starting point for you own landing page designs! This template
+            features:
+          </p>
+          <ul>
+            <li>Clickable nav links that smooth scroll to page sections</li>
+            <li>
+              Responsive behavior when clicking nav links perfect for a one
+              page website
+            </li>
+            <li>
+              Bootstrap's scrollspy feature which highlights which section of
+              the page you're on in the navbar
+            </li>
+            <li>
+              Minimal custom CSS so you are free to explore your own unique
+              design options
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Services section-->
+  <section class="bg-light" id="services">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>Services we offer</h2>
+          <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut
+            optio velit inventore, expedita quo laboriosam possimus ea
+            consequatur vitae, doloribus consequuntur ex. Nemo assumenda
+            laborum vel, labore ut velit dignissimos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Contact section-->
+  <section id="contact">
+    <div class="container px-4">
+      <div class="row gx-4 justify-content-center">
+        <div class="col-lg-8">
+          <h2>Contact us</h2>
+          <p class="lead">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero
+            odio fugiat voluptatem dolor, provident officiis, id iusto!
+            Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa
+            exercitationem, in, quo totam.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer-->
+  <footer class="py-5 bg-dark">
+    <div class="container px-4">
+      <p class="m-0 text-center text-white">
+        Copyright &copy; Your Website 2023
+      </p>
+    </div>
+  </footer>
 
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap Styles -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <!-- Bootstrap Styles -->
+  <!-- Bootstrap Styles -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <!-- Bootstrap Styles -->
 
 
+  <iframe id="chatbot-iframe" src="./src/chatbot.html" style="background-color: transparent; width:100%; height:600px; border:none; position: fixed; top: 20rem;"></iframe>
 
-    <!-- For local testing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
-    ></script>
-    <script src="src/main.js"></script>
-    <script>
-      window.onload = function () {
-        let chatLib = new ChatLib(
-          "8fed727b-0e89-4a41-8d49-f9bcb8c1fa56",
-          "http://localhost:8000",
-          "ws://localhost:8000/ws/chat/"
-        );
-      };
-    </script>
-    <!-- For local testing -->
-  </body>
+  <script>
+    window.embeddedChatbotConfig = {
+      chatbotId: "9305f480-4b1d-48fd-9263-16268c42b86a",
+      baseUrl: "http://localhost:8000",
+      wsUrl: "ws://localhost:8000/ws/chat/"
+    };
+
+    const iframe = document.getElementById('chatbot-iframe');
+    iframe.onload = () => {
+      iframe.contentWindow.postMessage(window.embeddedChatbotConfig, '*');
+    };
+  </script>
+
+
+
+
+</body>
+
 </html>
