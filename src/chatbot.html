@@ -243,6 +243,13 @@
     window.addEventListener('message', function (event) {
       const data = event.data;
       console.log('Data Sync Successfull');
+      if (data && data.domain && data.chatbotId){
+        localStorage.setItem('bot_id', data.chatbotId);
+        localStorage.setItem('domain', data.domain);
+      }
+      else{
+        window.alert('Please provide Pyaw AI bot credentials.')
+      }
 
       if (data && data.baseUrl && data.wsUrl) {
         console.log('DEBUG MODE');

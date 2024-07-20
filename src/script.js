@@ -69,7 +69,7 @@ function chatiQApplet() {
           },
           body: JSON.stringify({
             bot_id: bot_id,
-            whitelisted_domain: window.location.origin,
+            whitelisted_domain: data.domain,
           }),
         })
           .then((response) =>
