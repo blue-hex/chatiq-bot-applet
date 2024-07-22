@@ -138,7 +138,7 @@
         <main id="chat-ui" class="flex flex-col h-full">
           <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle" style="height: 30rem;">
             <!-- Messages Container -->
-            <div id="messages-container" class="flex-grow overflow-y-auto max-w-lg mx-auto w-full"
+            <div id="messages-container" class="flex-grow overflow-x-hidden overflow-y-auto max-w-lg mx-auto w-full"
               x-ref="messagesContainer">
               <template x-for="message in chatHistory">
                 <div class="flex flex-col px-2.5 py-2">
@@ -257,7 +257,7 @@
         localStorage.setItem('ws_url', data.wsUrl);
       } else {
         localStorage.setItem('base_url', 'https://chat.iqsuite.io');
-        localStorage.setItem('ws_url', 'wss://chat.iqsuite.io/ws/chat/');
+        localStorage.setItem('ws_url', 'wss://chat.iqsuite.io/app/ws/chat/');
       }
 
       if (typeof chatiQApplet === 'function') {
