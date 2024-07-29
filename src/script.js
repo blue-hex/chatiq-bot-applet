@@ -40,7 +40,7 @@ function chatiQApplet() {
     ws: null,
     botBranding: {
       name: localStorage.getItem("brand_name")
-        ? localStorage.getItem("brand_name") || "Pyaw AI"
+        ? localStorage.getItem("brand_name") || "Chat iQ"
         : "",
       logo: localStorage.getItem("logo_url")
         ? localStorage.getItem("logo_url") || ""

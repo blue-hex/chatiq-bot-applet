@@ -5,14 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
-  <script src="https://chatiq.blob.core.windows.net/static-files/test-pyaw-iframe/script.js"
-    type="text/javascript"></script>
-  <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/test-pyaw-iframe/styles.css">
+  <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
 </head>
 
 <body>
@@ -27,19 +26,19 @@
     </div>
 
 
-    <div class="fixed bottom-10 max-w-md right-0 sm:right-6 bg-white rounded-2xl shadow-lg border border-neutral-200"
+    <div class="fixed bottom-10 max-w-md right-0 sm:right-6 bg-white rounded-2xl shadow-lg border border-gray-200"
       style="z-index:9999; height: -webkit-fill-available;" x-show="showChatbotMainScreen" x-transition>
       <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
 
         <!-- Header For Branding And Logo -->
-        <header class="px-3 py-2 flex justify-between w-full items-center border-b border-neutral-100">
+        <header class="px-3 py-2 flex justify-between w-full items-center border-b border-gray-100">
           <div class="flex items-center gap-2">
             <div class="relative">
               <img :src="botBranding.logo ? botBranding.logo : 'https://iqsuite.io/assets/iq.png'"
                 class="w-14 h-14 shadow-sm rounded-full">
               <!-- Green circle indicator for online status -->
               <span
-                class="absolute bottom-0 right-0 block w-3 h-3 bg-emerald-500 rounded-md border-2 border-white"></span>
+                class="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 rounded-md border-2 border-white"></span>
             </div>
             <div>
               <h4 class="text-base font-medium font-redhat" x-text="botBranding.name"></h4>
@@ -90,7 +89,7 @@
               <p class="text-left my-2 text-black font-redhat font-medium text-3xl" id="welcome-message">
                 👋🏼 Welcome <br /> We're happy to assist you.
               </p>
-              <p class="text-neutral-600 text-lg font-light my-4 font-redhat"> To personalize your experience and ensure
+              <p class="text-gray-600 text-lg font-light my-4 font-redhat"> To personalize your experience and ensure
                 we can connect you with the most relevant information, could you please share a few details. </p>
             </div>
 
@@ -110,7 +109,7 @@
                     required class="input input-bordered input-sm w-full font-redhat" placeholder="Phone Number" />
                 </template>
 
-                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="btn btn-neutral">
+                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="btn btn-gray">
                   <span x-show="!isLoading">Continue</span>
                   <svg x-show="isLoading" class="animate-spin mx-auto h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -121,10 +120,10 @@
                   </svg>
                 </button>
                 <p
-                  class="text-center text-neutral-400 text-xs font-redhat inline-flex justify-center items-center font-light mt-4 gap-1 mb-2">
-                  <a href="https://pyaw.ai/" target="_blank" style="text-decoration: none !important;"
-                    class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">
-                    Powered By Pyaw AI
+                  class="text-center text-gray-400 text-xs font-redhat inline-flex justify-center items-center font-light mt-4 gap-1 mb-2">
+                  <a href="https://chat.iqsuite.io/" target="_blank" style="text-decoration: none !important;"
+                    class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">
+                    Powered By Chat iQ
                   </a>
                 </p>
               </div>
@@ -151,12 +150,12 @@
                       <!-- Avatar for IQ message -->
                       <div class="inline-flex justify-center items-center gap-2">
                         <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
-                        <small class="font-redhat text-neutral-500 text-xs font-light"
+                        <small class="font-redhat text-gray-500 text-xs font-light"
                           x-text="formatDate(message.created_at)"></small>
                       </div>
                       <div x-html="message.message"
-                        style="font-family: 'Red Hat Display', sans-serif !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;"
-                        class="text-sm text-black chat-bubble bg-neutral-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
+                        style="font-family: 'Red Hat Display', sans-serif !important; color: black !important; background: rgb(244, 248, 255) !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;"
+                        class="text-sm text-black chat-bubble bg-gray-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
                       </div>
                     </div>
                   </div>
@@ -168,14 +167,14 @@
                     <div class="inline-flex flex-col justify-start items-end gap-2">
                       <!-- Avatar for User message -->
                       <div class="inline-flex justify-center items-center gap-2">
-                        <small class="font-redhat text-neutral-500 text-xs font-light"
+                        <small class="font-redhat text-gray-500 text-xs font-light"
                           x-text="formatDate(message.created_at)"></small>
                         <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
                           <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
                         </div>
                       </div>
                       <span x-text="message.message"
-                        class="text-sm max-w-xs text-white chat-bubble font-redhat bg-neutral-900 font-light rounded-2xl p-3"
+                        class="text-sm max-w-xs text-white chat-bubble font-redhat bg-gray-200 font-light rounded-2xl p-3"
                         style="font-family: 'Red Hat Display', sans-serif !important;"></span>
                     </div>
                   </div>
@@ -198,7 +197,7 @@
                 <template x-if="suggestions.length > 0">
                   <div class="w-full overflow-y-auto my-1 space-x-1 space-y-1">
                     <template x-for="suggestion in suggestions" :key="suggestion">
-                      <button class="py-1.5 px-2 text-xs font-light rounded-3xl bg-neutral-100" x-text="suggestion"
+                      <button class="py-1.5 px-2 text-xs font-light rounded-3xl bg-gray-100" x-text="suggestion"
                         @click="send_suggestion(suggestion)"></button>
                     </template>
                   </div>
@@ -221,12 +220,12 @@
                 </div>
                 <div class="flex justify-center items-center gap-2 mt-2">
                   <button @click="clear_local_storage"
-                    class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">Start New Conversation
+                    class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">Start New Conversation
                   </button>
-                  <p class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">|</p>
-                  <a href="https://pyaw.ai/" target="_blank" style="text-decoration: none !important;"
-                    class="text-center text-xs font-redhat text-neutral-400 font-light mt-2 mb-2">
-                    Powered By Pyaw AI
+                  <p class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">|</p>
+                  <a href="https://chat.iqsuite.io/" target="_blank" style="text-decoration: none !important;"
+                    class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">
+                    Powered By Chat iQ
                   </a>
                 </div>
               </form>
@@ -248,7 +247,7 @@
         localStorage.setItem('domain', data.domain);
       }
       else{
-        window.alert('Please provide Pyaw AI bot credentials.')
+        window.alert('Please provide Chat iQ bot credentials.')
       }
 
       if (data && data.baseUrl && data.wsUrl) {

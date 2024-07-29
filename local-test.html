@@ -272,12 +272,13 @@
 
 
   <iframe id="chatbot-iframe" src="./src/chatbot.html"
-    style="background-color: transparent; width:-webkit-fill-available; height:600px; border:none; position: fixed; top: 20rem; right: 0;"></iframe>
+    style="background-color: transparent; width:-webkit-fill-available; height:600px; border:none; position: fixed; bottom: 0; right: 1rem;"></iframe>
 
   <script>
     window.embeddedChatbotConfig = {
       chatbotId: "9305f480-4b1d-48fd-9263-16268c42b86a",
       domain: window.location.origin,
+      
       baseUrl: "http://localhost:8000",
       wsUrl: "ws://localhost:8000/ws/chat/"
     };
