@@ -1,13 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&family=Inter:wght@100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 html,
 body {
     background: transparent !important;
     margin: 0;
     padding: 0;
+    font-family: "Inter", sans-serif;
 }
+
+.heading-font {
+    font-family: "Afacad", sans-serif;
+  }
+  
 
 #chatbot-iframe {
     background: transparent;
@@ -23,25 +32,25 @@ a {
 }
 
 .iq-message-wrapper>p {
-    font-family: "Red Hat Display", sans-serif !important;
+    font-family: "Inter", sans-serif !important;
     font-size: 14px !important;
     font-weight: 300 !important;
 
 }
 
 .iq-message-wrapper>strong {
-    font-family: "Red Hat Display", sans-serif !important;
+    font-family: "Inter", sans-serif !important;
     font-size: 14px !important;
 }
 
 b,
 strong {
-    font-family: "Red Hat Display", sans-serif !important;
+    font-family: "Inter", sans-serif !important;
     font-size: 14px !important;
 }
 
 ol:not([class]) li:before {
-    font-family: "Red Hat Display", sans-serif !important;
+    font-family: "Inter", sans-serif !important;
     font-size: 14px !important;
 }
 

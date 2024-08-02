@@ -18,6 +18,7 @@ function chatiQApplet() {
       : false,
     isErrored: false,
     isLoading: false,
+    isInitSuccess: false,
     base_url: localStorage.getItem("base_url"),
     domain: localStorage.getItem("domain"),
     ws_url: localStorage.getItem("ws_url"),
@@ -39,12 +40,8 @@ function chatiQApplet() {
     body_ui_frame: null,
     ws: null,
     botBranding: {
-      name: localStorage.getItem("brand_name")
-        ? localStorage.getItem("brand_name") || "Chat iQ"
-        : "",
-      logo: localStorage.getItem("logo_url")
-        ? localStorage.getItem("logo_url") || ""
-        : "https://iqsuite.io/assets/iq.png",
+      name:  "Pyaw",
+      logo: 'https://chatiq.blob.core.windows.net/static-files/pyaw-chat-logo.png',
     },
     currentYear: new Date().getFullYear(),
 
@@ -62,7 +59,6 @@ function chatiQApplet() {
         let domain = this.domain;
         this.body_ui_frame.style.display = "flex";
         this.chat_ui_frame.style.display = "none";
-        this.send_alerts();
 
         fetch(`${base_url}/api/v1/init/`, {
           method: "POST",
@@ -81,6 +77,8 @@ function chatiQApplet() {
             this.showChatBotToggleButton = true;
             this.showChatbotMainScreen = false;
             this.chat_ui_frame.style.display = "none";
+            this.isInitSuccess = true;
+            this.send_alerts();
 
             if (localStorage.getItem("email") == null) {
               this.showChatScreen = false;
@@ -96,7 +94,6 @@ function chatiQApplet() {
               this.scrollToBottom();
             }
 
-            this.botBranding.name = r.bot_branding.brand_name;
             this.botBranding.welcome_message = r.bot_branding.welcome_message;
             this.show_phone_field = r.bot_branding.show_phone_field;
             localStorage.setItem("show_phone_field", this.show_phone_field);
@@ -109,6 +106,10 @@ function chatiQApplet() {
 
             if (r.bot_branding.theme_hex !== null) {
               this.theme_hex = r.bot_branding.theme_hex;
+            }
+
+            if (r.bot_branding.name !== null) {
+              this.botBranding.name = r.bot_branding.brand_name;
             }
 
             if (r.bot_branding.logo) {
@@ -125,7 +126,7 @@ function chatiQApplet() {
               "logo_url",
               this.base_url + r.bot_branding.logo
             );
-            localStorage.setItem("brand_name", r.bot_branding.brand_name);
+            localStorage.setItem("brand_name",  r.bot_branding.brand_name);
           })
           .catch((error) => {
             console.error("Error initializing chatbot:", error);
