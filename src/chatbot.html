@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatbot</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -109,7 +109,7 @@
                     required class="input input-bordered input-sm w-full font-redhat" placeholder="Phone Number" />
                 </template>
 
-                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="btn btn-neutral text-white">
+                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="inline-flex justify-center items-center text-sm gap-1 font-medium bg-gradient-to-b from-neutral-600 via-neutral-700 to-neutral-900 rounded-lg py-2 px-4 text-white transition-all ease-in duration-300 focus:outline-none hover:shadow-xl focus:ring-1 focus:ring-gray-900 focus:ring-offset-2">
                   <span x-show="!isLoading">Continue</span>
                   <svg x-show="isLoading" class="animate-spin mx-auto h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -154,8 +154,8 @@
                           x-text="formatDate(message.created_at)"></small>
                       </div>
                       <div x-html="message.message"
-                        style="font-family: 'Red Hat Display', sans-serif !important; color: black !important; background: rgb(244, 248, 255) !important; white-space: pre-wrap; word-wrap: break-word; text-align: start; overflow-wrap: break-word;"
-                        class="text-sm text-black chat-bubble bg-gray-200 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
+                        style="white-space: pre-wrap; text-align: start; overflow-wrap: break-word;"
+                        class="text-sm text-black chat-bubble bg-gray-100 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
                       </div>
                     </div>
                   </div>
@@ -169,13 +169,12 @@
                       <div class="inline-flex justify-center items-center gap-2">
                         <small class="font-redhat text-gray-500 text-xs font-light"
                           x-text="formatDate(message.created_at)"></small>
-                        <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
-                          <span class="text-blue-600 font-light text-sm uppercase" x-text="name.charAt(0)"></span>
+                        <div class="flex items-center justify-center h-8 w-8 rounded-full bg-gray-200">
+                          <span class="text-black font-light text-sm uppercase" x-text="name.charAt(0)"></span>
                         </div>
                       </div>
                       <span x-text="message.message"
-                        class="text-sm max-w-xs text-white chat-bubble font-redhat bg-gray-200 font-light rounded-2xl p-3"
-                        style="font-family: 'Red Hat Display', sans-serif !important;"></span>
+                        class="text-sm max-w-xs text-white chat-bubble font-redhat bg-black font-light rounded-2xl p-3"></span>
                     </div>
                   </div>
 

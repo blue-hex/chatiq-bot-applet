@@ -40,8 +40,8 @@ function chatiQApplet() {
     body_ui_frame: null,
     ws: null,
     botBranding: {
-      name:  "Pyaw",
-      logo: 'https://chatiq.blob.core.windows.net/static-files/pyaw-chat-logo.png',
+      name: "Pyaw",
+      logo: "https://chatiq.blob.core.windows.net/static-files/pyaw-chat-logo.png",
     },
     currentYear: new Date().getFullYear(),
 
@@ -126,7 +126,7 @@ function chatiQApplet() {
               "logo_url",
               this.base_url + r.bot_branding.logo
             );
-            localStorage.setItem("brand_name",  r.bot_branding.brand_name);
+            localStorage.setItem("brand_name", r.bot_branding.brand_name);
           })
           .catch((error) => {
             console.error("Error initializing chatbot:", error);
@@ -222,24 +222,40 @@ function chatiQApplet() {
           const data = JSON.parse(event.data);
 
           if (data.event === "on_chat_model_start") {
-            this.ongoingStream = { id: data.run_id };
-
+            this.ongoingStream = { id: data.run_id, content: "" };
             this.chatHistory.push({
               type: "iq",
               id: data.run_id,
               message: "",
               created_at: new Date().toISOString(),
             });
+            this.scrollToBottom();
           } else if (
             data.event === "on_chat_model_stream" &&
             this.ongoingStream &&
             data.run_id == this.ongoingStream.id
           ) {
-            let chObject = this.chatHistory.find((ch) => ch.id == data.run_id);
+            const chObject = this.chatHistory.find(
+              (ch) => ch.id === data.run_id
+            );
 
-            if (data.message) {
-              chObject.message += data.message;
+            if (chObject) {
+              // Append new message chunk to the ongoing content
+              this.ongoingStream.content += data.message;
+
+              // Parse the entire content
+              chObject.message = marked.parse(this.ongoingStream.content);
+            } else {
+              // Handle case where chat object is not found
+              this.chatHistory.push({
+                type: "iq",
+                id: data.run_id,
+                message: marked.parse(data.message),
+                created_at: new Date().toISOString(),
+              });
             }
+
+            this.scrollToBottom();
           } else if (
             data.event === "on_parser_end" &&
             this.ongoingStream &&
@@ -247,11 +263,11 @@ function chatiQApplet() {
           ) {
             console.log("Parser end event");
 
-            this.scrollToBottom();
-            this.ongoingStream = null;
-
-            let chObject = this.chatHistory[this.chatHistory.length - 1];
-            chObject.message = marked.parse(chObject.message);
+            // this.scrollToBottom();
+            // this.ongoingStream = null;
+            //
+            // let chObject = this.chatHistory[this.chatHistory.length - 1];
+            // chObject.message = marked.parse(chObject.message);
             this.playsound();
           }
 
