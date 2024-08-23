@@ -1,6 +1,10 @@
 function chatiQApplet() {
   return {
     count: 0,
+    closeChatMainScreen: function() {
+      window.parent.postMessage({ event: 'close-iframe', message: 'collapsing the iframe' }, '*');
+      this.showChatbotMainScreen = !this.showChatbotMainScreen;
+    },
     showChatBotToggleButton: false,
     emailVerified: false,
     chatHistory: localStorage.getItem("chat_history")
@@ -137,6 +141,7 @@ function chatiQApplet() {
     },
 
     toggleChatbotButton: function () {
+      window.parent.postMessage({ event: 'open-iframe', message: 'opening the iframe' }, '*');
       this.showChatbotMainScreen = !this.showChatbotMainScreen;
       this.scrollToBottom();
     },
