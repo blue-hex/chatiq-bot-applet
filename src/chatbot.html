@@ -20,7 +20,7 @@
     <div x-show="showChatBotToggleButton" class="fixed bottom-4 right-6" style="z-index: 999 !important;">
       <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;"
         class="relative hover:scale-110 transition ease-in duration-300">
-        <img :src="botBranding.logo"
+        <img :src="botBranding.logo" draggable="false" 
           class="w-20 h-20 bg-white rounded-full object-cover border border-gray-100 shadow-sm">
       </button>
     </div>
@@ -34,7 +34,7 @@
         <header class="px-3 py-2 flex justify-between w-full items-center border-b border-gray-100">
           <div class="flex items-center gap-3">
             <div class="relative">
-              <img :src="botBranding.logo"
+              <img :src="botBranding.logo" draggable="false"
                 class="w-14 h-14 shadow-sm rounded-full">
               <!-- Green circle indicator for online status -->
               <span
@@ -42,7 +42,7 @@
             </div>
             <div>
               <h4 class="text-xl font-medium heading-font" x-text="botBranding.name"></h4>
-              <p class="font-light text-xs">Gen-AI Powered Assistant</p>
+              <p class="font-light text-xs">AI business expert</p>
             </div>
           </div>
 
@@ -149,7 +149,7 @@
                     <div class="inline-flex flex-col justify-start items-start gap-2">
                       <!-- Avatar for IQ message -->
                       <div class="inline-flex justify-center items-center gap-2">
-                        <img :src="botBranding.logo" class="w-8 h-8 rounded-full" />
+                        <img :src="botBranding.logo" draggable="false" class="w-8 h-8 rounded-full" />
                         <small class="font-redhat text-gray-500 text-xs font-light"
                           x-text="formatDate(message.created_at)"></small>
                       </div>
@@ -254,8 +254,8 @@
         localStorage.setItem('base_url', data.baseUrl);
         localStorage.setItem('ws_url', data.wsUrl);
       } else {
-        localStorage.setItem('base_url', 'https://chat.iqsuite.io');
-        localStorage.setItem('ws_url', 'wss://chat.iqsuite.io/app/ws/chat/');
+        localStorage.setItem('base_url', 'https://pyaw.ai');
+        localStorage.setItem('ws_url', 'wss://pyaw.ai/ws/chat/');
       }
 
       if (typeof chatiQApplet === 'function') {
