@@ -2,272 +2,295 @@
 <html lang="en" data-theme="light">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatbot</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
-  <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js" type="text/javascript"></script>
-  <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
+    <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js"
+            type="text/javascript"></script>
+    <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
 </head>
 
 <body>
-  <div class="alert-container" id="alert-container"></div>
-  <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
-    <div x-show="showChatBotToggleButton" class="fixed bottom-4 right-6" style="z-index: 999 !important;">
-      <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;"
-        class="relative hover:scale-110 transition ease-in duration-300">
-        <img :src="botBranding.logo" draggable="false" 
-          class="w-20 h-20 bg-white rounded-full object-cover border border-gray-100 shadow-sm">
-      </button>
+<div class="alert-container" id="alert-container"></div>
+<div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
+    <div x-show="showChatBotToggleButton" class="fixed bottom-4"
+         style="right: 0.2rem !important; z-index: 999 !important;">
+        <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;"
+                class="relative hover:scale-110 transition ease-in duration-300">
+            <img :src="botBranding.logo" draggable="false"
+                 class="w-20 h-20 bg-white rounded-full object-cover border border-gray-100 shadow-sm">
+        </button>
     </div>
 
 
     <div class="fixed bottom-10 max-w-md right-0 sm:right-6 bg-white rounded-2xl shadow-lg border border-gray-200"
-      style="z-index:9999; height: -webkit-fill-available; width: 26rem;" x-show="showChatbotMainScreen" x-transition>
-      <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
+         style="z-index:9999; height: -webkit-fill-available; width: 26rem;" x-show="showChatbotMainScreen"
+         x-transition>
+        <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
 
-        <!-- Header For Branding And Logo -->
-        <header class="px-3 py-2 flex justify-between w-full items-center border-b border-gray-100">
-          <div class="flex items-center gap-3">
-            <div class="relative">
-              <img :src="botBranding.logo" draggable="false"
-                class="w-14 h-14 shadow-sm rounded-full">
-              <!-- Green circle indicator for online status -->
-              <span
-                class="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 rounded-md border-2 border-white"></span>
-            </div>
-            <div>
-              <h4 class="text-xl font-medium heading-font" x-text="botBranding.name"></h4>
-              <p class="font-light text-xs">AI business expert</p>
-            </div>
-          </div>
-
-          <div class="inline-flex justify-center items-center gap-2">
-            <div class="inline-flex justify-center items-center gap-2"
-              x-data="{ disable_sound: JSON.parse(localStorage.getItem('isSoundDisabled')) ?? false }">
-              <!-- Button to enable sound -->
-              <button type="button"
-                @click="disable_sound = false; enableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
-                <svg x-show="disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                  class="h-5 w-5 bg-gray-100 rounded-full p-1">
-                  <path
-                    d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z" />
-                  <path
-                    d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z" />
-                </svg>
-              </button>
-              <!-- Button to disable sound -->
-              <button type="button"
-                @click="disable_sound = true; disableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
-                <svg x-show="!disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                  class="h-5 w-5 bg-gray-100 rounded-full p-1">
-                  <path
-                    d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM17.78 9.22a.75.75 0 1 0-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L20.56 12l1.72-1.72a.75.75 0 1 0-1.06-1.06l-1.72 1.72-1.72-1.72Z" />
-                </svg>
-              </button>
-            </div>
-            <button type="button" @click="closeChatMainScreen">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="h-5 w-5 bg-gray-100 rounded-full p-1">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-
-
-            </button>
-          </div>
-        </header>
-        <!-- Closing Header For Branding And Logo -->
-
-        <!-- Body Content And Description -->
-        <main id="body-ui" style="display: flex; height: 100%; flex-direction: row;">
-          <div x-show="showEmailVerification" class="px-3 py-2 flex flex-col justify-between">
-            <div class="py-4">
-              <p class="text-left my-2 text-black heading-font font-medium text-3xl" id="welcome-message">
-                Welcome to <span x-text="botBranding.name"></span> <br /> How may I help you today
-              </p>
-              <p class="text-gray-600 text-md font-light my-4 font-redhat"> To personalize your experience and ensure
-                we can connect you with the most relevant information, could you please share a few details. </p>
-            </div>
-
-            <!-- E-Mail Verification Form -->
-            <form id="email-verification-form" x-on:submit="handleEmailVerificationSubmit">
-              <div class="flex flex-col space-y-2 mt-16">
-                <div class="error-message block mb-3" x-show="isErrored">
-                  <p class="text-red-500 text-xs text-left">Oops, something went wrong, please try again.</p>
+            <!-- Header For Branding And Logo -->
+            <header class="px-3 py-2 flex justify-between w-full items-center border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <img :src="botBranding.logo" draggable="false"
+                             class="w-14 h-14 shadow-sm rounded-full">
+                        <!-- Green circle indicator for online status -->
+                        <span
+                                class="absolute bottom-0 right-0 block w-3 h-3 bg-green-500 rounded-md border-2 border-white"></span>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-medium heading-font" x-text="botBranding.name"></h4>
+                        <p class="font-light text-xs">AI business expert</p>
+                    </div>
                 </div>
 
-                <input x-model="name" type="text" name="name" id="customer_name" autofocus autocapitalize="words"
-                  required class="input input-bordered input-sm w-full font-redhat" placeholder="Full Name" />
-                <input x-model="email" type="email" name="email" id="email" required
-                  class="input input-bordered input-sm w-full font-redhat" placeholder="E-Mail Address" />
-                <template x-if="show_phone_field">
-                  <input x-model="phone" type="tel" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" name="phone" id="phone"
-                    required class="input input-bordered input-sm w-full font-redhat" placeholder="Phone Number" />
-                </template>
-
-                <button id="email-submit-btn" :disabled="isLoading" type="submit" class="inline-flex justify-center items-center text-sm gap-1 font-medium bg-gradient-to-b from-neutral-600 via-neutral-700 to-neutral-900 rounded-lg py-2 px-4 text-white transition-all ease-in duration-300 focus:outline-none hover:shadow-xl focus:ring-1 focus:ring-gray-900 focus:ring-offset-2">
-                  <span x-show="!isLoading">Continue</span>
-                  <svg x-show="isLoading" class="animate-spin mx-auto h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                  </svg>
-                </button>
-                <p
-                  class="text-center text-gray-400 text-xs font-redhat inline-flex justify-center items-center font-light mt-4 gap-1 mb-2">
-                  <a href="https://pyaw.ai" target="_blank" style="text-decoration: none !important;"
-                    class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">
-                    Powered By <span class="heading-font text-lg">Pyaw</span>
-                  </a>
-                </p>
-              </div>
-            </form>
-            <!-- Closing E-Mail Verification Form -->
-          </div>
-        </main>
-        <!-- Closing Body Content And Description -->
-
-        <!-- Chat UI And Form -->
-        <main id="chat-ui" class="flex flex-col h-full max-w-md">
-          <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle" style="height: 30rem;">
-            <!-- Messages Container -->
-            <div id="messages-container" class="flex-grow overflow-x-hidden overflow-y-auto max-w-lg mx-auto w-full"
-              x-ref="messagesContainer">
-              <template x-for="message in chatHistory">
-                <div class="flex flex-col px-2.5 py-2">
-                  <!-- AI Message -->
-                  <div x-show="message.type == 'iq'"
-                    class="flex flex-row justify-start items-start gap-2 chat chat-start"
-                    style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
-                    x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
-                    <div class="inline-flex flex-col justify-start items-start gap-2">
-                      <!-- Avatar for IQ message -->
-                      <div class="inline-flex justify-center items-center gap-2">
-                        <img :src="botBranding.logo" draggable="false" class="w-8 h-8 rounded-full" />
-                        <small class="font-redhat text-gray-500 text-xs font-light"
-                          x-text="formatDate(message.created_at)"></small>
-                      </div>
-                      <div x-html="message.message"
-                        style="white-space: pre-wrap; text-align: start; overflow-wrap: break-word;"
-                        class="text-sm text-black chat-bubble bg-gray-100 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
-                      </div>
+                <div class="inline-flex justify-center items-center gap-2">
+                    <div class="inline-flex justify-center items-center gap-2"
+                         x-data="{ disable_sound: JSON.parse(localStorage.getItem('isSoundDisabled')) ?? false }">
+                        <!-- Button to enable sound -->
+                        <button type="button"
+                                @click="disable_sound = false; enableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
+                            <svg x-show="disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 fill="currentColor"
+                                 class="h-5 w-5 bg-gray-100 rounded-full p-1">
+                                <path
+                                        d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM18.584 5.106a.75.75 0 0 1 1.06 0c3.808 3.807 3.808 9.98 0 13.788a.75.75 0 0 1-1.06-1.06 8.25 8.25 0 0 0 0-11.668.75.75 0 0 1 0-1.06Z"/>
+                                <path
+                                        d="M15.932 7.757a.75.75 0 0 1 1.061 0 6 6 0 0 1 0 8.486.75.75 0 0 1-1.06-1.061 4.5 4.5 0 0 0 0-6.364.75.75 0 0 1 0-1.06Z"/>
+                            </svg>
+                        </button>
+                        <!-- Button to disable sound -->
+                        <button type="button"
+                                @click="disable_sound = true; disableSound(); $nextTick(() => $el.style.transform = 'translateY(0)');">
+                            <svg x-show="!disable_sound" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                 fill="currentColor"
+                                 class="h-5 w-5 bg-gray-100 rounded-full p-1">
+                                <path
+                                        d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 0 0 1.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06ZM17.78 9.22a.75.75 0 1 0-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 1 0 1.06-1.06L20.56 12l1.72-1.72a.75.75 0 1 0-1.06-1.06l-1.72 1.72-1.72-1.72Z"/>
+                            </svg>
+                        </button>
                     </div>
-                  </div>
+                    <button type="button" @click="closeChatMainScreen">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                             stroke="currentColor" class="h-5 w-5 bg-gray-100 rounded-full p-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                        </svg>
 
-                  <!-- User Message -->
-                  <div x-show="message.type == 'user'" class="flex flex-row justify-end items-end gap-2 chat chat-end"
-                    style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
-                    x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
-                    <div class="inline-flex flex-col justify-start items-end gap-2">
-                      <!-- Avatar for User message -->
-                      <div class="inline-flex justify-center items-center gap-2">
-                        <small class="font-redhat text-gray-500 text-xs font-light"
-                          x-text="formatDate(message.created_at)"></small>
-                        <div class="flex items-center justify-center h-8 w-8 rounded-full bg-gray-200">
-                          <span class="text-black font-light text-sm uppercase" x-text="name.charAt(0)"></span>
+
+                    </button>
+                </div>
+            </header>
+            <!-- Closing Header For Branding And Logo -->
+
+            <!-- Body Content And Description -->
+            <main id="body-ui" style="display: flex; height: 100%; flex-direction: row;">
+                <div x-show="showEmailVerification" class="px-3 py-2 flex flex-col justify-between">
+                    <div class="py-4">
+                        <p class="text-left my-2 text-black heading-font font-medium text-3xl" id="welcome-message">
+                            Welcome to <span x-text="botBranding.name"></span> <br/> How may I help you today
+                        </p>
+                        <p class="text-gray-600 text-md font-light my-4 font-redhat"> To personalize your experience and
+                            ensure
+                            we can connect you with the most relevant information, could you please share a few
+                            details. </p>
+                    </div>
+
+                    <!-- E-Mail Verification Form -->
+                    <form id="email-verification-form" x-on:submit="handleEmailVerificationSubmit">
+                        <div class="flex flex-col space-y-2 mt-16">
+                            <div class="error-message block mb-3" x-show="isErrored">
+                                <p class="text-red-500 text-xs text-left">Oops, something went wrong, please try
+                                    again.</p>
+                            </div>
+
+                            <input x-model="name" type="text" name="name" id="customer_name" autofocus
+                                   autocapitalize="words"
+                                   required class="input input-bordered input-sm w-full font-redhat"
+                                   placeholder="Full Name"/>
+                            <input x-model="email" type="email" name="email" id="email" required
+                                   class="input input-bordered input-sm w-full font-redhat"
+                                   placeholder="E-Mail Address"/>
+                            <template x-if="show_phone_field">
+                                <input x-model="phone" type="tel" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" name="phone"
+                                       id="phone"
+                                       required class="input input-bordered input-sm w-full font-redhat"
+                                       placeholder="Phone Number"/>
+                            </template>
+
+                            <button id="email-submit-btn" :disabled="isLoading" type="submit"
+                                    class="inline-flex justify-center items-center text-sm gap-1 font-medium bg-gradient-to-b from-neutral-600 via-neutral-700 to-neutral-900 rounded-lg py-2 px-4 text-white transition-all ease-in duration-300 focus:outline-none hover:shadow-xl focus:ring-1 focus:ring-gray-900 focus:ring-offset-2">
+                                <span x-show="!isLoading">Continue</span>
+                                <svg x-show="isLoading" class="animate-spin mx-auto h-5 w-5 text-white"
+                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                            </button>
+                            <p
+                                    class="text-center text-gray-400 text-xs font-redhat inline-flex justify-center items-center font-light mt-4 gap-1 mb-2">
+                                <a href="https://pyaw.ai" target="_blank" style="text-decoration: none !important;"
+                                   class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">
+                                    Powered By <span class="heading-font text-lg">Pyaw</span>
+                                </a>
+                            </p>
                         </div>
-                      </div>
-                      <span x-text="message.message"
-                        class="text-sm max-w-xs text-white chat-bubble font-redhat bg-black font-light rounded-2xl p-3"></span>
-                    </div>
-                  </div>
-
-                  <div class="relative" x-show="message.type == 'divider'">
-                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div class="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div class="relative flex justify-center">
-                      <span class="px-2 text-sm bg-white text-gray-300 font-redhat">Today</span>
-                    </div>
-                  </div>
+                    </form>
+                    <!-- Closing E-Mail Verification Form -->
                 </div>
-              </template>
-            </div>
+            </main>
+            <!-- Closing Body Content And Description -->
 
-            <!-- Chat Form -->
-            <div class="relative mt-4">
-              <div x-data="suggestions" class="w-full overflow-y-auto inline-flex my-2 gap-2">
-                <template x-if="suggestions.length > 0">
-                  <div class="w-full overflow-y-auto my-1 space-x-1 space-y-1">
-                    <template x-for="suggestion in suggestions" :key="suggestion">
-                      <button class="py-1.5 px-2 text-xs font-light rounded-3xl bg-gray-100" x-text="suggestion"
-                        @click="send_suggestion(suggestion)"></button>
-                    </template>
-                  </div>
-                </template>
-              </div>
-              <form id="chat-form" x-on:submit="handleChatbotFormSubmit">
-                <div class="inline-flex justify-center items-center align-center w-full relative">
-                  <input x-model="message" required="" id="user-input" type="text"
-                    class="input input-bordered input-sm w-full font-redhat" placeholder="Ask your query here" />
-                  <button :disabled="isLoading" type="submit" id="send-button"
-                    class="px-2 bg-transparent text-white rounded-r-md disabled:text-gray-400 disabled:cursor-not-allowed">
-                    <svg x-show="!isLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                      class="w-6 h-6 text-black">
-                      <path
-                        d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z">
-                      </path>
-                    </svg>
-                    <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
-                  </button>
-                </div>
-                <div class="flex justify-center items-center gap-2 mt-2">
-                  <button @click="clear_local_storage"
-                    class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">Start New Conversation
-                  </button>
-                  <p class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">|</p>
-                  <a href="https://pyaw.ai" target="_blank" style="text-decoration: none !important;"
-                    class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">
-                    Powered By <span class="heading-font text-lg">Pyaw</span>
-                  </a>
-                </div>
-              </form>
-            </div>
+            <!-- Chat UI And Form -->
+            <main id="chat-ui" class="flex flex-col h-full max-w-md">
+                <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle"
+                     style="height: 30rem;">
+                    <!-- Messages Container -->
+                    <div id="messages-container"
+                         class="flex-grow overflow-x-hidden overflow-y-auto max-w-lg mx-auto w-full"
+                         x-ref="messagesContainer">
+                        <template x-for="message in chatHistory">
+                            <div class="flex flex-col px-2.5 py-2">
+                                <!-- AI Message -->
+                                <div x-show="message.type == 'iq'"
+                                     class="flex flex-row justify-start items-start gap-2 chat chat-start"
+                                     style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
+                                     x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
+                                    <div class="inline-flex flex-col justify-start items-start gap-2">
+                                        <!-- Avatar for IQ message -->
+                                        <div class="inline-flex justify-center items-center gap-2">
+                                            <img :src="botBranding.logo" draggable="false"
+                                                 class="w-8 h-8 rounded-full"/>
+                                            <small class="font-redhat text-gray-500 text-xs font-light"
+                                                   x-text="formatDate(message.created_at)"></small>
+                                        </div>
+                                        <div x-html="message.message"
+                                             style="white-space: pre-wrap; text-align: start; overflow-wrap: break-word;"
+                                             class="text-sm text-black chat-bubble bg-gray-100 font-redhat font-light rounded-2xl p-3 iq-message-wrapper">
+                                        </div>
+                                    </div>
+                                </div>
 
-          </div>
-        </main>
-        <!-- Chat UI And Form -->
-      </div>
+                                <!-- User Message -->
+                                <div x-show="message.type == 'user'"
+                                     class="flex flex-row justify-end items-end gap-2 chat chat-end"
+                                     style="transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.8s ease-in; transform: translateY(100%); opacity: 0;"
+                                     x-init="$nextTick(() => { $el.style.transform = 'translateY(0)'; $el.style.opacity = '1'; })">
+                                    <div class="inline-flex flex-col justify-start items-end gap-2">
+                                        <!-- Avatar for User message -->
+                                        <div class="inline-flex justify-center items-center gap-2">
+                                            <small class="font-redhat text-gray-500 text-xs font-light"
+                                                   x-text="formatDate(message.created_at)"></small>
+                                            <div class="flex items-center justify-center h-8 w-8 rounded-full bg-gray-200">
+                                                <span class="text-black font-light text-sm uppercase"
+                                                      x-text="name.charAt(0)"></span>
+                                            </div>
+                                        </div>
+                                        <span x-text="message.message"
+                                              class="text-sm max-w-xs text-white chat-bubble font-redhat bg-black font-light rounded-2xl p-3"></span>
+                                    </div>
+                                </div>
+
+                                <div class="relative" x-show="message.type == 'divider'">
+                                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div class="w-full border-t border-gray-300"></div>
+                                    </div>
+                                    <div class="relative flex justify-center">
+                                        <span class="px-2 text-sm bg-white text-gray-300 font-redhat">Today</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Chat Form -->
+                    <div class="relative mt-4">
+                        <div x-data="suggestions" class="w-full overflow-y-auto inline-flex my-2 gap-2">
+                            <template x-if="suggestions.length > 0">
+                                <div class="w-full overflow-y-auto my-1 space-x-1 space-y-1">
+                                    <template x-for="suggestion in suggestions" :key="suggestion">
+                                        <button class="py-1.5 px-2 text-xs font-light rounded-3xl bg-gray-100"
+                                                x-text="suggestion"
+                                                @click="send_suggestion(suggestion)"></button>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                        <form id="chat-form" x-on:submit="handleChatbotFormSubmit">
+                            <div class="inline-flex justify-center items-center align-center w-full relative">
+                                <input x-model="message" required="" id="user-input" type="text"
+                                       class="input input-bordered input-sm w-full font-redhat"
+                                       placeholder="Ask your query here"/>
+                                <button :disabled="isLoading" type="submit" id="send-button"
+                                        class="px-2 bg-transparent text-white rounded-r-md disabled:text-gray-400 disabled:cursor-not-allowed">
+                                    <svg x-show="!isLoading" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                         fill="currentColor"
+                                         class="w-6 h-6 text-black">
+                                        <path
+                                                d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z">
+                                        </path>
+                                    </svg>
+                                    <div class="isLoading loader" x-show="isLoading" style="display: none;"></div>
+                                </button>
+                            </div>
+                            <div class="flex justify-center items-center gap-2 mt-2">
+                                <button @click="clear_local_storage"
+                                        class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">Start
+                                    New Conversation
+                                </button>
+                                <p class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">|</p>
+                                <a href="https://pyaw.ai" target="_blank" style="text-decoration: none !important;"
+                                   class="text-center text-xs font-redhat text-gray-400 font-light mt-2 mb-2">
+                                    Powered By <span class="heading-font text-lg">Pyaw</span>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </main>
+            <!-- Chat UI And Form -->
+        </div>
     </div>
-  </div>
+</div>
 
-  <script>
+<script>
     window.addEventListener('message', function (event) {
-      const data = event.data;
-      console.log('Data Sync Successfull');
-      if (data && data.domain && data.chatbotId){
-        localStorage.setItem('bot_id', data.chatbotId);
-        localStorage.setItem('domain', data.domain);
-      }
-      else{
-        window.alert('Please provide Pyaw credentials.')
-      }
-
-      if (data && data.baseUrl && data.wsUrl) {
-        console.log('DEBUG MODE');
-        localStorage.setItem('base_url', data.baseUrl);
-        localStorage.setItem('ws_url', data.wsUrl);
-      } else {
-        localStorage.setItem('base_url', 'https://pyaw.ai');
-        localStorage.setItem('ws_url', 'wss://pyaw.ai/ws/chat/');
-      }
-
-      if (typeof chatiQApplet === 'function') {
-        const applet = chatiQApplet();
-        if (typeof applet.initChatbot === 'function') {
-          document.addEventListener("DOMContentLoaded", function () {
-            applet.initChatbot();
-          });
+        const data = event.data;
+        console.log('Data Sync Successfull');
+        if (data && data.domain && data.chatbotId) {
+            localStorage.setItem('bot_id', data.chatbotId);
+            localStorage.setItem('domain', data.domain);
+        } else {
+            console.log('Please provide Pyaw credentials.')
         }
-      }
+
+        if (data && data.baseUrl && data.wsUrl) {
+            console.log('DEBUG MODE');
+            localStorage.setItem('base_url', data.baseUrl);
+            localStorage.setItem('ws_url', data.wsUrl);
+        } else {
+            localStorage.setItem('base_url', 'https://pyaw.ai');
+            localStorage.setItem('ws_url', 'wss://pyaw.ai/ws/chat/');
+        }
+
+        if (typeof chatiQApplet === 'function') {
+            const applet = chatiQApplet();
+            if (typeof applet.initChatbot === 'function') {
+                document.addEventListener("DOMContentLoaded", function () {
+                    applet.initChatbot();
+                });
+            }
+        }
     }, false);
-  </script>
+</script>
 </body>
 
 </html>
