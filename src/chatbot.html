@@ -225,7 +225,7 @@
                         </div>
                         <form id="chat-form" x-on:submit="handleChatbotFormSubmit">
                             <div class="inline-flex justify-center items-center align-center w-full relative">
-                                <input x-model="message" required="" id="user-input" type="text"
+                                <input x-model="message" required="" id="user-input" type="text" maxlength="120"
                                        class="input input-bordered input-sm w-full font-redhat"
                                        placeholder="Ask your query here"/>
                                 <button :disabled="isLoading" type="submit" id="send-button"
