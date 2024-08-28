@@ -15,8 +15,8 @@ body {
 
 .heading-font {
     font-family: "Afacad", sans-serif;
-  }
-  
+}
+
 
 #chatbot-iframe {
     background: transparent;
@@ -27,18 +27,18 @@ a {
     font-weight: bold;
 }
 
-.iq-message-wrapper>a {
+.iq-message-wrapper > a {
     text-decoration: underline !important;
 }
 
-.iq-message-wrapper>p {
+.iq-message-wrapper > p {
     font-family: "Inter", sans-serif !important;
     font-size: 14px !important;
     font-weight: 300 !important;
 
 }
 
-.iq-message-wrapper>strong {
+.iq-message-wrapper > strong {
     font-family: "Inter", sans-serif !important;
     font-size: 14px !important;
 }
@@ -144,4 +144,49 @@ blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
     align-items: center;
     justify-content: center;
     background-color: #f0f0f0;
+}
+
+/* Mus.JS */
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls td {
+    vertical-align: top;
+    padding: 0 20px;
+}
+
+.move-mouse-here {
+    width: 400px;
+    height: 200px;
+    display: table;
+    margin: 0 auto;
+    background-color: #33ff00;
+    text-align: center;
+    line-height: 200px;
+}
+
+.click-here {
+    width: 400px;
+    height: 200px;
+    display: table;
+    margin: 0 auto;
+    background-color: #00ffff;
+    text-align: center;
+    line-height: 200px;
+}
+
+.scroll-here {
+    width: 400px;
+    height: 2000px;
+    display: table;
+    margin: 0 auto;
+    background-color: #00c4ff;
+    text-align: center;
+    line-height: 200px;
+}
+
+#console {
+    font-size: 10px;
 }

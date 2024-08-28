@@ -386,7 +386,7 @@ function chatiQApplet() {
       this.playsound();
       setTimeout(() => {
         this.render_alert("😊 Welcome! Do you need any help or assistance?");
-      }, 6000);
+      }, 3000);
     },
 
     clear_local_storage: function () {

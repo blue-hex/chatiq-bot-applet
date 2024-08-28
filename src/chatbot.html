@@ -264,7 +264,7 @@
 <script>
     window.addEventListener('message', function (event) {
         const data = event.data;
-        console.log('Data Sync Successfull');
+        console.log('Data Sync Successful');
         if (data && data.domain && data.chatbotId) {
             localStorage.setItem('bot_id', data.chatbotId);
             localStorage.setItem('domain', data.domain);
