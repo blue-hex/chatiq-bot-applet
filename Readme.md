@@ -1,44 +1,55 @@
-# ChatiQ-Applet
+# Pyaw - Chat Assistant Plugin
 
-**Description:**
+## Description
 
-ChatiQ-Applet is a powerful npm package that empowers you to integrate the ChatiQ functionality seamlessly within your web applications. It provides a streamlined approach to adding real-time LLM based capabilities, enhancing user engagement and communication.
+**Pyaw - Chat Assistant Plugin** is a customer-facing chatbot/chat assistant interface designed to connect with the Pyaw application using bot ID, domain, and WebSocket URLs. It integrates seamlessly into any site using an iframe. Internally, it utilizes **TailwindCSS**, **DaisyUI**, and **Alpine.js** for styling and functionality.
 
-**Installation:**
+## Local Testing
 
-The primary methods to install ChatiQ-Applet:
+To test Pyaw - Chat Assistant Plugin locally, follow the structure outlined below:
 
-**Using CDN**
+### File Structure
 
+1. **local-test.html**
+   - This file serves as the main entry point for local testing.
+   - It includes references to two essential files: `styles.css` and `script.js`.
 
-1. **Include the script:** Directly reference the ChatiQ-Applet script from the unpkg CDN in your HTML file's `<head>` section:
+2. **styles.css**
+   - Contains the styling rules and some custom CSS to enhance the appearance of the chatbot.
 
-   ```html
-    <script src="https://cdn.jsdelivr.net/npm/chatiq-applet"></script>
-    <link href="https://cdn.jsdelivr.net/npm/chatiq-applet/main.css" rel="stylesheet">
-   ```
+3. **script.js**
+   - The core logic of the chatbot is implemented here, handling the chat interactions and connecting to the Pyaw application.
 
+### Steps to Test Locally
 
-2. Once installed, you can leverage ChatiQ-Applet's functionality within your JavaScript code:
+1. **Download the Repository**
+   - Clone the repository to your local machine using the following command:
+     ```bash
+     git clone https://github.com/your-repo/Pyaw - Chat Assistant Plugin.git
+     ```
 
-```javascript
-   <script>
-   	chatLib.initChat('pass_your_unique_bot_id'); // intialize your iQ bot
-   </script>
-```
+2. **Navigate to the Project Directory**
+   - Change into the project directory:
+     ```bash
+     cd Pyaw - Chat Assistant Plugin
+     ```
 
-3. Optional (If your application is blocking the Network API Call)
+3. **Open local-test.html**
+   - Open the `local-test.html` file in your preferred web browser to test the chatbot interface.
 
-- Include https://chatiq.iqsuite.in in CORS
+## Contributing
 
+If you encounter any issues or have feature requests, please feel free to raise an issue or submit a pull request (PR) on the [GitHub repository](https://github.com/your-repo/Pyaw - Chat Assistant Plugin/issues).
 
+### Useful Links
 
-**Important:**
+- [TailwindCSS](https://tailwindcss.com/): A utility-first CSS framework for rapidly building custom user interfaces.
+- [DaisyUI](https://daisyui.com/): A component library for TailwindCSS.
+- [Alpine.js](https://alpinejs.dev/): A rugged, minimal framework for composing JavaScript behavior in your HTML.
 
-For detailed configuration options and usage examples, consult the official ChatiQ-Applet documentation, which can be found at [https://chat.iqsuite.in/](https://chat.iqsuite.in/)
+For a deeper understanding of the concepts used in this project, you can refer to the following:
 
-**Contributing:**
+- [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket): A protocol for creating real-time interactive applications.
+- [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe): An HTML element that embeds another HTML page within the current page.
 
-We welcome contributions to the ChatiQ-Applet project! If you'd like to get involved, please refer to the contribution guidelines outlined in the CONTRIBUTING.md file within the project's repository.
-
-Made By Blue Hex Software
+By following these guidelines, you can ensure a professional and detailed documentation for the Pyaw - Chat Assistant Plugin.
