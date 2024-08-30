@@ -10,15 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
-    <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js"
-            type="text/javascript"></script>
+    <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
 </head>
 
 <body>
 <div class="alert-container" id="alert-container"></div>
 <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
-    <div x-show="showChatBotToggleButton" class="fixed bottom-4"
+    <div x-show="showChatBotToggleButton" class="fixed bottom-4" x-on:click="collectClicks"
          style="right: 0.2rem !important; z-index: 999 !important;">
         <button x-on:click="toggleChatbotButton" id="toggle-chatbot-button" style="border: 0; background: transparent;"
                 class="relative hover:scale-110 transition ease-in duration-300">
@@ -29,7 +28,7 @@
 
 
     <div class="fixed bottom-10 max-w-md right-0 sm:right-6 bg-white rounded-2xl shadow-lg border border-gray-200"
-         style="z-index:9999; height: -webkit-fill-available; width: 26rem;" x-show="showChatbotMainScreen"
+         style="z-index:9999; height: -webkit-fill-available; width: 24rem;" x-show="showChatbotMainScreen"
          x-transition>
         <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
 
@@ -200,10 +199,33 @@
 
                                 <div class="relative" x-show="message.type == 'divider'">
                                     <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div class="w-full border-t border-gray-300"></div>
+                                        <div class="w-full border-t border-gray-200"></div>
                                     </div>
                                     <div class="relative flex justify-center">
-                                        <span class="px-2 text-sm bg-white text-gray-300 font-redhat">Today</span>
+                                        <span class="px-2 text-sm bg-white font-light text-gray-300">Today</span>
+                                    </div>
+                                </div>
+
+                                <div id="feedback-div" class="relative gap-4 px-4"
+                                     x-show="message.type == 'feedback-ui'"
+                                     style="position: relative; bottom: 1rem;">
+                                    <div id="feedback-btn">
+                                        <button x-on:click="upAccurate" data-tip="Useful"
+                                                class="tooltip transition ease-in duration-300 hover:text-green-500 hover:scale-110">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"/>
+                                            </svg>
+                                        </button>
+                                        <button x-on:click="downAccurate" data-tip="Not Clear"
+                                                class="tooltip transition ease-in duration-300 hover:text-red-500 hover:scale-110">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"/>
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

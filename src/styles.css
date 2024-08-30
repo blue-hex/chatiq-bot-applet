@@ -54,6 +54,20 @@ ol:not([class]) li:before {
     font-size: 14px !important;
 }
 
+.chat-ui-frame {
+    opacity: 0;
+    transform: translateY(10px); /* Slightly smaller initial slide for a snappier effect */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Faster transition */
+    display: none; /* Initially hidden */
+}
+
+.chat-ui-frame.show {
+    opacity: 1;
+    transform: translateY(0); /* Slide into place */
+    display: flex; /* Flex display when shown */
+}
+
+
 /* 
 blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre {
     margin: 0;
