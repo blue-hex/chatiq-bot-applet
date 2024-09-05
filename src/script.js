@@ -355,7 +355,6 @@ function chatiQApplet() {
                 });
 
                 this.socket.on('response_start', (data) => {
-                    console.log(data);
                     if (data.event === "on_chat_model_start") {
                         this.ongoingStream = {id: data.run_id, content: ""};
                         this.chatHistory.push({
@@ -443,24 +442,28 @@ function chatiQApplet() {
         scrollToBottom: function () {
             this.$nextTick(() => {
                 const container = this.$refs.messagesContainer;
-                const targetScroll = container.scrollHeight;
-                const currentScroll = container.scrollTop;
-                const distance = targetScroll - currentScroll;
-                const duration = 1000;
-                let startTime = null;
+                if (container) {
+                    const targetScroll = container.scrollHeight;
+                    const currentScroll = container.scrollTop;
 
-                function scrollStep(timestamp) {
-                    if (!startTime) startTime = timestamp;
-                    const progress = timestamp - startTime;
-                    const scrollAmount = Math.min(progress / duration, 1) * distance;
-                    container.scrollTop = currentScroll + scrollAmount;
+                    const distance = targetScroll - currentScroll;
+                    const duration = 1000;
+                    let startTime = null;
 
-                    if (progress < duration) {
-                        requestAnimationFrame(scrollStep);
+                    function scrollStep(timestamp) {
+                        if (!startTime) startTime = timestamp;
+                        const progress = timestamp - startTime;
+                        const scrollAmount = Math.min(progress / duration, 1) * distance;
+                        container.scrollTop = currentScroll + scrollAmount;
+
+                        if (progress < duration) {
+                            requestAnimationFrame(scrollStep);
+                        }
                     }
+
+                    requestAnimationFrame(scrollStep);
                 }
 
-                requestAnimationFrame(scrollStep);
             });
         },
 

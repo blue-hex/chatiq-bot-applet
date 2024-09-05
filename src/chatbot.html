@@ -10,12 +10,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
-    <script src="https://chatiq.blob.core.windows.net/static-files/staging-assets/script.js"
-            type="text/javascript"></script>
+    <script src="https://chatiq.blob.core.windows.net/static-files/staging-assets/script.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
 </head>
-`
 <body>
 <div class="alert-container" id="alert-container"></div>
 <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
@@ -302,7 +300,7 @@
             localStorage.setItem('ws_url', data.wsUrl);
         } else {
             localStorage.setItem('base_url', 'https://pyaw.ai');
-            localStorage.setItem('ws_url', 'wss://pyaw.ai/chat/');
+            localStorage.setItem('ws_url', 'wss://pyaw.ai/chat');
         }
 
         if (typeof chatiQApplet === 'function') {
