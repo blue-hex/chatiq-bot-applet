@@ -490,7 +490,14 @@ function chatiQApplet() {
 
             this.isLoading = true;
             try {
-                this.ws.send(JSON.stringify({message: suggestion_string}));
+                //this.ws.send(JSON.stringify({message: suggestion_string}));
+                if (this.socket && this.socket.connected) {
+                    // Emit the message to the server
+                    this.socket.emit('message', {message: suggestion_string});
+                    //console.log('Message sent:', this.message);
+                } else {
+                    console.error('Socket is not connected. Cannot send message.');
+                }
             } catch (error) {
                 console.error("Error sending suggestion through websocket:", error);
             }
