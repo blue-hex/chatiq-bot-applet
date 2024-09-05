@@ -278,7 +278,7 @@
       domain: window.location.origin,
 
       baseUrl: "http://localhost:8000",
-      wsUrl: "ws://localhost:8000/ws/chat/"
+      wsUrl: "ws://localhost:8000/chat"
     };
 
     const iframe = document.getElementById('chatbot-iframe');
@@ -293,7 +293,7 @@
         }
         if (event.data.event === 'open-iframe') {
           let el = document.getElementById("chatbot-iframe")
-          el.setAttribute('style', 'height: 600px; width: 600px; position: fixed; bottom: 0; right: 1rem; overflow: hidden;');
+          el.setAttribute('style', 'height: 650px; width: 550px; position: fixed; bottom: 0; right: 1rem; overflow: hidden;');
         }
     });
   </script>

@@ -318,7 +318,7 @@ function chatiQApplet() {
                     }
 
                     this.isLoading = false;
-                    this.setupWebsocket();
+                    this.setupSocketIO();
                     this.chatHistory.push({
                         type: "iq",
                         message: this.welcome_message,
@@ -337,24 +337,36 @@ function chatiQApplet() {
                 });
         },
 
-        setupWebsocket: function () {
+        setupSocketIO: function () {
             try {
-                this.ws = new WebSocket(this.ws_url + `${this.bot_id}/${this.email}/applet/`);
+                this.socket = io.connect(`${this.ws_url}`, {
+                    query: {
+                        bot_id: this.bot_id,
+                        email: this.email,
+                        source: 'applet'
+                    },
+                    transports: ['websocket'],
+                    reconnectionAttempts: 5,
+                    timeout: 20000
+                });
 
-                this.ws.onopen = () => {
+                this.socket.on('connect', () => {
                     console.log("Data Connection Active");
-                };
+                });
 
-                this.ws.onmessage = (event) => {
-                    const data = JSON.parse(event.data);
-
+                this.socket.on('response_start', (data) => {
+                    console.log(data);
                     if (data.event === "on_chat_model_start") {
                         this.ongoingStream = {id: data.run_id, content: ""};
                         this.chatHistory.push({
                             type: "iq", id: data.run_id, message: "", created_at: new Date().toISOString(),
                         });
                         this.scrollToBottom();
-                    } else if (data.event === "on_chat_model_stream" && this.ongoingStream && data.run_id == this.ongoingStream.id) {
+                    }
+                });
+
+                this.socket.on('response_chunk', (data) => {
+                    if (data.event === "on_chat_model_stream" && this.ongoingStream && data.run_id === this.ongoingStream.id) {
                         const chObject = this.chatHistory.find((ch) => ch.id === data.run_id);
 
                         if (chObject) {
@@ -368,22 +380,20 @@ function chatiQApplet() {
                                 created_at: new Date().toISOString(),
                             });
                         }
-
                         this.scrollToBottom();
-                    } else if (data.event === "is_llm_refused") {
-                        //console.log("Parser end event");
-                        // NOTE: LLM has completed streaming at this point.
+                    }
+                });
+
+                this.socket.on('response_end', (data) => {
+                    if (data.event === "is_llm_refused") {
                         this.playsound();
 
-                        // Check if a feedback-ui element already exists in the chatHistory array
                         const feedbackIndex = this.chatHistory.findIndex((item) => item.type === "feedback-ui");
 
-                        // If found, remove the existing feedback-ui element
                         if (feedbackIndex !== -1) {
                             this.chatHistory.splice(feedbackIndex, 1);
                         }
 
-                        // Now check if there's no feedback-ui element in the array, then push a new one
                         if (this.chatHistory.findIndex((item) => item.type === "feedback-ui") === -1) {
                             this.chatHistory.push({
                                 type: "feedback-ui", message: "",
@@ -391,21 +401,17 @@ function chatiQApplet() {
                             this.scrollToBottom();
                         }
                     }
+                });
 
-                    //console.log("event names =>",data.event)
-                    this.$nextTick(() => {
-                    });
-                };
+                this.socket.on('disconnect', (reason) => {
+                    console.log(`Socket disconnected: ${reason}`);
+                });
 
-                this.ws.onerror = (event) => {
-                    console.error("WebSocket error observed:", event);
-                };
-
-                this.ws.onclose = (event) => {
-                    console.log(`WebSocket is closed now. Code: ${event.code}, Reason: ${event.reason}`);
-                };
+                this.socket.on('connect_error', (error) => {
+                    console.error("Socket.IO error observed:", error);
+                });
             } catch (error) {
-                console.error("Error setting up websocket:", error);
+                console.error("Error setting up socket.io:", error);
             }
         },
 
@@ -418,7 +424,14 @@ function chatiQApplet() {
 
             this.isLoading = true;
             try {
-                this.ws.send(JSON.stringify({message: this.message}));
+                //this.ws.send(JSON.stringify({message: this.message}));
+                if (this.socket && this.socket.connected) {
+                    // Emit the message to the server
+                    this.socket.emit('message', {message: this.message});
+                    //console.log('Message sent:', this.message);
+                } else {
+                    console.error('Socket is not connected. Cannot send message.');
+                }
             } catch (error) {
                 console.error("Error sending message through websocket:", error);
             }
@@ -550,7 +563,7 @@ function chatiQApplet() {
                         });
                         localStorage.setItem("chat_history", JSON.stringify(r.chat_history));
                     }
-                    this.setupWebsocket();
+                    this.setupSocketIO();
                     this.chatHistory.push({
                         type: "iq",
                         message: this.welcome_message,

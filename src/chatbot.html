@@ -10,10 +10,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
-    <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js" type="text/javascript"></script>
+    <script src="https://chatiq.blob.core.windows.net/static-files/staging-assets/script.js"
+            type="text/javascript"></script>
     <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
 </head>
-
+`
 <body>
 <div class="alert-container" id="alert-container"></div>
 <div id="chatiQ-applet" x-data="chatiQApplet()" x-init="initChatbot" class="font-redhat">
@@ -27,13 +29,13 @@
     </div>
 
 
-    <div class="fixed bottom-10 max-w-md right-0 sm:right-6 bg-white rounded-2xl shadow-lg border border-gray-200"
+    <div class="fixed bottom-10 max-w-md right-0 sm:right-6 bg-white rounded-2xl shadow-lg border border-gray-200 bg-gradient-to-b from-gray-400 via-gray-50 to-zinc-50 p-2"
          style="z-index:9999; height: -webkit-fill-available; width: 24rem;" x-show="showChatbotMainScreen"
          x-transition>
         <div style="display: flex; height: 100%; flex-direction: column;" id="first-screen-layout">
 
             <!-- Header For Branding And Logo -->
-            <header class="px-3 py-2 flex justify-between w-full items-center border-b border-gray-100">
+            <header class="px-3 py-2 flex justify-between w-full items-center">
                 <div class="flex items-center gap-3">
                     <div class="relative">
                         <img :src="botBranding.logo" draggable="false"
@@ -90,13 +92,13 @@
             <main id="body-ui" style="display: flex; height: 100%; flex-direction: row;">
                 <div x-show="showEmailVerification" class="px-3 py-2 flex flex-col justify-between">
                     <div class="py-4">
-                        <p class="text-left my-2 text-black heading-font font-medium text-3xl" id="welcome-message">
-                            Welcome to <span x-text="botBranding.name"></span> <br/> How may I help you today
+                        <p class="text-left my-2 text-black heading-font font-medium text-4xl" id="welcome-message">
+                            <span class="inline-flex justify-center items-center gap-2"> <span class="opacity-70">Hello there</span>
+                           </span>
+
+                            <br/> <span class="text-4xl">How can we help?</span>
                         </p>
-                        <p class="text-gray-600 text-md font-light my-4 font-redhat"> To personalize your experience and
-                            ensure
-                            we can connect you with the most relevant information, could you please share a few
-                            details. </p>
+                        <p class="text-gray-600 text-md font-light my-4 font-redhat"> We’d love to personalize your experience! Share a few details, and we’ll connect you with the most relevant and exciting information tailored just for you. </p>
                     </div>
 
                     <!-- E-Mail Verification Form -->
@@ -123,7 +125,7 @@
 
                             <button id="email-submit-btn" :disabled="isLoading" type="submit"
                                     class="inline-flex justify-center items-center text-sm gap-1 font-medium bg-gradient-to-b from-neutral-600 via-neutral-700 to-neutral-900 rounded-lg py-2 px-4 text-white transition-all ease-in duration-300 focus:outline-none hover:shadow-xl focus:ring-1 focus:ring-gray-900 focus:ring-offset-2">
-                                <span x-show="!isLoading">Continue</span>
+                                <span x-show="!isLoading">Start Conversation</span>
                                 <svg x-show="isLoading" class="animate-spin mx-auto h-5 w-5 text-white"
                                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -148,9 +150,9 @@
             <!-- Closing Body Content And Description -->
 
             <!-- Chat UI And Form -->
-            <main id="chat-ui" class="flex flex-col h-full max-w-md">
+            <main id="chat-ui" class="flex flex-col h-full max-w-md bg-white rounded-2xl mt-4">
                 <div x-show="showChatScreen" class="flex flex-col p-2 justify-between items-middle"
-                     style="height: 30rem;">
+                     style="height: 32rem;">
                     <!-- Messages Container -->
                     <div id="messages-container"
                          class="flex-grow overflow-x-hidden overflow-y-auto max-w-lg mx-auto w-full"
