@@ -4,30 +4,30 @@ function chatiQApplet() {
         closeChatMainScreen: function () {
             window.parent.postMessage({event: 'close-iframe', message: 'collapsing the iframe'}, '*');
             this.showChatbotMainScreen = !this.showChatbotMainScreen;
-            let userId = localStorage.getItem('userId');
+            let userId = sessionStorage.getItem('userId');
             if (userId != null) {
                 this.closeSession(userId);
             }
         },
         showChatBotToggleButton: false,
         emailVerified: false,
-        chatHistory: localStorage.getItem("chat_history") ? JSON.parse(localStorage.getItem("chat_history") || "[]") : [],
+        chatHistory: sessionStorage.getItem("chat_history") ? JSON.parse(sessionStorage.getItem("chat_history") || "[]") : [],
         showEmailVerification: false,
         suggestions: [],
         showChatScreen: false,
         showChatbotMainScreen: false,
-        isSoundDisabled: localStorage.getItem("isSoundDisabled") ? localStorage.getItem("isSoundDisabled") : false,
-        show_phone_field: localStorage.getItem("show_phone_field") ? localStorage.getItem("show_phone_field") || "" : false,
+        isSoundDisabled: sessionStorage.getItem("isSoundDisabled") ? sessionStorage.getItem("isSoundDisabled") : false,
+        show_phone_field: sessionStorage.getItem("show_phone_field") ? sessionStorage.getItem("show_phone_field") || "" : false,
         isErrored: false,
         isLoading: false,
         isInitSuccess: false,
-        base_url: localStorage.getItem("base_url"),
-        domain: localStorage.getItem("domain"),
-        ws_url: localStorage.getItem("ws_url"),
-        bot_id: localStorage.getItem("bot_id"),
-        welcome_message: localStorage.getItem("welcome_message") ? localStorage.getItem("welcome_message") || "" : "👋🏼 Hey There! What can I help you with today? I am a Gen AI powered chatbot trained to help customers with their queries.",
-        name: localStorage.getItem("name") ? localStorage.getItem("name") || "" : "",
-        email: localStorage.getItem("email") ? localStorage.getItem("email") || "" : "",
+        base_url: sessionStorage.getItem("base_url"),
+        domain: sessionStorage.getItem("domain"),
+        ws_url: sessionStorage.getItem("ws_url"),
+        bot_id: sessionStorage.getItem("bot_id"),
+        welcome_message: sessionStorage.getItem("welcome_message") ? sessionStorage.getItem("welcome_message") || "" : "👋🏼 Hey There! What can I help you with today? I am a Gen AI powered chatbot trained to help customers with their queries.",
+        name: null,
+        email: null,
         phone: null,
         message: "",
         theme_hex: "ffffff",
@@ -71,7 +71,7 @@ function chatiQApplet() {
                         this.isInitSuccess = true;
                         this.send_alerts();
 
-                        if (localStorage.getItem("email") == null) {
+                        if (this.email == null || this.name == null) {
                             this.showChatScreen = false;
                             this.body_ui_frame.style.display = "flex";
                             this.chat_ui_frame.style.display = "none";
@@ -84,6 +84,7 @@ function chatiQApplet() {
                             this.chat_ui_frame.classList.remove('show');
                             this.chat_ui_frame.style.display = "flex";
 
+                            // Force reflow
                             void this.chat_ui_frame.offsetWidth;
 
                             this.chat_ui_frame.classList.add('show');
@@ -92,14 +93,15 @@ function chatiQApplet() {
                             this.scrollToBottom();
                         }
 
+
                         this.botBranding.welcome_message = r.bot_branding.welcome_message;
                         this.show_phone_field = r.bot_branding.show_phone_field;
-                        localStorage.setItem("show_phone_field", this.show_phone_field);
+                        sessionStorage.setItem("show_phone_field", this.show_phone_field);
 
                         if (this.isSoundDisabled == null) {
-                            localStorage.setItem("isSoundDisabled", false);
+                            sessionStorage.setItem("isSoundDisabled", false);
                         } else {
-                            localStorage.setItem("isSoundDisabled", this.isSoundDisabled);
+                            sessionStorage.setItem("isSoundDisabled", this.isSoundDisabled);
                         }
 
                         if (r.bot_branding.theme_hex !== null) {
@@ -116,9 +118,9 @@ function chatiQApplet() {
 
                         this.welcome_message = r.bot_branding.welcome_message;
 
-                        localStorage.setItem("welcome_message", r.bot_branding.welcome_message);
-                        localStorage.setItem("logo_url", this.base_url + r.bot_branding.logo);
-                        localStorage.setItem("brand_name", r.bot_branding.brand_name);
+                        sessionStorage.setItem("welcome_message", r.bot_branding.welcome_message);
+                        sessionStorage.setItem("logo_url", this.base_url + r.bot_branding.logo);
+                        sessionStorage.setItem("brand_name", r.bot_branding.brand_name);
                     })
                     .catch((error) => {
                         console.error("Error initializing chatbot:", error);
@@ -129,10 +131,10 @@ function chatiQApplet() {
         },
 
         generateUserId: function () {
-            if (!localStorage.getItem("userId")) {
-                localStorage.setItem("userId", 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000));
+            if (!sessionStorage.getItem("userId")) {
+                sessionStorage.setItem("userId", 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000));
             }
-            return localStorage.getItem("userId");
+            return sessionStorage.getItem("userId");
         },
 
         toggleChatbotButton: function () {
@@ -143,11 +145,11 @@ function chatiQApplet() {
 
         collectClicks: function () {
             let base_url = this.base_url;
-            let userId = localStorage.getItem("userId");
-            if (userId && this.email === "") {
+            let userId = sessionStorage.getItem("userId");
+            /*if (userId && this.email === "") {
                 console.log("Unique click detected", userId);
+            }*/
 
-            }
             const formdata = new FormData();
             formdata.append("deployment_code", this.bot_id);
             formdata.append("user_id", userId)
@@ -175,7 +177,7 @@ function chatiQApplet() {
 
             fetch(`${base_url}/api/v1/collect-feedback/`, requestOptions)
                 .then((response) => {
-                    console.log("Feedback collected");
+                    // console.log("Feedback collected");
                     document.querySelectorAll('#feedback-btn')[document.querySelectorAll('#feedback-btn').length - 1].style.display = "none";
                     document.querySelectorAll('#feedback-div')[document.querySelectorAll('#feedback-div').length - 1]?.appendChild(Object.assign(document.createElement('div'), {
                         textContent: 'Thanks for your feedback!', className: 'text-sm font-light text-black'
@@ -201,7 +203,7 @@ function chatiQApplet() {
 
             fetch(`${base_url}/api/v1/collect-feedback/`, requestOptions)
                 .then((response) => {
-                    console.log("Feedback collected");
+                    // console.log("Feedback collected");
                     document.querySelectorAll('#feedback-btn')[document.querySelectorAll('#feedback-btn').length - 1].style.display = "none";
                     document.querySelectorAll('#feedback-div')[document.querySelectorAll('#feedback-div').length - 1]?.appendChild(Object.assign(document.createElement('div'), {
                         textContent: 'Thanks for your feedback!', className: 'text-sm font-light text-black'
@@ -214,7 +216,7 @@ function chatiQApplet() {
         },
 
         startSession: function (userId) {
-            console.log("Starting session", userId);
+            // console.log("Starting session", userId);
             // Create a unique session ID and store it in sessionStorage
             let sessionId = 'session_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
             sessionStorage.setItem("sessionId", sessionId);
@@ -254,7 +256,7 @@ function chatiQApplet() {
         },
 
         closeSession: function (userId) {
-            console.log("closing session")
+            //console.log("closing session")
             // Retrieve the current session ID from sessionStorage
             let sessionId = sessionStorage.getItem("sessionId");
             if (!sessionId) {
@@ -285,56 +287,58 @@ function chatiQApplet() {
             e.preventDefault();
             this.isLoading = true;
 
-            fetch(this.base_url + "/api/v1/bot-get-or-create/", {
-                method: "POST", headers: {
-                    "Content-Type": "application/json",
-                }, body: JSON.stringify({
-                    email: this.email, name: this.name, phone_number: this.phone, bot_id: this.bot_id,
-                }),
-            })
-                .then((response) => response.ok ? response.json() : Promise.reject(response))
-                .then((r) => {
-                    this.emailVerified = true;
-                    this.showEmailVerification = false;
-                    this.showChatScreen = true;
-                    this.body_ui_frame.style.display = "none";
-                    this.chat_ui_frame.style.display = "flex";
-                    this.suggestions = r.user_data.suggestions;
-                    this.chatHistory = r.chat_history;
-                    localStorage.setItem("name", r.user_data.name);
-                    localStorage.setItem("email", r.user_data.email);
-
-                    if (r.chat_history.length > 0) {
-                        this.chatHistory.push({
-                            type: "divider", message: "",
-                        });
-
-                        this.chatHistory.forEach((ch) => {
-                            if (ch.type == "iq") {
-                                ch.message = marked.parse(ch.message);
-                            }
-                        });
-                        localStorage.setItem("chat_history", JSON.stringify(r.chat_history));
-                    }
-
-                    this.isLoading = false;
-                    this.setupSocketIO();
-                    this.chatHistory.push({
-                        type: "iq",
-                        message: this.welcome_message,
-                        tag: "welcome_message",
-                        created_at: new Date().toISOString(),
-                    });
-
-                    setTimeout(() => {
-                        this.scrollToBottom();
-                    }, 200);
+            if (this.email && this.name) {
+                fetch(this.base_url + "/api/v1/bot-get-or-create/", {
+                    method: "POST", headers: {
+                        "Content-Type": "application/json",
+                    }, body: JSON.stringify({
+                        email: this.email, name: this.name, phone_number: this.phone, bot_id: this.bot_id,
+                    }),
                 })
-                .catch((error) => {
-                    console.error("Error verifying email:", error);
-                    this.isLoading = false;
-                    this.isErrored = true;
-                });
+                    .then((response) => response.ok ? response.json() : Promise.reject(response))
+                    .then((r) => {
+                        this.emailVerified = true;
+                        this.showEmailVerification = false;
+                        this.showChatScreen = true;
+                        this.body_ui_frame.style.display = "none";
+                        this.chat_ui_frame.style.display = "flex";
+                        this.suggestions = r.user_data.suggestions;
+                        this.chatHistory = r.chat_history;
+                        sessionStorage.setItem("name", r.user_data.name);
+                        sessionStorage.setItem("email", r.user_data.email);
+
+                        if (r.chat_history.length > 0) {
+                            this.chatHistory.push({
+                                type: "divider", message: "",
+                            });
+
+                            this.chatHistory.forEach((ch) => {
+                                if (ch.type == "iq") {
+                                    ch.message = marked.parse(ch.message);
+                                }
+                            });
+                            sessionStorage.setItem("chat_history", JSON.stringify(r.chat_history));
+                        }
+
+                        this.isLoading = false;
+                        this.setupSocketIO();
+                        this.chatHistory.push({
+                            type: "iq",
+                            message: this.welcome_message,
+                            tag: "welcome_message",
+                            created_at: new Date().toISOString(),
+                        });
+
+                        setTimeout(() => {
+                            this.scrollToBottom();
+                        }, 200);
+                    })
+                    .catch((error) => {
+                        console.error("Error verifying email:", error);
+                        this.isLoading = false;
+                        this.isErrored = true;
+                    });
+            }
         },
 
         setupSocketIO: function () {
@@ -469,19 +473,19 @@ function chatiQApplet() {
 
 
         playsound: function () {
-            if (localStorage.getItem("isSoundDisabled") === "false") {
+            if (sessionStorage.getItem("isSoundDisabled") === "false") {
                 const audio = new Audio("https://chatiq.blob.core.windows.net/static-files/chatiq-message-alert.mp3");
                 audio.play();
             }
         },
 
         enableSound: function () {
-            localStorage.setItem("isSoundDisabled", false);
+            sessionStorage.setItem("isSoundDisabled", false);
             this.isSoundDisabled = false;
         },
 
         disableSound: function () {
-            localStorage.setItem("isSoundDisabled", true);
+            sessionStorage.setItem("isSoundDisabled", true);
             this.isSoundDisabled = true;
         },
 
@@ -536,13 +540,13 @@ function chatiQApplet() {
         },
 
         clear_local_storage: function () {
-            localStorage.removeItem("name");
-            localStorage.removeItem("email");
-            localStorage.removeItem("chat_history");
-            localStorage.removeItem("logo_url");
-            localStorage.removeItem("brand_name");
-            localStorage.removeItem("welcome_message");
-            localStorage.setItem("isSoundDisabled", false);
+            sessionStorage.removeItem("name");
+            sessionStorage.removeItem("email");
+            sessionStorage.removeItem("chat_history");
+            sessionStorage.removeItem("logo_url");
+            sessionStorage.removeItem("brand_name");
+            sessionStorage.removeItem("welcome_message");
+            sessionStorage.setItem("isSoundDisabled", false);
             this.showChatScreen = false;
             this.showEmailVerification = true;
             location.reload();
@@ -571,7 +575,7 @@ function chatiQApplet() {
                                 ch.message = marked.parse(ch.message);
                             }
                         });
-                        localStorage.setItem("chat_history", JSON.stringify(r.chat_history));
+                        sessionStorage.setItem("chat_history", JSON.stringify(r.chat_history));
                     }
                     this.setupSocketIO();
                     this.chatHistory.push({
