@@ -10,7 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.2.0/dist/cdn.min.js" defer></script>
-    <script src="https://chatiq.blob.core.windows.net/static-files/staging-assets/script.js" type="text/javascript"></script>
+    <script src="https://chatiq.blob.core.windows.net/static-files/production-assets/script.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://chatiq.blob.core.windows.net/static-files/production-assets/styles.css">
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
 </head>
@@ -96,7 +96,9 @@
 
                             <br/> <span class="text-4xl">How can we help?</span>
                         </p>
-                        <p class="text-gray-600 text-md font-light my-4 font-redhat"> We’d love to personalize your experience! Share a few details, and we’ll connect you with the most relevant and exciting information tailored just for you. </p>
+                        <p class="text-gray-600 text-md font-light my-4 font-redhat"> We’d love to personalize your
+                            experience! Share a few details, and we’ll connect you with the most relevant and exciting
+                            information tailored just for you. </p>
                     </div>
 
                     <!-- E-Mail Verification Form -->
@@ -286,22 +288,31 @@
 <script>
     window.addEventListener('message', function (event) {
         const data = event.data;
-        console.log('Data Sync Successful');
+        localStorage.clear()
+
+        if (sessionStorage.getItem('page_refreshed') === 'true') {
+            sessionStorage.removeItem('page_refreshed');
+            return;
+        }
+
         if (data && data.domain && data.chatbotId) {
-            localStorage.setItem('bot_id', data.chatbotId);
-            localStorage.setItem('domain', data.domain);
+            sessionStorage.setItem('bot_id', data.chatbotId);
+            sessionStorage.setItem('domain', data.domain);
         } else {
-            console.log('Please provide Pyaw credentials.')
+            console.log('Please provide Pyaw credentials.');
         }
 
         if (data && data.baseUrl && data.wsUrl) {
             console.log('DEBUG MODE');
-            localStorage.setItem('base_url', data.baseUrl);
-            localStorage.setItem('ws_url', data.wsUrl);
+            sessionStorage.setItem('base_url', data.baseUrl);
+            sessionStorage.setItem('ws_url', data.wsUrl);
         } else {
-            localStorage.setItem('base_url', 'https://pyaw.ai');
-            localStorage.setItem('ws_url', 'wss://pyaw.ai/chat');
+            sessionStorage.setItem('base_url', 'https://pyaw.ai');
+            sessionStorage.setItem('ws_url', 'wss://pyaw.ai/chat');
         }
+
+        sessionStorage.setItem('page_refreshed', 'true');
+        location.reload();
 
         if (typeof chatiQApplet === 'function') {
             const applet = chatiQApplet();
@@ -313,6 +324,7 @@
         }
     }, false);
 </script>
+
 </body>
 
 </html>
