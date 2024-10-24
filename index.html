@@ -1,53 +1,152 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pyaw Web Widget - Test Site</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Theme Variables */
+        :root[data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --secondary-text: #666666;
+            --toggle-bg: #f0f0f0;
+            --toggle-hover: #e0e0e0;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --secondary-text: #cccccc;
+            --toggle-bg: #333333;
+            --toggle-hover: #444444;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* Container */
+        .container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            line-height: 1.5;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--toggle-bg);
+            border: none;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--toggle-hover);
+        }
+
+        .theme-toggle svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            fill: var(--text-color);
+        }
+
+        /* For screens smaller than 600px */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .theme-toggle {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <!-- Theme Toggle Button -->
-    <div class="position-fixed top-0 end-0 p-3">
-        <button class="btn btn-outline-primary rounded-circle" id="themeToggle">
-            <i class="bi bi-sun-fill" id="themeIcon"></i>
-        </button>
+    <button class="theme-toggle" aria-label="Toggle theme">
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path
+                d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM12 21.75a.75.75 0 0 1-.75-.75v-2.25a.75.75 0 0 1 1.5 0V21a.75.75 0 0 1-.75.75ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 21 12ZM5.66 5.66a.75.75 0 0 1 1.06 0l1.593 1.593a.75.75 0 1 1-1.06 1.061L5.66 6.72a.75.75 0 0 1 0-1.06ZM18.34 18.34a.75.75 0 0 1-1.06 0l-1.593-1.593a.75.75 0 1 1 1.06-1.061l1.593 1.593a.75.75 0 0 1 0 1.06ZM18.34 5.66a.75.75 0 0 1 0 1.06l-1.593 1.593a.75.75 0 1 1-1.06-1.061L17.28 5.66a.75.75 0 0 1 1.06 0ZM5.66 18.34a.75.75 0 0 1 0-1.06l1.593-1.593a.75.75 0 1 1 1.06 1.061L6.72 18.34a.75.75 0 0 1-1.06 0Z" />
+        </svg>
+    </button>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Pyaw Web Widget Test Site</h1>
+        <p>You're currently testing pyaw web widget. This site is built with vanilla HTML, CSS, and JavaScript.</p>
     </div>
 
-    <div class="container min-vh-100 d-flex flex-column align-items-center justify-content-center">
-        <h1 class="display-5 text-center">Pyaw Web Widget Test Site</h1>
-        <p class="mt-2 text-muted">You're currently testing pyaw web widget. This site is built with Bootstrap v5.</p>
-    </div>
-
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Dark/ Light theme configuration -->
+    <!-- Theme Toggle -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
             // Theme Toggle Logic
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = document.getElementById('themeIcon');
             const html = document.documentElement;
+            const themeToggle = document.querySelector('.theme-toggle');
+            const sunPath = themeToggle.querySelector('path');
+
+            // SVG paths for sun and moon icons
+            const sunPathD = "M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM12 21.75a.75.75 0 0 1-.75-.75v-2.25a.75.75 0 0 1 1.5 0V21a.75.75 0 0 1-.75.75ZM3 12a.75.75 0 0 1 .75-.75h2.25a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12ZM21 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 21 12ZM5.66 5.66a.75.75 0 0 1 1.06 0l1.593 1.593a.75.75 0 1 1-1.06 1.061L5.66 6.72a.75.75 0 0 1 0-1.06ZM18.34 18.34a.75.75 0 0 1-1.06 0l-1.593-1.593a.75.75 0 1 1 1.06-1.061l1.593 1.593a.75.75 0 0 1 0 1.06ZM18.34 5.66a.75.75 0 0 1 0 1.06l-1.593 1.593a.75.75 0 1 1-1.06-1.061L17.28 5.66a.75.75 0 0 1 1.06 0ZM5.66 18.34a.75.75 0 0 1 0-1.06l1.593-1.593a.75.75 0 1 1 1.06 1.061L6.72 18.34a.75.75 0 0 1-1.06 0Z";
+            const moonPathD = "M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z";
 
             themeToggle.addEventListener('click', () => {
-                if (html.getAttribute('data-bs-theme') === 'light') {
-                    html.setAttribute('data-bs-theme', 'dark');
-                    themeIcon.classList.replace('bi-sun-fill', 'bi-moon-fill');
-                } else {
-                    html.setAttribute('data-bs-theme', 'light');
-                    themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
-                }
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+
+                // Toggle icon
+                sunPath.setAttribute('d', currentTheme === 'light' ? moonPathD : sunPathD);
             });
         });
     </script>
-
 
     <!-- Pyaw Widget Scripts -->
     <script src="src/chatbot.min.js"></script>

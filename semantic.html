@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyaw Web Widget - Test Site</title>
+    <!-- Semantic UI CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <style>
+        .dark-mode {
+            background-color: #1B1C1D !important;
+            color: #FFFFFF !important;
+        }
+
+        .dark-mode h1 {
+            color: #FFFFFF !important;
+        }
+
+        .dark-mode p {
+            color: #AAAAAA !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Theme Toggle -->
+    <div class="ui top right fixed menu" style="background: transparent; border: none; box-shadow: none;">
+        <div class="item">
+            <button id="themeToggle" class="ui circular icon button">
+                <i class="sun icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="ui center aligned middle aligned grid" style="min-height: 100vh; margin: 0;">
+        <div class="column">
+            <h1 class="ui huge header">Pyaw Web Widget Test Site</h1>
+            <p class="ui text">You're currently testing pyaw web widget. This site is built with Semantic UI.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Theme Toggle Logic
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const button = themeToggle.querySelector('i');
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                button.classList.toggle('sun');
+                button.classList.toggle('moon');
+            });
+        });
+    </script>
+
+    <!-- Pyaw Widget Scripts -->
+    <script src="src/chatbot.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChatBot();
+        });
+    </script>
+</body>
+
+</html>
