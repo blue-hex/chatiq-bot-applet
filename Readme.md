@@ -1,55 +1,98 @@
-# Pyaw - Chat Assistant Plugin
+# Pyaw Web Widget
 
-## Description
+A lightweight, customizable chat widget for seamless customer support integration with Pyaw AI.
 
-**Pyaw - Chat Assistant Plugin** is a customer-facing chatbot/chat assistant interface designed to connect with the Pyaw application using bot ID, domain, and WebSocket URLs. It integrates seamlessly into any site using an iframe. Internally, it utilizes **TailwindCSS**, **DaisyUI**, and **Alpine.js** for styling and functionality.
+## Overview
 
-## Local Testing
+Pyaw Web Widget is a drop-in chat solution that enables direct customer interactions through Pyaw's AI-powered support system. The widget is platform-agnostic and can be integrated into any web environment.
 
-To test Pyaw - Chat Assistant Plugin locally, follow the structure outlined below:
+## Features
 
-### File Structure
+- Vanilla JavaScript implementation
+- Zero dependencies
+- Conflict-free custom CSS classes
+- Responsive design
+- Customizable themes and branding
+- Cross-platform compatibility
 
-1. **local-test.html**
-   - This file serves as the main entry point for local testing.
-   - It includes references to two essential files: `styles.css` and `script.js`.
+## Installation
 
-2. **styles.css**
-   - Contains the styling rules and some custom CSS to enhance the appearance of the chatbot.
+Add the following script to your HTML:
 
-3. **script.js**
-   - The core logic of the chatbot is implemented here, handling the chat interactions and connecting to the Pyaw application.
+```html
+<script src="https://chatiq.blob.core.windows.net/static-files/v3-pyaw-widget/chatbot.min.js"></script>
+```
 
-### Steps to Test Locally
+## Usage
 
-1. **Download the Repository**
-   - Clone the repository to your local machine using the following command:
-     ```bash
-     git clone https://github.com/your-repo/Pyaw - Chat Assistant Plugin.git
-     ```
+### Basic Implementation
 
-2. **Navigate to the Project Directory**
-   - Change into the project directory:
-     ```bash
-     cd Pyaw - Chat Assistant Plugin
-     ```
+For default settings:
 
-3. **Open local-test.html**
-   - Open the `local-test.html` file in your preferred web browser to test the chatbot interface.
+```html
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    new ChatBot();
+});
+</script>
+```
 
-## Contributing
+### Custom Configuration
 
-If you encounter any issues or have feature requests, please feel free to raise an issue or submit a pull request (PR) on the [GitHub repository](https://github.com/your-repo/Pyaw - Chat Assistant Plugin/issues).
+For branded experience:
 
-### Useful Links
+```html
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    new ChatBot({
+        brandName: "Your Brand",
+        brandLogo: "path/to/logo.png",
+        brandShortDescription: "Your tagline",
+        brandWelcomeMessage: "Welcome message",
+        theme: "light",
+        primaryColor: "#0E54FF",
+        secondaryColor: "#F5F7FF",
+        position: "bottom-right",
+        size: "large",
+        soundEnabled: true,
+        messageSound: "path/to/sound.mp3"
+    });
+});
+</script>
+```
 
-- [TailwindCSS](https://tailwindcss.com/): A utility-first CSS framework for rapidly building custom user interfaces.
-- [DaisyUI](https://daisyui.com/): A component library for TailwindCSS.
-- [Alpine.js](https://alpinejs.dev/): A rugged, minimal framework for composing JavaScript behavior in your HTML.
+### Configuration Options
 
-For a deeper understanding of the concepts used in this project, you can refer to the following:
+| Option | Type | Description | Default |
+|--------|------|-------------|---------|
+| brandName | string | Company name | "Pyaw" |
+| brandLogo | string | URL to logo (256x256px) | Default logo |
+| theme | string | "light" or "dark" | "light" |
+| size | string | "small", "medium", "large", "fullscreen" | "large" |
+| position | string | Widget position | "bottom-right" |
+| soundEnabled | boolean | Enable notification sounds | true |
 
-- [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket): A protocol for creating real-time interactive applications.
-- [iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe): An HTML element that embeds another HTML page within the current page.
+and more configurations coming soon
 
-By following these guidelines, you can ensure a professional and detailed documentation for the Pyaw - Chat Assistant Plugin.
+## Project Structure
+
+```
+src/
+├── chatbot.min.js    # Main widget script
+├── logo.png          # Brand assets
+└── tune.mp3          # Notification sound
+```
+
+## Platform Compatibility
+
+- HTML websites
+- WordPress
+- Wix
+- Framer
+- Squarespace
+- Shopify
+- Other web platforms
+
+## Support
+
+For issues or feature requests, please contact our support team.
